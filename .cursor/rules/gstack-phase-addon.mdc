@@ -1,0 +1,35 @@
+---
+description: gstack is a mandatory add-on at every Pulseboard phase (does not replace SDLC gates)
+alwaysApply: true
+---
+
+# gstack phase add-on
+
+Treat **gstack** as a required add-on at every phase. It does **not** replace Pulseboard SDLC phase gates (`docs/Pulseboard-Complete-SDLC.md`), Human UAT, or S0–S7 success bars.
+
+## When a phase starts (`Run Phase N`)
+
+1. Restate Build / Security / Tests / Human inputs (SDLC).
+2. **Also** run the matching gstack skills as add-ons (invoke via Skill tool / `/gstack-*` if prefixed):
+   - Scope/strategy → `/office-hours` or `/plan-ceo-review` (as needed)
+   - Architecture → `/plan-eng-review`
+   - UI/design plan → `/plan-design-review` or `/design-consultation`
+   - Before ship/PR → `/review`
+   - Security-sensitive → `/cso` or security review skill when available
+   - Bugs → `/investigate`
+   - Behavior UAT assist → `/qa` or `/qa-only`
+3. After implementation: prefer `/review` before asking Human to sign the phase.
+
+## Rules
+
+- Do not skip phase gates because a gstack skill passed.
+- Do not skip gstack on a phase because “we’re just coding.”
+- Selective use is OK inside a phase (pick the skills that fit), but **at least one** relevant gstack pass must happen per phase before Human sign-off.
+- UI taste polish can defer; gstack design skills still apply when the phase has user-facing UI.
+- Log durable phase decisions with gstack decision tools when available.
+
+## Source of truth order
+
+1. Human decisions + SDLC locked docs under `docs/`
+2. This gstack add-on rule
+3. Agent implementation

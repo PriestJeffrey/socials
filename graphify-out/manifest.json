@@ -1,0 +1,37 @@
+{
+  "README.md": {
+    "mtime": 1785163766.1712272,
+    "ast_hash": "36aba16af57f48ba7cc6718011f1d85c",
+    "semantic_hash": "36aba16af57f48ba7cc6718011f1d85c"
+  },
+  "docs/Pulseboard-Complete-SDLC.md": {
+    "mtime": 1785161881.0548575,
+    "ast_hash": "87d8e8e86a41e3f0eeaf2eedc208562a",
+    "semantic_hash": "87d8e8e86a41e3f0eeaf2eedc208562a"
+  },
+  "docs/agent-roster.md": {
+    "mtime": 1785163751.1480293,
+    "ast_hash": "0199d6b145c8935cda20b750a0f38d1b",
+    "semantic_hash": "0199d6b145c8935cda20b750a0f38d1b"
+  },
+  "docs/locked-prompts.md": {
+    "mtime": 1785163765.6280475,
+    "ast_hash": "ce7843e7ed6f720f1962e633bfd7635b",
+    "semantic_hash": "ce7843e7ed6f720f1962e633bfd7635b"
+  },
+  "docs/phase-0-restatement.md": {
+    "mtime": 1785163716.2982297,
+    "ast_hash": "2f361a6d6c1c801065e73a5cb169732c",
+    "semantic_hash": "2f361a6d6c1c801065e73a5cb169732c"
+  },
+  "docs/scalability-addendum.md": {
+    "mtime": 1785163744.3892932,
+    "ast_hash": "fb123c90f138c1bcb3d3768438dfadcc",
+    "semantic_hash": "fb123c90f138c1bcb3d3768438dfadcc"
+  },
+  "docs/ui-direction-phase-0.md": {
+    "mtime": 1785163763.0276341,
+    "ast_hash": "a9d8092ab84fbc2a47f936f7ec6c70d6",
+    "semantic_hash": "a9d8092ab84fbc2a47f936f7ec6c70d6"
+  }
+}
