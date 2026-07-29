@@ -1,4 +1,4 @@
-# Phase 0 Security Exit — draft for Human
+# Phase 0 Security Exit — signed
 
 ## Tactics touched
 TA0043 · TA0001 · TA0004 · TA0006 · TA0007 · (partial) TA0002
@@ -13,20 +13,21 @@ TA0043 · TA0001 · TA0004 · TA0006 · TA0007 · (partial) TA0002
 
 ## Evidence
 - Unit: `tests/unit/{password,aes,logger,seams}.test.ts`
-- Integration/security: `tests/integration/auth-tenancy.test.ts` (password, session hash, tenancy-scoped Overview read, audit, DbJobQueue dedupe, OAuth state, IG stub, rate limit)
+- Integration/security: `tests/integration/auth-tenancy.test.ts`
 - CI: `.github/workflows/ci.yml`
-- gstack add-on (locked): `docs/gstack-phase-addon.md` — Phase 0 used `/plan-design-review` for landing; run `/review` before S0 sign
+- gstack: `/plan-design-review` (landing) + `/review` (pre-S0); redirect-loop + race fixes landed
 
 ## Residual risk
 | Risk | Accept? |
 |---|---|
-| No MFA | [ ] |
-| Local TLS deferred | [ ] |
-| In-memory rate limit | [ ] |
-| Light SCA/SAST | [ ] |
+| No MFA | [x] |
+| Local TLS deferred | [x] |
+| In-memory rate limit | [x] |
+| Light SCA/SAST | [x] |
 
 ## Human decision
-- [ ] Accept residual risk and sign **S0**
+- [x] Accept residual risk and sign **S0**
 - [ ] Block — fixes: _______________
 
-Signed: __________ Date: __________
+Signed: **PriestJeffrey** Date: **2026-07-29**  
+Authority: Human message “S0 signed — run Phase 1”

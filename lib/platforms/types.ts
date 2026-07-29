@@ -14,7 +14,7 @@ export interface PlatformAdapter {
   handleOAuthCallback(
     userId: string,
     query: Record<string, string>,
-  ): Promise<unknown>;
+  ): Promise<{ connectionId: string }>;
   refreshToken(connectionId: string): Promise<void>;
   disconnect(connectionId: string): Promise<void>;
   fetchPosts(connectionId: string, cursor?: string): Promise<unknown>;

@@ -1,10 +1,30 @@
+import { prisma } from "@/lib/db/prisma";
+import { encryptAesGcm, decryptAesGcm } from "@/lib/crypto/aes";
+import { createOAuthState, verifyOAuthState } from "@/lib/platforms/oauth-state";
+import { writeAudit } from "@/lib/audit/log";
+import { jobQueue } from "@/lib/jobs";
+import { clock } from "@/lib/clock";
 import type { PlatformAdapter } from "@/lib/platforms/types";
+import { getMetaConfig } from "./config";
+import {
+  buildOAuthAuthorizeUrl,
+  discoverIgAccount,
+  exchangeCodeForToken,
+  exchangeLongLivedToken,
+  fetchIgInsights,
+  fetchIgMedia,
+  fixtureSyncPayload,
+} from "./meta-client";
 
-const notReady = (method: string): never => {
-  throw new Error(`Instagram adapter not implemented yet (${method}). Phase 1.`);
-};
+function requireMetaReady(): void {
+  const cfg = getMetaConfig();
+  if (!cfg.configured) {
+    throw new Error(
+      "Instagram not configured. Set META_APP_ID + META_APP_SECRET, or META_USE_FIXTURES=true",
+    );
+  }
+}
 
-/** Phase 0 scaffold — registered so Phase 1 fills methods, not invents the module. */
 export const instagramAdapter: PlatformAdapter = {
   id: "instagram",
   capabilities: {
@@ -15,11 +35,157 @@ export const instagramAdapter: PlatformAdapter = {
     schedule: false,
     comments: false,
   },
-  beginOAuth: async () => notReady("beginOAuth"),
-  handleOAuthCallback: async () => notReady("handleOAuthCallback"),
-  refreshToken: async () => notReady("refreshToken"),
-  disconnect: async () => notReady("disconnect"),
-  fetchPosts: async () => notReady("fetchPosts"),
-  fetchMetrics: async () => notReady("fetchMetrics"),
-  publish: async () => notReady("publish"),
+
+  async beginOAuth(userId: string): Promise<string> {
+    requireMetaReady();
+    const { state } = createOAuthState(userId);
+    return buildOAuthAuthorizeUrl(state);
+  },
+
+  async handleOAuthCallback(
+    userId: string,
+    query: Record<string, string>,
+  ): Promise<{ connectionId: string }> {
+    requireMetaReady();
+    const state = query.state ?? "";
+    const code = query.code ?? "";
+    const verified = verifyOAuthState(state);
+    if (!verified || verified.userId !== userId) {
+      throw new Error("Invalid OAuth state");
+    }
+    if (!code) throw new Error("Missing OAuth code");
+
+    const cfg = getMetaConfig();
+    let accessToken: string;
+    let expiresIn: number | undefined;
+    let externalAccountId: string;
+    let displayName: string;
+
+    if (cfg.useFixtures) {
+      const fix = fixtureSyncPayload(userId);
+      accessToken = fix.accessToken;
+      expiresIn = 60 * 60 * 24 * 60;
+      externalAccountId = fix.externalAccountId;
+      displayName = fix.displayName;
+    } else {
+      const short = await exchangeCodeForToken(code);
+      const long = await exchangeLongLivedToken(short.accessToken);
+      accessToken = long.accessToken;
+      expiresIn = long.expiresIn;
+      const ig = await discoverIgAccount(accessToken);
+      accessToken = ig.pageAccessToken;
+      externalAccountId = ig.externalAccountId;
+      displayName = ig.displayName;
+    }
+
+    const tokenExpiresAt = expiresIn
+      ? new Date(clock.now().getTime() + expiresIn * 1000)
+      : null;
+
+    const connection = await prisma.socialConnection.upsert({
+      where: {
+        userId_platform_externalAccountId: {
+          userId,
+          platform: "instagram",
+          externalAccountId,
+        },
+      },
+      create: {
+        userId,
+        platform: "instagram",
+        externalAccountId,
+        displayName,
+        accessTokenEnc: encryptAesGcm(accessToken),
+        tokenExpiresAt,
+        scopes: "instagram",
+        status: "connected",
+      },
+      update: {
+        displayName,
+        accessTokenEnc: encryptAesGcm(accessToken),
+        tokenExpiresAt,
+        status: "connected",
+        lastSyncError: null,
+      },
+    });
+
+    await writeAudit({
+      userId,
+      action: "platform.instagram.connected",
+      metadata: { connectionId: connection.id, externalAccountId },
+    });
+
+    await jobQueue.enqueue({
+      userId,
+      type: "sync",
+      payload: { platform: "instagram", connectionId: connection.id },
+      idempotencyKey: `sync:instagram:${connection.id}:${clock.now().toISOString().slice(0, 13)}`,
+    });
+
+    return { connectionId: connection.id };
+  },
+
+  async refreshToken(connectionId: string): Promise<void> {
+    const conn = await prisma.socialConnection.findFirst({
+      where: { id: connectionId, platform: "instagram" },
+    });
+    if (!conn?.accessTokenEnc) throw new Error("Connection not found");
+    const current = decryptAesGcm(conn.accessTokenEnc);
+    const long = await exchangeLongLivedToken(current);
+    await prisma.socialConnection.update({
+      where: { id: connectionId },
+      data: {
+        accessTokenEnc: encryptAesGcm(long.accessToken),
+        tokenExpiresAt: long.expiresIn
+          ? new Date(clock.now().getTime() + long.expiresIn * 1000)
+          : null,
+      },
+    });
+  },
+
+  async disconnect(connectionId: string): Promise<void> {
+    const conn = await prisma.socialConnection.findFirst({
+      where: { id: connectionId, platform: "instagram" },
+    });
+    if (!conn) return;
+    await prisma.socialConnection.update({
+      where: { id: connectionId },
+      data: {
+        status: "disconnected",
+        accessTokenEnc: null,
+        refreshTokenEnc: null,
+        lastSyncError: null,
+      },
+    });
+    await writeAudit({
+      userId: conn.userId,
+      action: "platform.instagram.disconnected",
+      metadata: { connectionId },
+    });
+  },
+
+  async fetchPosts(connectionId: string): Promise<unknown> {
+    const conn = await prisma.socialConnection.findFirst({
+      where: { id: connectionId, platform: "instagram", status: "connected" },
+    });
+    if (!conn?.accessTokenEnc) throw new Error("Not connected");
+    const token = decryptAesGcm(conn.accessTokenEnc);
+    return fetchIgMedia(conn.externalAccountId, token);
+  },
+
+  async fetchMetrics(
+    connectionId: string,
+    _range: { from: Date; to: Date },
+  ): Promise<unknown> {
+    const conn = await prisma.socialConnection.findFirst({
+      where: { id: connectionId, platform: "instagram", status: "connected" },
+    });
+    if (!conn?.accessTokenEnc) throw new Error("Not connected");
+    const token = decryptAesGcm(conn.accessTokenEnc);
+    return fetchIgInsights(conn.externalAccountId, token);
+  },
+
+  async publish(): Promise<unknown> {
+    throw new Error("Instagram publish not in Phase 1");
+  },
 };

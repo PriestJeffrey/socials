@@ -18,19 +18,25 @@ export interface JobRunner {
   markFailed(id: string, error: string): Promise<void>;
 }
 
-/** Phase 0 stub — no workers yet. */
+/** Local/tests stub — no persistence. */
 export class NoopJobQueue implements JobQueue {
-  async enqueue(): Promise<{ id: string; deduped: boolean }> {
+  async enqueue(_input: {
+    userId: string;
+    type: JobType;
+    payload: JobPayload;
+    idempotencyKey?: string;
+    runAfter?: Date;
+  }): Promise<{ id: string; deduped: boolean }> {
     return { id: `noop_${crypto.randomUUID()}`, deduped: false };
   }
 }
 
 export class NoopJobRunner implements JobRunner {
-  async claim(): Promise<JobRecord[]> {
+  async claim(_limit: number): Promise<JobRecord[]> {
     return [];
   }
-  async markDone(): Promise<void> {}
-  async markFailed(): Promise<void> {}
+  async markDone(_id: string): Promise<void> {}
+  async markFailed(_id: string, _error: string): Promise<void> {}
 }
 
 /** Persists jobs for Phase 1+ workers. Dedupes on idempotencyKey. */
@@ -54,7 +60,7 @@ export class DbJobQueue implements JobQueue {
         data: {
           userId: input.userId,
           type: input.type,
-          payload: input.payload,
+          payload: input.payload as object,
           idempotencyKey: input.idempotencyKey,
           runAfter: input.runAfter ?? clock.now(),
           status: "pending",

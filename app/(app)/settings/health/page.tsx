@@ -1,7 +1,11 @@
+import { redirect } from "next/navigation";
+import { getSessionUser } from "@/lib/auth/session";
 import { getHealthReport } from "@/lib/health/types";
 
 export default async function HealthPage() {
-  const report = await getHealthReport();
+  const user = await getSessionUser();
+  if (!user) redirect("/login");
+  const report = await getHealthReport(user.id);
 
   return (
     <main data-testid="settings-health">
@@ -9,12 +13,13 @@ export default async function HealthPage() {
         Health
       </h1>
       <p data-testid="health-placeholder" className="mt-2 text-sm text-[var(--pb-slate)]">
-        Systems will appear as they&apos;re connected.
+        Phase {report.phase} — auth, database, and Instagram sync status.
       </p>
       <ul className="mt-8 space-y-3">
         {report.subsystems.map((s) => (
           <li
             key={s.id}
+            data-testid={`health-${s.id}`}
             className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3"
           >
             <div className="flex items-center justify-between gap-4">
@@ -25,7 +30,7 @@ export default async function HealthPage() {
                   color:
                     s.status === "ok"
                       ? "var(--pb-ok)"
-                      : s.status === "down"
+                      : s.status === "down" || s.status === "degraded"
                         ? "var(--pb-warn)"
                         : "var(--pb-slate)",
                 }}

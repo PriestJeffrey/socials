@@ -60,12 +60,13 @@ describe.runIf(hasDb)("auth + tenancy integration", () => {
     expect(session?.userId).toBe(userAId);
   });
 
-  it("readOverview is scoped to userId and empty in Phase 0", async () => {
+  it("readOverview is scoped to userId when no snapshots exist", async () => {
     const board = await readOverview(userAId);
     expect(board.userId).toBe(userAId);
     expect(board.empty).toBe(true);
     const other = await readOverview(userBId);
     expect(other.userId).toBe(userBId);
+    expect(other.empty).toBe(true);
   });
 
   it("destroys session on logout path", async () => {
@@ -120,12 +121,16 @@ describe("oauth state + adapters", () => {
     expect(verifyOAuthState(state + "x")).toBeNull();
   });
 
-  it("registers Instagram stub adapter", async () => {
+  it("registers Instagram adapter with OAuth", async () => {
+    process.env.SESSION_SECRET = "test-session-secret-min-32-characters-long";
+    process.env.META_USE_FIXTURES = "true";
     const ig = getAdapter("instagram");
     expect(ig?.id).toBe("instagram");
     expect(ig?.capabilities.oauth).toBe(true);
     expect(listAdapters().length).toBeGreaterThanOrEqual(1);
-    await expect(ig!.beginOAuth("u1")).rejects.toThrow(/Phase 1/);
+    const url = await ig!.beginOAuth("u1");
+    expect(url).toContain("/api/oauth/instagram/callback");
+    expect(url).toContain("code=fixture_code");
   });
 });
 

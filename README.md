@@ -24,8 +24,18 @@ Know what's broken, what's working, and what to post next.
 2. Ensure `.env` exists (from `.env.example`) with `TOKEN_ENCRYPTION_KEY` + `SESSION_SECRET`
 3. `npm install` (if lockfile/bin links incomplete, re-run until `node_modules/.bin` exists)
 4. `npx prisma migrate deploy` (or `npx prisma db push`)
-5. `npm run dev` → http://localhost:3000
-6. `npm test` — unit tests (Argon2id, AES-GCM, seams, logger)
+5. `npm run db:seed` — creates the reusable demo login
+6. `npm run dev` → http://localhost:3000
+7. `npm test` — unit tests (Argon2id, AES-GCM, seams, logger)
+
+### Demo login (local only)
+
+| Field | Value |
+|---|---|
+| Email | `demo@pulseboard.local` |
+| Password | `pulseboard-demo` |
+
+Re-run `npm run db:seed` anytime to reset that password.
 
 ## Next Human action
 
