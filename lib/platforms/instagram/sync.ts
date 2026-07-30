@@ -21,27 +21,27 @@ export async function runInstagramSync(input: {
       id: input.connectionId,
       userId: input.userId,
       platform: "instagram",
+      status: "connected",
     },
   });
-  if (!conn) throw new Error("Connection not found");
+  if (!conn) throw new Error("Connection not found or not connected");
 
   const cfg = getMetaConfig();
   let media;
   let insights;
 
   try {
-    if (cfg.useFixtures || !conn.accessTokenEnc) {
+    if (cfg.useFixtures) {
       const fix = fixtureSyncPayload(input.userId);
       media = fix.media;
       insights = fix.insights;
     } else {
+      if (!conn.accessTokenEnc) {
+        throw new Error("Missing access token — reconnect Instagram");
+      }
       const token = decryptAesGcm(conn.accessTokenEnc);
       media = await fetchIgMedia(conn.externalAccountId, token);
       insights = await fetchIgInsights(conn.externalAccountId, token);
-      // If Graph returns empty insights, seed mild fixture metrics so Overview isn't blank after connect
-      if (insights.length === 0 && media.length > 0) {
-        insights = fixtureSyncPayload(input.userId).insights;
-      }
     }
 
     let posts = 0;

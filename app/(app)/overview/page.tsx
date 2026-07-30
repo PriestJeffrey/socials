@@ -2,12 +2,21 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
 import { readOverview } from "@/lib/analytics/pipeline";
+import { prisma } from "@/lib/db/prisma";
 
 export default async function OverviewPage() {
   const user = await getSessionUser();
   if (!user) redirect("/login");
 
   const board = await readOverview(user.id);
+  const igConnected = await prisma.socialConnection.findFirst({
+    where: {
+      userId: user.id,
+      platform: "instagram",
+      status: { in: ["connected", "error"] },
+    },
+    select: { id: true, status: true },
+  });
 
   return (
     <main>
@@ -26,18 +35,19 @@ export default async function OverviewPage() {
           className="mt-8 max-w-xl rounded-xl border border-[var(--pb-line)] bg-white/80 p-8"
         >
           <p className="font-display text-xl font-semibold text-[var(--pb-ink)]">
-            Your board is ready
+            {igConnected ? "Waiting on snapshots" : "Your board is ready"}
           </p>
           <p className="mt-3 text-[var(--pb-slate)]">
-            Connect Instagram and sync to see what&apos;s broken, what&apos;s
-            working, and what to post next.
+            {igConnected
+              ? "Instagram is linked. Sync from Settings to fill what's broken and what's working."
+              : "Connect Instagram and sync to see what's broken, what's working, and what to post next."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/settings"
               className="rounded-md bg-[var(--pb-pulse)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--pb-pulse-deep)]"
             >
-              Connect Instagram
+              {igConnected ? "Open Settings to sync" : "Connect Instagram"}
             </Link>
             <Link
               href="/settings/health"

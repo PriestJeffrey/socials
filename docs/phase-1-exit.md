@@ -1,7 +1,7 @@
-# Pulseboard — Phase 1 exit (draft)
+# Pulseboard — Phase 1 exit — signed
 
-**Status:** Implementation complete — awaiting Human UAT + S1 sign.  
-**Date:** 2026-07-29
+**Status:** **S1 signed** (fixtures path; real Meta deferred until developer access unlocks).  
+**Date:** 2026-07-30
 
 ## Delivered
 
@@ -10,28 +10,36 @@
 - Sync jobs → `Post` + `MetricSnapshot`; Overview from snapshots only
 - Settings Connect / Disconnect / Sync now
 - Health phase 1 + Instagram subsystem
-- Tests: `tests/integration/phase1-instagram.test.ts`
+- Harden: disconnect clears board; OAuth rate limit; fixture-local callback; sync guards
+- Tests: `tests/integration/phase1-instagram.test.ts` (incl. disconnect → empty Overview)
 
-## Security residual (accept at S1)
+## Security residual (accepted at S1)
 
-- ATT&CK: Credential Access (stolen session → connect abuse) mitigated by session hash + OAuth state
-- Fixture mode must stay off in production (`META_USE_FIXTURES≠true`)
+| Risk | Accept? |
+|---|---|
+| No real Meta / fixtures-only until App ID available | [x] |
+| Fixture mode must stay off in production | [x] |
+| ATT&CK Credential Access (stolen session → connect) | [x] mitigated by session hash + OAuth state |
+| Prod cron for pending jobs deferred | [x] |
 
 ## gstack
 
 - Restatement: `docs/phase-1-restatement.md`
-- Pre-sign: `/review` notes below; `/qa` optional after Human connects Meta or fixtures
+- Harden `/review` notes below; Human fixture UAT signed
 
 ### /review notes (AI)
 
 - Tenancy on connectionId checks in actions + sync
-- Callback redacts token-ish words from error redirects
+- Callback redacts token-ish words from error redirects (query + catch)
 - Overview never calls Graph
-- Open follow-ups: rate-limit OAuth start; cron for pending jobs in prod
+- Disconnect deletes posts/snapshots + clears overview cache
+- OAuth start rate-limited; fixtures always use local callback
+- Open follow-up: cron for pending jobs in prod (callback/sync still drain queue)
 
-## Human UAT checklist
+## Human decision
 
-1. `META_USE_FIXTURES=true` → Settings → Connect Instagram → Overview shows cards
-2. Health shows Instagram ok
-3. Disconnect clears connection; Overview empty again (after cache TTL or new sync)
-4. (Optional) Real Meta app: set APP_ID/SECRET, redirect URI, fixtures off
+- [x] Accept residual risk and sign **S1** (fixtures)
+- [ ] Block — fixes: _______________
+
+Signed: **PriestJeffrey** Date: **2026-07-30**  
+Authority: Human message “done!” after Phase 1 harden UAT

@@ -12,7 +12,7 @@ export default async function HealthPage() {
       <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
         Health
       </h1>
-      <p data-testid="health-placeholder" className="mt-2 text-sm text-[var(--pb-slate)]">
+      <p data-testid="health-summary" className="mt-2 text-sm text-[var(--pb-slate)]">
         Phase {report.phase} — auth, database, and Instagram sync status.
       </p>
       <ul className="mt-8 space-y-3">

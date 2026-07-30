@@ -97,4 +97,32 @@ describe.runIf(hasDb)("phase 1 instagram fixtures + tenancy", () => {
       }),
     ).rejects.toThrow(/Invalid OAuth state/i);
   });
+
+  it("fixture OAuth URL stays local even when META_APP_ID is set", async () => {
+    process.env.META_USE_FIXTURES = "true";
+    process.env.META_APP_ID = "dummy-app-id";
+    const url = await instagramAdapter.beginOAuth(userAId);
+    expect(url).toContain("/api/oauth/instagram/callback");
+    expect(url).not.toContain("facebook.com");
+    delete process.env.META_APP_ID;
+  });
+
+  it("disconnect clears snapshots and empties Overview", async () => {
+    await runInstagramSync({ userId: userAId, connectionId: connectionAId });
+    expect((await readOverview(userAId)).empty).toBe(false);
+
+    await instagramAdapter.disconnect(connectionAId);
+
+    const posts = await prisma.post.count({ where: { connectionId: connectionAId } });
+    const snaps = await prisma.metricSnapshot.count({
+      where: { connectionId: connectionAId },
+    });
+    expect(posts).toBe(0);
+    expect(snaps).toBe(0);
+    expect((await readOverview(userAId)).empty).toBe(true);
+
+    await expect(
+      runInstagramSync({ userId: userAId, connectionId: connectionAId }),
+    ).rejects.toThrow(/not connected/i);
+  });
 });

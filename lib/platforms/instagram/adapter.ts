@@ -148,15 +148,25 @@ export const instagramAdapter: PlatformAdapter = {
       where: { id: connectionId, platform: "instagram" },
     });
     if (!conn) return;
-    await prisma.socialConnection.update({
-      where: { id: connectionId },
-      data: {
-        status: "disconnected",
-        accessTokenEnc: null,
-        refreshTokenEnc: null,
-        lastSyncError: null,
-      },
-    });
+
+    await prisma.$transaction([
+      prisma.post.deleteMany({ where: { connectionId } }),
+      prisma.metricSnapshot.deleteMany({ where: { connectionId } }),
+      prisma.socialConnection.update({
+        where: { id: connectionId },
+        data: {
+          status: "disconnected",
+          accessTokenEnc: null,
+          refreshTokenEnc: null,
+          lastSyncError: null,
+          lastSyncAt: null,
+        },
+      }),
+    ]);
+
+    const { cacheStore } = await import("@/lib/cache");
+    await cacheStore.delByPrefix(`overview:v1:${conn.userId}`);
+
     await writeAudit({
       userId: conn.userId,
       action: "platform.instagram.disconnected",

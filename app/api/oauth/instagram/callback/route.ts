@@ -3,6 +3,10 @@ import { getSessionUser } from "@/lib/auth/session";
 import { getAdapter } from "@/lib/platforms";
 import { processPendingJobs } from "@/lib/jobs/runner";
 
+function redactOAuthError(message: string): string {
+  return message.replace(/token|secret|bearer/gi, "[redacted]");
+}
+
 export async function GET(request: Request) {
   const appUrl = process.env.APP_URL ?? "http://localhost:3000";
   const user = await getSessionUser();
@@ -14,7 +18,7 @@ export async function GET(request: Request) {
   const error = searchParams.get("error_description") ?? searchParams.get("error");
   if (error) {
     return NextResponse.redirect(
-      new URL(`/settings?error=${encodeURIComponent(error)}`, appUrl),
+      new URL(`/settings?error=${encodeURIComponent(redactOAuthError(error))}`, appUrl),
     );
   }
 
@@ -31,10 +35,8 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/settings?connected=instagram", appUrl));
   } catch (err) {
     const message = err instanceof Error ? err.message : "OAuth failed";
-    // Never include tokens in redirect
-    const safe = message.replace(/token|secret|bearer/gi, "[redacted]");
     return NextResponse.redirect(
-      new URL(`/settings?error=${encodeURIComponent(safe)}`, appUrl),
+      new URL(`/settings?error=${encodeURIComponent(redactOAuthError(message))}`, appUrl),
     );
   }
 }

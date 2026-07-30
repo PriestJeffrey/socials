@@ -1,0 +1,14 @@
+---
+description: Always show demo login credentials when wrapping up work
+alwaysApply: true
+---
+
+# Demo login reminder
+
+When finishing a task (implementation done, tests green, or telling the Human next UAT steps), always include the local demo credentials:
+
+- **Email:** `demo@pulseboard.local`
+- **Password:** `pulseboard-demo`
+- **Login:** http://localhost:3000/login
+
+If the user may be missing, mention `npm run db:seed`. Never present these as production credentials.

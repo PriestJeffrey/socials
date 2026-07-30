@@ -222,15 +222,17 @@ export async function fetchIgInsights(
 
 export function buildOAuthAuthorizeUrl(state: string): string {
   const cfg = getMetaConfig();
-  if (!cfg.appId && !cfg.useFixtures) {
-    throw new Error("META_APP_ID not configured");
-  }
-  if (cfg.useFixtures && !cfg.appId) {
-    // Fixture connect uses local callback without Meta dialog
-    const u = new URL(`${process.env.APP_URL ?? "http://localhost:3000"}/api/oauth/instagram/callback`);
+  if (cfg.useFixtures) {
+    // Fixture connect always uses local callback — never open Meta dialog
+    const u = new URL(
+      `${process.env.APP_URL ?? "http://localhost:3000"}/api/oauth/instagram/callback`,
+    );
     u.searchParams.set("code", "fixture_code");
     u.searchParams.set("state", state);
     return u.toString();
+  }
+  if (!cfg.appId) {
+    throw new Error("META_APP_ID not configured");
   }
   const url = new URL(`https://www.facebook.com/${cfg.graphVersion}/dialog/oauth`);
   url.searchParams.set("client_id", cfg.appId);
