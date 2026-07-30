@@ -92,18 +92,25 @@ describe.runIf(hasDb)("phase 5 drafts + publish", () => {
       },
     });
     const when = draft.scheduledAt!;
-    const job = await jobQueue.enqueue({
+    await jobQueue.enqueue({
       userId: userA,
       type: "publish",
       payload: { draftId: draft.id },
       idempotencyKey: `publish:${draft.id}:${when.toISOString()}`,
       runAfter: when,
     });
-    expect(job.deduped).toBe(false);
-    const pending = await processPendingJobs(5);
-    expect(pending).toBe(0);
+    // Drain any due jobs (e.g. leftover syncs) — future publish must remain pending
+    await processPendingJobs(10);
     const still = await prisma.draft.findUniqueOrThrow({ where: { id: draft.id } });
     expect(still.status).toBe("scheduled");
+    const futureJob = await prisma.job.findFirst({
+      where: {
+        userId: userA,
+        type: "publish",
+        idempotencyKey: `publish:${draft.id}:${when.toISOString()}`,
+      },
+    });
+    expect(futureJob?.status).toBe("pending");
   });
 
   it("repurpose creates sibling body for X", () => {
