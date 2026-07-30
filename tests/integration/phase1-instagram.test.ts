@@ -7,7 +7,6 @@ import { runInstagramSync } from "@/lib/platforms/instagram/sync";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { getHealthReport } from "@/lib/health/types";
 import { instagramAdapter } from "@/lib/platforms/instagram/adapter";
-import { processPendingJobs } from "@/lib/jobs/runner";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
 
@@ -42,7 +41,7 @@ describe.runIf(hasDb)("phase 1 instagram fixtures + tenancy", () => {
       state: createOAuthState(userAId).state,
     });
     connectionAId = connectionId;
-    await processPendingJobs(5);
+    await runInstagramSync({ userId: userAId, connectionId });
   });
 
   afterAll(async () => {

@@ -4,10 +4,10 @@ import { hashPassword } from "@/lib/auth/password";
 import { createOAuthState } from "@/lib/platforms/oauth-state";
 import { linkedinAdapter } from "@/lib/platforms/linkedin/adapter";
 import { facebookAdapter } from "@/lib/platforms/facebook/adapter";
+import { runFacebookSync } from "@/lib/platforms/facebook/sync";
 import { runLinkedInSync } from "@/lib/platforms/linkedin/sync";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { getHealthReport } from "@/lib/health/types";
-import { processPendingJobs } from "@/lib/jobs/runner";
 import { listAdapters } from "@/lib/platforms";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
@@ -48,7 +48,8 @@ describe.runIf(hasDb)("phase 3 linkedin + formulas", () => {
       })
     ).connectionId;
 
-    await processPendingJobs(8);
+    await runLinkedInSync({ userId, connectionId: liId });
+    await runFacebookSync({ userId, connectionId: fbId });
   });
 
   afterAll(async () => {

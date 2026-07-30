@@ -118,14 +118,14 @@ export class DbJobRunner implements JobRunner {
   }
 
   async markDone(id: string): Promise<void> {
-    await prisma.job.update({
+    await prisma.job.updateMany({
       where: { id },
       data: { status: "done", completedAt: clock.now(), lastError: null },
     });
   }
 
   async markFailed(id: string, error: string): Promise<void> {
-    await prisma.job.update({
+    await prisma.job.updateMany({
       where: { id },
       data: { status: "failed", lastError: error, completedAt: clock.now() },
     });

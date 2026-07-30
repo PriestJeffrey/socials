@@ -2,13 +2,12 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createOAuthState } from "@/lib/platforms/oauth-state";
+import { facebookAdapter } from "@/lib/platforms/facebook/adapter";
+import { instagramAdapter } from "@/lib/platforms/instagram/adapter";
 import { runFacebookSync } from "@/lib/platforms/facebook/sync";
 import { runInstagramSync } from "@/lib/platforms/instagram/sync";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { getHealthReport } from "@/lib/health/types";
-import { facebookAdapter } from "@/lib/platforms/facebook/adapter";
-import { instagramAdapter } from "@/lib/platforms/instagram/adapter";
-import { processPendingJobs } from "@/lib/jobs/runner";
 import { listAdapters } from "@/lib/platforms";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
@@ -52,7 +51,8 @@ describe.runIf(hasDb)("phase 2 facebook fixtures + tenancy", () => {
     });
     igConnectionId = ig.connectionId;
 
-    await processPendingJobs(8);
+    await runFacebookSync({ userId: userAId, connectionId: fbConnectionId });
+    await runInstagramSync({ userId: userAId, connectionId: igConnectionId });
   });
 
   afterAll(async () => {
