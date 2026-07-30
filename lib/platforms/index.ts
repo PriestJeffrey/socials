@@ -10,12 +10,13 @@ import { blueskyAdapter } from "./bluesky/adapter";
 import { redditAdapter } from "./reddit/adapter";
 import { mastodonAdapter } from "./mastodon/adapter";
 import { tumblrAdapter } from "./tumblr/adapter";
+import { twitchAdapter } from "./twitch/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 17: + Tumblr. */
+/** Registered adapters. Phase 18: + Twitch. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
@@ -28,6 +29,7 @@ export const adapters: PlatformAdapter[] = [
   redditAdapter,
   mastodonAdapter,
   tumblrAdapter,
+  twitchAdapter,
   xAdapter,
 ];
 

@@ -21,7 +21,8 @@ export type OverviewCard = {
     | "bluesky"
     | "reddit"
     | "mastodon"
-    | "tumblr";
+    | "tumblr"
+    | "twitch";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -717,6 +718,54 @@ function pushTumblrCards(
   }
 }
 
+function pushTwitchCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const views = byKey.get("views");
+  if (views && views.value >= 4000) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Twitch: VOD views look strong — titles and hooks are landing",
+      platform: "twitch",
+      metricKey: views.metricKey,
+      value: views.value,
+    });
+  } else if (views && views.value > 0 && views.value < 500) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Twitch: VOD views are soft — sharpen the first-3-seconds hook",
+      platform: "twitch",
+      metricKey: views.metricKey,
+      value: views.value,
+    });
+  }
+
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.25) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Twitch: view engagement rate looks healthy",
+      platform: "twitch",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.08) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Twitch: view engagement is soft — lead with a clearer title promise",
+      platform: "twitch",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -744,6 +793,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "reddit",
           "mastodon",
           "tumblr",
+          "twitch",
         ],
       },
     },
@@ -762,6 +812,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const redditByKey = new Map<string, (typeof latest)[0]>();
   const mastodonByKey = new Map<string, (typeof latest)[0]>();
   const tumblrByKey = new Map<string, (typeof latest)[0]>();
+  const twitchByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -784,7 +835,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
                         ? mastodonByKey
                         : row.platform === "tumblr"
                           ? tumblrByKey
-                          : igByKey;
+                          : row.platform === "twitch"
+                            ? twitchByKey
+                            : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -801,6 +854,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushRedditCards(redditByKey, wins, issues);
   pushMastodonCards(mastodonByKey, wins, issues);
   pushTumblrCards(tumblrByKey, wins, issues);
+  pushTwitchCards(twitchByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
@@ -818,6 +872,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "reddit",
           "mastodon",
           "tumblr",
+          "twitch",
         ],
       },
       status: { in: ["connected", "error"] },

@@ -21,6 +21,7 @@ export const ANALYTICS_PLATFORMS = [
   "reddit",
   "mastodon",
   "tumblr",
+  "twitch",
   "x",
 ] as const;
 
@@ -200,6 +201,17 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "engagement_rate", label: "Engagement (notes)", highlight: true, format: "pct" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
       { key: "posts_7d", label: "Posts (7d)", format: "number" },
+    ],
+  },
+  twitch: {
+    label: "Twitch",
+    focus: "VOD views and average views — hook and title clarity over vanity peaks.",
+    keys: [
+      { key: "views", label: "Views", highlight: true, format: "number" },
+      { key: "avg_views", label: "Avg views", highlight: true, format: "number" },
+      { key: "engagement_rate", label: "Engagement (views)", highlight: true, format: "pct" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+      { key: "videos_7d", label: "Videos (7d)", format: "number" },
     ],
   },
 };

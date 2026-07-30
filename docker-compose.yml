@@ -35,6 +35,7 @@ services:
       REDDIT_USE_FIXTURES: "true"
       MASTODON_USE_FIXTURES: "true"
       TUMBLR_USE_FIXTURES: "true"
+      TWITCH_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
       CRON_SECRET: ${CRON_SECRET:-dev-cron-secret-change-me}
       NODE_ENV: production

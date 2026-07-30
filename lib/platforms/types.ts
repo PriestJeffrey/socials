@@ -10,6 +10,7 @@ export type PlatformId =
   | "reddit"
   | "mastodon"
   | "tumblr"
+  | "twitch"
   | "x";
 
 export interface PlatformCapabilities {

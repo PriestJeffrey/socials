@@ -25,6 +25,7 @@ export default async function OverviewPage() {
           "reddit",
           "mastodon",
           "tumblr",
+          "twitch",
         ],
       },
       status: { in: ["connected", "error"] },

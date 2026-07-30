@@ -11,6 +11,7 @@ import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
+import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -24,6 +25,7 @@ const PUBLISHABLE = new Set([
   "reddit",
   "mastodon",
   "tumblr",
+  "twitch",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -76,7 +78,9 @@ export async function runPublishDraft(input: {
                     ? getMastodonConfig().useFixtures
                     : draft.platform === "tumblr"
                       ? getTumblrConfig().useFixtures
-                      : getMetaConfig().useFixtures;
+                      : draft.platform === "twitch"
+                        ? getTwitchConfig().useFixtures
+                        : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

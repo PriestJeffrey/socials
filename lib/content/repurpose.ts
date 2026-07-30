@@ -14,6 +14,7 @@ export type RepurposePlatform =
   | "reddit"
   | "mastodon"
   | "tumblr"
+  | "twitch"
   | "x";
 
 export function repurposeBody(
@@ -55,7 +56,6 @@ export function repurposeBody(
         ? `${trimmed.slice(0, 297)}…`
         : trimmed;
     case "reddit":
-      // Title-style: lead with a sharp first line; keep body ~300
       return trimmed.length > 300
         ? `${trimmed.slice(0, 297)}…`
         : trimmed;
@@ -67,6 +67,10 @@ export function repurposeBody(
       return trimmed.length > 1000
         ? `${trimmed.slice(0, 980)}…\n\n#pulseboard`
         : `${trimmed}\n\n#pulseboard`;
+    case "twitch":
+      return trimmed.length > 500
+        ? `${trimmed.slice(0, 480)}…\n\n(On-stream / VO note)`
+        : `${trimmed}\n\n(On-stream / VO note)`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

@@ -24,6 +24,7 @@ import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
+import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -57,6 +58,10 @@ import {
   disconnectTumblrAction,
   syncTumblrAction,
 } from "@/app/actions/tumblr";
+import {
+  disconnectTwitchAction,
+  syncTwitchAction,
+} from "@/app/actions/twitch";
 
 function PlatformSection({
   title,
@@ -177,7 +182,8 @@ export default async function SettingsPage({
   const redditCfg = getRedditConfig();
   const mastodonCfg = getMastodonConfig();
   const tumblrCfg = getTumblrConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr] =
+  const twitchCfg = getTwitchConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch] =
     await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
@@ -223,6 +229,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "tumblr" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "twitch" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -246,7 +256,9 @@ export default async function SettingsPage({
                       ? "Mastodon"
                       : p === "tumblr"
                         ? "Tumblr"
-                        : "Instagram";
+                        : p === "twitch"
+                          ? "Twitch"
+                          : "Instagram";
 
   return (
     <main>
@@ -403,6 +415,18 @@ export default async function SettingsPage({
         configHint="Configure TUMBLR_CLIENT_ID + SECRET, or TUMBLR_USE_FIXTURES=true."
         syncAction={syncTumblrAction}
         disconnectAction={disconnectTumblrAction}
+      />
+
+      <PlatformSection
+        title="Twitch"
+        description="Connect Twitch for VOD views + engagement snapshots (Helix). Live broadcast deferred — fixtures for local UAT."
+        testIdPrefix="twitch"
+        connectHref="/api/oauth/twitch/start"
+        connection={twitch}
+        configured={twitchCfg.configured}
+        configHint="Configure TWITCH_CLIENT_ID + SECRET, or TWITCH_USE_FIXTURES=true."
+        syncAction={syncTwitchAction}
+        disconnectAction={disconnectTwitchAction}
       />
 
       <section

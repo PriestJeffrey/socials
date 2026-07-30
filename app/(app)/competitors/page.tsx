@@ -73,6 +73,7 @@ export default async function CompetitorsPage({
             <option value="reddit">Reddit</option>
             <option value="mastodon">Mastodon</option>
             <option value="tumblr">Tumblr</option>
+            <option value="twitch">Twitch</option>
             <option value="x">X</option>
             <option value="generic">Generic</option>
           </select>
