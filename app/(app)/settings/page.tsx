@@ -16,7 +16,12 @@ import {
   syncLinkedInAction,
 } from "@/app/actions/linkedin";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
+import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { deleteAccountAction } from "@/app/actions/account";
+import {
+  disconnectThreadsAction,
+  syncThreadsAction,
+} from "@/app/actions/threads";
 
 function PlatformSection({
   title,
@@ -129,7 +134,8 @@ export default async function SettingsPage({
 
   const cfg = getMetaConfig();
   const liCfg = getLinkedInConfig();
-  const [ig, fb, li] = await Promise.all([
+  const thCfg = getThreadsConfig();
+  const [ig, fb, li, th] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -142,10 +148,20 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "linkedin" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "threads" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
-    p === "facebook" ? "Facebook" : p === "linkedin" ? "LinkedIn" : "Instagram";
+    p === "facebook"
+      ? "Facebook"
+      : p === "linkedin"
+        ? "LinkedIn"
+        : p === "threads"
+          ? "Threads"
+          : "Instagram";
 
   return (
     <main>
@@ -206,6 +222,18 @@ export default async function SettingsPage({
         configHint="Configure LINKEDIN_CLIENT_ID + SECRET, or set LINKEDIN_USE_FIXTURES=true."
         syncAction={syncLinkedInAction}
         disconnectAction={disconnectLinkedInAction}
+      />
+
+      <PlatformSection
+        title="Threads"
+        description="Connect Threads for views/replies/engagement snapshots. Live Graph needs a Meta Threads app; fixtures work locally."
+        testIdPrefix="threads"
+        connectHref="/api/oauth/threads/start"
+        connection={th}
+        configured={thCfg.configured}
+        configHint="Configure THREADS_APP_ID + SECRET (or META_*), or THREADS_USE_FIXTURES=true."
+        syncAction={syncThreadsAction}
+        disconnectAction={disconnectThreadsAction}
       />
 
       <section

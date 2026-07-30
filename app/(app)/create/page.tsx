@@ -103,6 +103,9 @@ export default async function CreatePage({
             <option value="linkedin">
               LinkedIn{connected.has("linkedin") ? "" : " (connect in Settings)"}
             </option>
+            <option value="threads">
+              Threads{connected.has("threads") ? "" : " (connect in Settings)"}
+            </option>
             <option value="x">X (copy only)</option>
           </select>
         </div>
@@ -221,6 +224,7 @@ export default async function CreatePage({
             <option value="instagram">Instagram</option>
             <option value="facebook">Facebook</option>
             <option value="linkedin">LinkedIn</option>
+            <option value="threads">Threads</option>
             <option value="x">X</option>
           </select>
           <input
@@ -266,7 +270,7 @@ export default async function CreatePage({
                 <p className="mt-1 line-clamp-2 text-[var(--pb-slate)]">{d.body}</p>
                 <form action={repurposeDraftAction} className="mt-3 flex flex-wrap gap-2">
                   <input type="hidden" name="draftId" value={d.id} />
-                  {(["instagram", "facebook", "linkedin", "x"] as const)
+                  {(["instagram", "facebook", "linkedin", "threads", "x"] as const)
                     .filter((p) => p !== d.platform)
                     .map((p) => (
                       <label key={p} className="flex items-center gap-1 text-xs">

@@ -3,8 +3,9 @@ import { clock } from "@/lib/clock";
 import { writeAudit } from "@/lib/audit/log";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
+import { getThreadsConfig } from "@/lib/platforms/threads/config";
 
-const PUBLISHABLE = new Set(["instagram", "facebook", "linkedin"]);
+const PUBLISHABLE = new Set(["instagram", "facebook", "linkedin", "threads"]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
 export async function runPublishDraft(input: {
@@ -40,7 +41,9 @@ export async function runPublishDraft(input: {
   const useFixtures =
     draft.platform === "linkedin"
       ? getLinkedInConfig().useFixtures
-      : getMetaConfig().useFixtures;
+      : draft.platform === "threads"
+        ? getThreadsConfig().useFixtures
+        : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

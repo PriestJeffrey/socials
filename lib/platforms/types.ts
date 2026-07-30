@@ -1,4 +1,9 @@
-export type PlatformId = "instagram" | "facebook" | "linkedin" | "x";
+export type PlatformId =
+  | "instagram"
+  | "facebook"
+  | "linkedin"
+  | "threads"
+  | "x";
 
 export interface PlatformCapabilities {
   oauth: boolean;

@@ -2,7 +2,12 @@
  * Rule-based repurpose — no LLM.
  * One source body → platform-flavored sibling drafts.
  */
-export type RepurposePlatform = "instagram" | "facebook" | "linkedin" | "x";
+export type RepurposePlatform =
+  | "instagram"
+  | "facebook"
+  | "linkedin"
+  | "threads"
+  | "x";
 
 export function repurposeBody(
   source: string,
@@ -22,6 +27,10 @@ export function repurposeBody(
       return trimmed.length > 3000
         ? trimmed.slice(0, 2990) + "…"
         : `${trimmed}\n\n— Curious how this lands for you.`;
+    case "threads":
+      return trimmed.length > 500
+        ? `${trimmed.slice(0, 480)}…\n\nReply with your take.`
+        : `${trimmed}\n\nReply with your take.`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

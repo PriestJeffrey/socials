@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getAiConfig } from "@/lib/ai/config";
+import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -13,6 +14,7 @@ export type HealthSubsystem = {
     | "instagram"
     | "facebook"
     | "linkedin"
+    | "threads"
     | "x"
     | "ai"
     | "runtime";
@@ -23,13 +25,13 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 8;
+  phase: 9;
   subsystems: HealthSubsystem[];
 };
 
 async function platformHealth(
   userId: string | undefined,
-  platform: "instagram" | "facebook" | "linkedin",
+  platform: "instagram" | "facebook" | "linkedin" | "threads",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -40,6 +42,13 @@ async function platformHealth(
 
   if (platform === "linkedin") {
     const cfg = getLinkedInConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "threads") {
+    const cfg = getThreadsConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -135,9 +144,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "LinkedIn app configured — no connection yet",
   );
+  const th = await platformHealth(
+    userId,
+    "threads",
+    checkedAt,
+    "THREADS_APP_ID/SECRET missing (or THREADS_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Threads app configured — no connection yet",
+  );
 
   return {
-    phase: 8,
+    phase: 9,
     subsystems: [
       {
         id: "auth",
@@ -156,6 +173,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "instagram", label: "Instagram", ...ig },
       { id: "facebook", label: "Facebook", ...fb },
       { id: "linkedin", label: "LinkedIn", ...li },
+      { id: "threads", label: "Threads", ...th },
       {
         id: "x",
         label: "X",

@@ -5,7 +5,14 @@ import { revalidatePath } from "next/cache";
 import { getSessionUser } from "@/lib/auth/session";
 import { analyzeCompetitorPaste } from "@/lib/ai/features/analyze-competitor";
 
-const PLATFORMS = new Set(["instagram", "facebook", "linkedin", "x", "generic"]);
+const PLATFORMS = new Set([
+  "instagram",
+  "facebook",
+  "linkedin",
+  "threads",
+  "x",
+  "generic",
+]);
 
 export async function analyzeCompetitorAction(formData: FormData) {
   const user = await getSessionUser();

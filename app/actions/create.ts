@@ -10,7 +10,13 @@ import { processPendingJobs } from "@/lib/jobs/runner";
 import { clock } from "@/lib/clock";
 import { repurposeBody, type RepurposePlatform } from "@/lib/content/repurpose";
 
-const PLATFORMS = new Set(["instagram", "facebook", "linkedin", "x"]);
+const PLATFORMS = new Set([
+  "instagram",
+  "facebook",
+  "linkedin",
+  "threads",
+  "x",
+]);
 
 function formStr(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();

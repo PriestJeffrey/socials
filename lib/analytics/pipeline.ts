@@ -10,7 +10,7 @@ export type OverviewCard = {
   kind: "win" | "issue";
   title: string;
   body: string;
-  platform?: "instagram" | "facebook" | "linkedin";
+  platform?: "instagram" | "facebook" | "linkedin" | "threads";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -214,6 +214,66 @@ function pushLiCards(byKey: Map<string, Snap>, wins: OverviewCard[], issues: Ove
   }
 }
 
+function pushThreadsCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.03) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Threads: engagement rate looks healthy",
+      platform: "threads",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.015) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Threads: engagement is soft — lead with a sharper hook",
+      platform: "threads",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const replies = byKey.get("replies");
+  if (replies && replies.value >= 20) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Threads: replies are flowing — keep the conversation open",
+      platform: "threads",
+      metricKey: replies.metricKey,
+      value: replies.value,
+    });
+  }
+
+  const followers = byKey.get("followers_delta_7d");
+  if (followers && followers.value < 0) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Threads: follower delta is negative on recent signal",
+      platform: "threads",
+      metricKey: followers.metricKey,
+      value: followers.value,
+    });
+  } else if (followers && followers.value > 0) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Threads: followers are trending up",
+      platform: "threads",
+      metricKey: followers.metricKey,
+      value: followers.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -226,21 +286,27 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   }
 
   const latest = await prisma.metricSnapshot.findMany({
-    where: { userId, platform: { in: ["instagram", "facebook", "linkedin"] } },
+    where: {
+      userId,
+      platform: { in: ["instagram", "facebook", "linkedin", "threads"] },
+    },
     orderBy: { capturedAt: "desc" },
-    take: 120,
+    take: 160,
   });
 
   const igByKey = new Map<string, (typeof latest)[0]>();
   const fbByKey = new Map<string, (typeof latest)[0]>();
   const liByKey = new Map<string, (typeof latest)[0]>();
+  const thByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
         ? fbByKey
         : row.platform === "linkedin"
           ? liByKey
-          : igByKey;
+          : row.platform === "threads"
+            ? thByKey
+            : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -249,11 +315,12 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushIgCards(igByKey, wins, issues);
   pushFbCards(fbByKey, wins, issues);
   pushLiCards(liByKey, wins, issues);
+  pushThreadsCards(thByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
       userId,
-      platform: { in: ["instagram", "facebook", "linkedin"] },
+      platform: { in: ["instagram", "facebook", "linkedin", "threads"] },
       status: { in: ["connected", "error"] },
     },
     orderBy: { lastSyncAt: "desc" },
