@@ -6,12 +6,13 @@ import { threadsAdapter } from "./threads/adapter";
 import { tiktokAdapter } from "./tiktok/adapter";
 import { youtubeAdapter } from "./youtube/adapter";
 import { pinterestAdapter } from "./pinterest/adapter";
+import { blueskyAdapter } from "./bluesky/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 13: + Pinterest. */
+/** Registered adapters. Phase 14: + Bluesky. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
@@ -20,6 +21,7 @@ export const adapters: PlatformAdapter[] = [
   tiktokAdapter,
   youtubeAdapter,
   pinterestAdapter,
+  blueskyAdapter,
   xAdapter,
 ];
 

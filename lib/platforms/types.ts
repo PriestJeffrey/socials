@@ -6,6 +6,7 @@ export type PlatformId =
   | "tiktok"
   | "youtube"
   | "pinterest"
+  | "bluesky"
   | "x";
 
 export interface PlatformCapabilities {

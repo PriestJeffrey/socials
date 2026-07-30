@@ -31,6 +31,7 @@ services:
       TIKTOK_USE_FIXTURES: "true"
       YOUTUBE_USE_FIXTURES: "true"
       PINTEREST_USE_FIXTURES: "true"
+      BLUESKY_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
       CRON_SECRET: ${CRON_SECRET:-dev-cron-secret-change-me}
       NODE_ENV: production

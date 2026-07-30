@@ -20,6 +20,7 @@ import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
+import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -37,6 +38,10 @@ import {
   disconnectPinterestAction,
   syncPinterestAction,
 } from "@/app/actions/pinterest";
+import {
+  disconnectBlueskyAction,
+  syncBlueskyAction,
+} from "@/app/actions/bluesky";
 
 function PlatformSection({
   title,
@@ -153,7 +158,8 @@ export default async function SettingsPage({
   const ttCfg = getTikTokConfig();
   const ytCfg = getYouTubeConfig();
   const pinCfg = getPinterestConfig();
-  const [ig, fb, li, th, tt, yt, pin] = await Promise.all([
+  const bskyCfg = getBlueskyConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -182,6 +188,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "pinterest" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "bluesky" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -197,7 +207,9 @@ export default async function SettingsPage({
               ? "YouTube"
               : p === "pinterest"
                 ? "Pinterest"
-                : "Instagram";
+                : p === "bluesky"
+                  ? "Bluesky"
+                  : "Instagram";
 
   return (
     <main>
@@ -306,6 +318,18 @@ export default async function SettingsPage({
         configHint="Configure PINTEREST_APP_ID + SECRET, or PINTEREST_USE_FIXTURES=true."
         syncAction={syncPinterestAction}
         disconnectAction={disconnectPinterestAction}
+      />
+
+      <PlatformSection
+        title="Bluesky"
+        description="Connect Bluesky for replies/reposts/engagement snapshots (ATProto). Live OAuth deferred — fixtures for local UAT."
+        testIdPrefix="bluesky"
+        connectHref="/api/oauth/bluesky/start"
+        connection={bsky}
+        configured={bskyCfg.useFixtures}
+        configHint="Set BLUESKY_USE_FIXTURES=true (live OAuth deferred)."
+        syncAction={syncBlueskyAction}
+        disconnectAction={disconnectBlueskyAction}
       />
 
       <section

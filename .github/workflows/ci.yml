@@ -59,6 +59,7 @@ jobs:
       TIKTOK_USE_FIXTURES: "true"
       YOUTUBE_USE_FIXTURES: "true"
       PINTEREST_USE_FIXTURES: "true"
+      BLUESKY_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
     steps:
       - uses: actions/checkout@v4

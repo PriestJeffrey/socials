@@ -17,6 +17,7 @@ export const ANALYTICS_PLATFORMS = [
   "tiktok",
   "youtube",
   "pinterest",
+  "bluesky",
   "x",
 ] as const;
 
@@ -149,6 +150,18 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "impressions", label: "Impressions", format: "number" },
       { key: "engagement_rate", label: "Engagement rate", format: "pct" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+    ],
+  },
+  bluesky: {
+    label: "Bluesky",
+    focus: "Replies and reposts vs likes — conversation over vanity.",
+    keys: [
+      { key: "replies", label: "Replies", highlight: true, format: "number" },
+      { key: "reposts", label: "Reposts", highlight: true, format: "number" },
+      { key: "likes", label: "Likes", highlight: true, format: "number" },
+      { key: "engagement_rate", label: "Engagement rate", format: "pct" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+      { key: "posts_7d", label: "Posts (7d)", format: "number" },
     ],
   },
 };

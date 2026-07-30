@@ -17,7 +17,8 @@ export type OverviewCard = {
     | "threads"
     | "tiktok"
     | "youtube"
-    | "pinterest";
+    | "pinterest"
+    | "bluesky";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -479,6 +480,78 @@ function pushPinterestCards(
   }
 }
 
+function pushBlueskyCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.03) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Bluesky: engagement rate looks healthy",
+      platform: "bluesky",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.015) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Bluesky: engagement is soft — lead with a sharper hook",
+      platform: "bluesky",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const replies = byKey.get("replies");
+  if (replies && replies.value >= 20) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Bluesky: replies are flowing — keep the conversation open",
+      platform: "bluesky",
+      metricKey: replies.metricKey,
+      value: replies.value,
+    });
+  }
+
+  const reposts = byKey.get("reposts");
+  if (reposts && reposts.value >= 15) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Bluesky: reposts are moving — lean into shareable takes",
+      platform: "bluesky",
+      metricKey: reposts.metricKey,
+      value: reposts.value,
+    });
+  }
+
+  const followers = byKey.get("followers_delta_7d");
+  if (followers && followers.value < 0) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Bluesky: follower delta is negative on recent signal",
+      platform: "bluesky",
+      metricKey: followers.metricKey,
+      value: followers.value,
+    });
+  } else if (followers && followers.value > 0) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Bluesky: followers are trending up",
+      platform: "bluesky",
+      metricKey: followers.metricKey,
+      value: followers.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -502,6 +575,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "tiktok",
           "youtube",
           "pinterest",
+          "bluesky",
         ],
       },
     },
@@ -516,6 +590,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const ttByKey = new Map<string, (typeof latest)[0]>();
   const ytByKey = new Map<string, (typeof latest)[0]>();
   const pinByKey = new Map<string, (typeof latest)[0]>();
+  const bskyByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -530,7 +605,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
                 ? ytByKey
                 : row.platform === "pinterest"
                   ? pinByKey
-                  : igByKey;
+                  : row.platform === "bluesky"
+                    ? bskyByKey
+                    : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -543,6 +620,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushTikTokCards(ttByKey, wins, issues);
   pushYouTubeCards(ytByKey, wins, issues);
   pushPinterestCards(pinByKey, wins, issues);
+  pushBlueskyCards(bskyByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
@@ -556,6 +634,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "tiktok",
           "youtube",
           "pinterest",
+          "bluesky",
         ],
       },
       status: { in: ["connected", "error"] },

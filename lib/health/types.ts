@@ -6,6 +6,7 @@ import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
+import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -21,6 +22,7 @@ export type HealthSubsystem = {
     | "tiktok"
     | "youtube"
     | "pinterest"
+    | "bluesky"
     | "x"
     | "ai"
     | "runtime";
@@ -31,23 +33,23 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 13;
+  phase: 14;
   subsystems: HealthSubsystem[];
 };
 
 /** Anonymous /api/health — no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
-  phase: 13;
+  phase: 14;
   status: "ok" | "down";
 };
 
 export async function getPublicLiveness(): Promise<PublicLiveness> {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { ok: true, phase: 13, status: "ok" };
+    return { ok: true, phase: 14, status: "ok" };
   } catch {
-    return { ok: false, phase: 13, status: "down" };
+    return { ok: false, phase: 14, status: "down" };
   }
 }
 
@@ -60,7 +62,8 @@ async function platformHealth(
     | "threads"
     | "tiktok"
     | "youtube"
-    | "pinterest",
+    | "pinterest"
+    | "bluesky",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -99,6 +102,13 @@ async function platformHealth(
         : unconfiguredDetail;
   } else if (platform === "pinterest") {
     const cfg = getPinterestConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "bluesky") {
+    const cfg = getBlueskyConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -226,9 +236,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "Pinterest app configured — no connection yet",
   );
+  const bsky = await platformHealth(
+    userId,
+    "bluesky",
+    checkedAt,
+    "Set BLUESKY_USE_FIXTURES=true (live OAuth deferred)",
+    "Fixture mode enabled",
+    "Bluesky service URL set — live OAuth deferred",
+  );
 
   return {
-    phase: 13,
+    phase: 14,
     subsystems: [
       {
         id: "auth",
@@ -251,6 +269,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "tiktok", label: "TikTok", ...tt },
       { id: "youtube", label: "YouTube", ...yt },
       { id: "pinterest", label: "Pinterest", ...pin },
+      { id: "bluesky", label: "Bluesky", ...bsky },
       {
         id: "x",
         label: "X",

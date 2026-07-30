@@ -10,6 +10,7 @@ export type RepurposePlatform =
   | "tiktok"
   | "youtube"
   | "pinterest"
+  | "bluesky"
   | "x";
 
 export function repurposeBody(
@@ -46,6 +47,10 @@ export function repurposeBody(
       return trimmed.length > 500
         ? `${trimmed.slice(0, 480)}…\n\n(Pin description / link note)`
         : `${trimmed}\n\n(Pin description / link note)`;
+    case "bluesky":
+      return trimmed.length > 300
+        ? `${trimmed.slice(0, 297)}…`
+        : trimmed;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

@@ -13,6 +13,7 @@ const PLATFORMS = new Set([
   "tiktok",
   "youtube",
   "pinterest",
+  "bluesky",
   "x",
   "generic",
 ]);
