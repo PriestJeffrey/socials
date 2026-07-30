@@ -13,6 +13,7 @@ import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 import { getDiscordConfig } from "@/lib/platforms/discord/config";
 import { getSlackConfig } from "@/lib/platforms/slack/config";
+import { getVimeoConfig } from "@/lib/platforms/vimeo/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -35,6 +36,7 @@ export type HealthSubsystem = {
     | "twitch"
     | "discord"
     | "slack"
+    | "vimeo"
     | "x"
     | "ai"
     | "runtime";
@@ -45,23 +47,23 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 20;
+  phase: 21;
   subsystems: HealthSubsystem[];
 };
 
 /** Anonymous /api/health — no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
-  phase: 20;
+  phase: 21;
   status: "ok" | "down";
 };
 
 export async function getPublicLiveness(): Promise<PublicLiveness> {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { ok: true, phase: 20, status: "ok" };
+    return { ok: true, phase: 21, status: "ok" };
   } catch {
-    return { ok: false, phase: 20, status: "down" };
+    return { ok: false, phase: 21, status: "down" };
   }
 }
 
@@ -81,7 +83,8 @@ async function platformHealth(
     | "tumblr"
     | "twitch"
     | "discord"
-    | "slack",
+    | "slack"
+    | "vimeo",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -169,6 +172,13 @@ async function platformHealth(
         : unconfiguredDetail;
   } else if (platform === "slack") {
     const cfg = getSlackConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "vimeo") {
+    const cfg = getVimeoConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -352,9 +362,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "Slack app configured — no connection yet",
   );
+  const vimeo = await platformHealth(
+    userId,
+    "vimeo",
+    checkedAt,
+    "VIMEO_CLIENT_ID/SECRET missing (or VIMEO_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Vimeo app configured — no connection yet",
+  );
 
   return {
-    phase: 20,
+    phase: 21,
     subsystems: [
       {
         id: "auth",
@@ -384,6 +402,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "twitch", label: "Twitch", ...twitch },
       { id: "discord", label: "Discord", ...discord },
       { id: "slack", label: "Slack", ...slack },
+      { id: "vimeo", label: "Vimeo", ...vimeo },
       {
         id: "x",
         label: "X",

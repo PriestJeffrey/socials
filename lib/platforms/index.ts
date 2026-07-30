@@ -13,12 +13,13 @@ import { tumblrAdapter } from "./tumblr/adapter";
 import { twitchAdapter } from "./twitch/adapter";
 import { discordAdapter } from "./discord/adapter";
 import { slackAdapter } from "./slack/adapter";
+import { vimeoAdapter } from "./vimeo/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 20: + Slack. */
+/** Registered adapters. Phase 21: + Vimeo. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
@@ -34,6 +35,7 @@ export const adapters: PlatformAdapter[] = [
   twitchAdapter,
   discordAdapter,
   slackAdapter,
+  vimeoAdapter,
   xAdapter,
 ];
 

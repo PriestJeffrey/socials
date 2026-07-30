@@ -154,6 +154,9 @@ export default async function CreatePage({
             <option value="slack">
               Slack{connected.has("slack") ? "" : " (connect in Settings)"}
             </option>
+            <option value="vimeo">
+              Vimeo{connected.has("vimeo") ? "" : " (connect in Settings)"}
+            </option>
             <option value="x">X (copy only)</option>
           </select>
         </div>
@@ -283,6 +286,7 @@ export default async function CreatePage({
             <option value="twitch">Twitch</option>
             <option value="discord">Discord</option>
             <option value="slack">Slack</option>
+            <option value="vimeo">Vimeo</option>
             <option value="x">X</option>
           </select>
           <input
@@ -344,6 +348,7 @@ export default async function CreatePage({
                       "twitch",
                       "discord",
                       "slack",
+                      "vimeo",
                       "x",
                     ] as const
                   )

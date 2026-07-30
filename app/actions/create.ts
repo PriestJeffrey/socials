@@ -25,6 +25,7 @@ const PLATFORMS = new Set([
   "twitch",
   "discord",
   "slack",
+  "vimeo",
   "x",
 ]);
 

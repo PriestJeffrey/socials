@@ -13,6 +13,7 @@ export type PlatformId =
   | "twitch"
   | "discord"
   | "slack"
+  | "vimeo"
   | "x";
 
 export interface PlatformCapabilities {

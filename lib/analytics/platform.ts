@@ -24,6 +24,7 @@ export const ANALYTICS_PLATFORMS = [
   "twitch",
   "discord",
   "slack",
+  "vimeo",
   "x",
 ] as const;
 
@@ -237,6 +238,17 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "engagement_rate", label: "Engagement", highlight: true, format: "pct" },
       { key: "messages", label: "Messages", format: "number" },
       { key: "channels", label: "Channels", format: "number" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+    ],
+  },
+  vimeo: {
+    label: "Vimeo",
+    focus: "Plays and title clarity — retention over vanity peak views.",
+    keys: [
+      { key: "views", label: "Plays", highlight: true, format: "number" },
+      { key: "engagement_rate", label: "Engagement (plays)", highlight: true, format: "pct" },
+      { key: "avg_views", label: "Avg plays", format: "number" },
+      { key: "videos_7d", label: "Videos (7d)", format: "number" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
     ],
   },

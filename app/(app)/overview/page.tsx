@@ -28,6 +28,7 @@ export default async function OverviewPage() {
           "twitch",
           "discord",
           "slack",
+          "vimeo",
         ],
       },
       status: { in: ["connected", "error"] },

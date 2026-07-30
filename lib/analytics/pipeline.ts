@@ -24,7 +24,8 @@ export type OverviewCard = {
     | "tumblr"
     | "twitch"
     | "discord"
-    | "slack";
+    | "slack"
+    | "vimeo";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -870,6 +871,54 @@ function pushSlackCards(
   }
 }
 
+function pushVimeoCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const views = byKey.get("views");
+  if (views && views.value >= 4000) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Vimeo: plays look strong — titles and hooks are landing",
+      platform: "vimeo",
+      metricKey: views.metricKey,
+      value: views.value,
+    });
+  } else if (views && views.value > 0 && views.value < 500) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Vimeo: plays are soft — sharpen the first-3-seconds hook",
+      platform: "vimeo",
+      metricKey: views.metricKey,
+      value: views.value,
+    });
+  }
+
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.25) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Vimeo: view engagement rate looks healthy",
+      platform: "vimeo",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.08) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Vimeo: view engagement is soft — lead with a clearer title promise",
+      platform: "vimeo",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -900,6 +949,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "twitch",
           "discord",
           "slack",
+          "vimeo",
         ],
       },
     },
@@ -921,6 +971,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const twitchByKey = new Map<string, (typeof latest)[0]>();
   const discordByKey = new Map<string, (typeof latest)[0]>();
   const slackByKey = new Map<string, (typeof latest)[0]>();
+  const vimeoByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -949,6 +1000,8 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
                               ? discordByKey
                               : row.platform === "slack"
                                 ? slackByKey
+                                : row.platform === "vimeo"
+                                  ? vimeoByKey
                               : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
@@ -969,6 +1022,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushTwitchCards(twitchByKey, wins, issues);
   pushDiscordCards(discordByKey, wins, issues);
   pushSlackCards(slackByKey, wins, issues);
+  pushVimeoCards(vimeoByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
@@ -989,6 +1043,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "twitch",
           "discord",
           "slack",
+          "vimeo",
         ],
       },
       status: { in: ["connected", "error"] },

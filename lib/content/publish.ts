@@ -14,6 +14,7 @@ import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 import { getDiscordConfig } from "@/lib/platforms/discord/config";
 import { getSlackConfig } from "@/lib/platforms/slack/config";
+import { getVimeoConfig } from "@/lib/platforms/vimeo/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -30,6 +31,7 @@ const PUBLISHABLE = new Set([
   "twitch",
   "discord",
   "slack",
+  "vimeo",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -88,6 +90,8 @@ export async function runPublishDraft(input: {
                           ? getDiscordConfig().useFixtures
                           : draft.platform === "slack"
                             ? getSlackConfig().useFixtures
+                            : draft.platform === "vimeo"
+                              ? getVimeoConfig().useFixtures
                           : getMetaConfig().useFixtures;
 
   if (!useFixtures) {

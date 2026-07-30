@@ -17,6 +17,7 @@ export type RepurposePlatform =
   | "twitch"
   | "discord"
   | "slack"
+  | "vimeo"
   | "x";
 
 export function repurposeBody(
@@ -81,6 +82,10 @@ export function repurposeBody(
       return trimmed.length > 3000
         ? `${trimmed.slice(0, 2980)}…\n\nThoughts?`
         : `${trimmed}\n\nThoughts?`;
+    case "vimeo":
+      return trimmed.length > 5000
+        ? `${trimmed.slice(0, 4980)}…\n\n(Video description)`
+        : `${trimmed}\n\n(Video description)`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

@@ -27,6 +27,7 @@ import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 import { getDiscordConfig } from "@/lib/platforms/discord/config";
 import { getSlackConfig } from "@/lib/platforms/slack/config";
+import { getVimeoConfig } from "@/lib/platforms/vimeo/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -72,6 +73,10 @@ import {
   disconnectSlackAction,
   syncSlackAction,
 } from "@/app/actions/slack";
+import {
+  disconnectVimeoAction,
+  syncVimeoAction,
+} from "@/app/actions/vimeo";
 
 function PlatformSection({
   title,
@@ -195,7 +200,8 @@ export default async function SettingsPage({
   const twitchCfg = getTwitchConfig();
   const discordCfg = getDiscordConfig();
   const slackCfg = getSlackConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch, discord, slack] =
+  const vimeoCfg = getVimeoConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch, discord, slack, vimeo] =
     await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
@@ -253,6 +259,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "slack" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "vimeo" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -282,6 +292,8 @@ export default async function SettingsPage({
                             ? "Discord"
                             : p === "slack"
                               ? "Slack"
+                              : p === "vimeo"
+                                ? "Vimeo"
                             : "Instagram";
 
   return (
@@ -475,6 +487,18 @@ export default async function SettingsPage({
         configHint="Configure SLACK_CLIENT_ID + SECRET, or SLACK_USE_FIXTURES=true."
         syncAction={syncSlackAction}
         disconnectAction={disconnectSlackAction}
+      />
+
+      <PlatformSection
+        title="Vimeo"
+        description="Connect Vimeo for video plays + engagement snapshots. Upload/edit deferred — fixtures for local UAT."
+        testIdPrefix="vimeo"
+        connectHref="/api/oauth/vimeo/start"
+        connection={vimeo}
+        configured={vimeoCfg.configured}
+        configHint="Configure VIMEO_CLIENT_ID + SECRET, or VIMEO_USE_FIXTURES=true."
+        syncAction={syncVimeoAction}
+        disconnectAction={disconnectVimeoAction}
       />
 
       <section
