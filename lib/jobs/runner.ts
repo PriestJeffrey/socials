@@ -2,6 +2,8 @@ import { jobRunner } from "@/lib/jobs";
 import { runInstagramSync } from "@/lib/platforms/instagram/sync";
 import { runFacebookSync } from "@/lib/platforms/facebook/sync";
 import { runLinkedInSync } from "@/lib/platforms/linkedin/sync";
+import { runPublishDraft } from "@/lib/content/publish";
+import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
 
 /** Claim pending jobs and run handlers. Safe to call from route or after connect. */
@@ -24,6 +26,10 @@ export async function processPendingJobs(limit = 5): Promise<number> {
         const connectionId = String(job.payload.connectionId ?? "");
         if (!connectionId) throw new Error("Missing connectionId");
         await runLinkedInSync({ userId: job.userId, connectionId });
+      } else if (job.type === "publish") {
+        const draftId = String(job.payload.draftId ?? "");
+        if (!draftId) throw new Error("Missing draftId");
+        await runPublishDraft({ userId: job.userId, draftId });
       } else {
         throw new Error(`Unsupported job type: ${job.type}`);
       }
@@ -32,8 +38,14 @@ export async function processPendingJobs(limit = 5): Promise<number> {
     } catch (err) {
       const message = err instanceof Error ? err.message : "job failed";
       await jobRunner.markFailed(job.id, message);
+      if (job.type === "publish" && job.payload.draftId) {
+        await prisma.draft.updateMany({
+          where: { id: String(job.payload.draftId), userId: job.userId },
+          data: { status: "failed" },
+        });
+      }
       log({
-        phase: 3,
+        phase: 5,
         component: "jobs.runner",
         level: "error",
         message: "job failed",

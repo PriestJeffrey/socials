@@ -19,6 +19,7 @@ model User {
   posts        Post[]
   snapshots    MetricSnapshot[]
   jobs         Job[]
+  drafts       Draft[]
 }
 
 model Session {
@@ -123,5 +124,26 @@ model Job {
   updatedAt      DateTime  @updatedAt
 
   @@index([status, runAfter])
+  @@index([userId, createdAt])
+}
+
+/// Phase 5 — compose / schedule / publish drafts
+model Draft {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform        String
+  body            String
+  goalTag         String?
+  conversionNote  String?
+  status          String    @default("draft")
+  scheduledAt     DateTime?
+  connectionId    String?
+  publishedPostId String?
+  sourceDraftId   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, status, scheduledAt])
   @@index([userId, createdAt])
 }

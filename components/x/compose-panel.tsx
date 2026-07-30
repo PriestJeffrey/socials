@@ -4,8 +4,8 @@ import { useState } from "react";
 
 const LIMIT = 280;
 
-export function XComposePanel() {
-  const [text, setText] = useState("");
+export function XComposePanel({ initialText = "" }: { initialText?: string }) {
+  const [text, setText] = useState(initialText.slice(0, LIMIT));
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const remaining = LIMIT - text.length;
