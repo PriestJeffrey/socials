@@ -21,6 +21,7 @@ import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
+import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -42,6 +43,10 @@ import {
   disconnectBlueskyAction,
   syncBlueskyAction,
 } from "@/app/actions/bluesky";
+import {
+  disconnectRedditAction,
+  syncRedditAction,
+} from "@/app/actions/reddit";
 
 function PlatformSection({
   title,
@@ -159,7 +164,8 @@ export default async function SettingsPage({
   const ytCfg = getYouTubeConfig();
   const pinCfg = getPinterestConfig();
   const bskyCfg = getBlueskyConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky] = await Promise.all([
+  const redditCfg = getRedditConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -192,6 +198,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "bluesky" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "reddit" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -209,7 +219,9 @@ export default async function SettingsPage({
                 ? "Pinterest"
                 : p === "bluesky"
                   ? "Bluesky"
-                  : "Instagram";
+                  : p === "reddit"
+                    ? "Reddit"
+                    : "Instagram";
 
   return (
     <main>
@@ -330,6 +342,18 @@ export default async function SettingsPage({
         configHint="Set BLUESKY_USE_FIXTURES=true (live OAuth deferred)."
         syncAction={syncBlueskyAction}
         disconnectAction={disconnectBlueskyAction}
+      />
+
+      <PlatformSection
+        title="Reddit"
+        description="Connect Reddit for submitted posts + comments/score/upvote ratio snapshots. Live submit deferred — fixtures for local UAT."
+        testIdPrefix="reddit"
+        connectHref="/api/oauth/reddit/start"
+        connection={reddit}
+        configured={redditCfg.configured}
+        configHint="Configure REDDIT_CLIENT_ID + SECRET, or REDDIT_USE_FIXTURES=true."
+        syncAction={syncRedditAction}
+        disconnectAction={disconnectRedditAction}
       />
 
       <section

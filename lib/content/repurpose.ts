@@ -11,6 +11,7 @@ export type RepurposePlatform =
   | "youtube"
   | "pinterest"
   | "bluesky"
+  | "reddit"
   | "x";
 
 export function repurposeBody(
@@ -48,6 +49,11 @@ export function repurposeBody(
         ? `${trimmed.slice(0, 480)}…\n\n(Pin description / link note)`
         : `${trimmed}\n\n(Pin description / link note)`;
     case "bluesky":
+      return trimmed.length > 300
+        ? `${trimmed.slice(0, 297)}…`
+        : trimmed;
+    case "reddit":
+      // Title-style: lead with a sharp first line; keep body ~300
       return trimmed.length > 300
         ? `${trimmed.slice(0, 297)}…`
         : trimmed;

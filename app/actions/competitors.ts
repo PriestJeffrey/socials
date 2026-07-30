@@ -14,6 +14,7 @@ const PLATFORMS = new Set([
   "youtube",
   "pinterest",
   "bluesky",
+  "reddit",
   "x",
   "generic",
 ]);

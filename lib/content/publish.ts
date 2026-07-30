@@ -8,6 +8,7 @@ import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
+import { getRedditConfig } from "@/lib/platforms/reddit/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -18,6 +19,7 @@ const PUBLISHABLE = new Set([
   "youtube",
   "pinterest",
   "bluesky",
+  "reddit",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -64,7 +66,9 @@ export async function runPublishDraft(input: {
               ? getPinterestConfig().useFixtures
               : draft.platform === "bluesky"
                 ? getBlueskyConfig().useFixtures
-                : getMetaConfig().useFixtures;
+                : draft.platform === "reddit"
+                  ? getRedditConfig().useFixtures
+                  : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

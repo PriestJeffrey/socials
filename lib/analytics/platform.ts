@@ -18,6 +18,7 @@ export const ANALYTICS_PLATFORMS = [
   "youtube",
   "pinterest",
   "bluesky",
+  "reddit",
   "x",
 ] as const;
 
@@ -160,6 +161,18 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "reposts", label: "Reposts", highlight: true, format: "number" },
       { key: "likes", label: "Likes", highlight: true, format: "number" },
       { key: "engagement_rate", label: "Engagement rate", format: "pct" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+      { key: "posts_7d", label: "Posts (7d)", format: "number" },
+    ],
+  },
+  reddit: {
+    label: "Reddit",
+    focus: "Comments vs score and upvote ratio — discussion over vanity karma.",
+    keys: [
+      { key: "comments", label: "Comments", highlight: true, format: "number" },
+      { key: "score", label: "Score", highlight: true, format: "number" },
+      { key: "upvote_ratio", label: "Upvote ratio", highlight: true, format: "pct" },
+      { key: "engagement_rate", label: "Engagement (comments/score)", format: "pct" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
       { key: "posts_7d", label: "Posts (7d)", format: "number" },
     ],

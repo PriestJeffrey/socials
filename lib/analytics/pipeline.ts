@@ -18,7 +18,8 @@ export type OverviewCard = {
     | "tiktok"
     | "youtube"
     | "pinterest"
-    | "bluesky";
+    | "bluesky"
+    | "reddit";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -552,6 +553,68 @@ function pushBlueskyCards(
   }
 }
 
+function pushRedditCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  // comments vs score (engagement_rate ≈ comments / score)
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.2) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Reddit: comments vs score looks strong — posts are sparking discussion",
+      platform: "reddit",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.08) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Reddit: comments vs score is soft — invite debate in the first line",
+      platform: "reddit",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const comments = byKey.get("comments");
+  const score = byKey.get("score");
+  if (comments && score && comments.value >= 20 && score.value > 0) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Reddit: comments are flowing relative to score",
+      platform: "reddit",
+      metricKey: comments.metricKey,
+      value: comments.value,
+    });
+  }
+
+  const ratio = byKey.get("upvote_ratio");
+  if (ratio && ratio.value >= 0.85) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Reddit: upvote ratio looks healthy",
+      platform: "reddit",
+      metricKey: ratio.metricKey,
+      value: ratio.value,
+    });
+  } else if (ratio && ratio.value > 0 && ratio.value < 0.6) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Reddit: upvote ratio is soft — tighten the title hook",
+      platform: "reddit",
+      metricKey: ratio.metricKey,
+      value: ratio.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -576,6 +639,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "youtube",
           "pinterest",
           "bluesky",
+          "reddit",
         ],
       },
     },
@@ -591,6 +655,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const ytByKey = new Map<string, (typeof latest)[0]>();
   const pinByKey = new Map<string, (typeof latest)[0]>();
   const bskyByKey = new Map<string, (typeof latest)[0]>();
+  const redditByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -607,7 +672,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
                   ? pinByKey
                   : row.platform === "bluesky"
                     ? bskyByKey
-                    : igByKey;
+                    : row.platform === "reddit"
+                      ? redditByKey
+                      : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -621,6 +688,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushYouTubeCards(ytByKey, wins, issues);
   pushPinterestCards(pinByKey, wins, issues);
   pushBlueskyCards(bskyByKey, wins, issues);
+  pushRedditCards(redditByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
@@ -635,6 +703,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "youtube",
           "pinterest",
           "bluesky",
+          "reddit",
         ],
       },
       status: { in: ["connected", "error"] },

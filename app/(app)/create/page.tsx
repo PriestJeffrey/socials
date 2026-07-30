@@ -129,6 +129,9 @@ export default async function CreatePage({
             <option value="bluesky">
               Bluesky{connected.has("bluesky") ? "" : " (connect in Settings)"}
             </option>
+            <option value="reddit">
+              Reddit{connected.has("reddit") ? "" : " (connect in Settings)"}
+            </option>
             <option value="x">X (copy only)</option>
           </select>
         </div>
@@ -252,6 +255,7 @@ export default async function CreatePage({
             <option value="youtube">YouTube</option>
             <option value="pinterest">Pinterest</option>
             <option value="bluesky">Bluesky</option>
+            <option value="reddit">Reddit</option>
             <option value="x">X</option>
           </select>
           <input
@@ -307,6 +311,7 @@ export default async function CreatePage({
                       "youtube",
                       "pinterest",
                       "bluesky",
+                      "reddit",
                       "x",
                     ] as const
                   )
