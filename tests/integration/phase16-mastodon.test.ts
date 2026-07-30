@@ -2,8 +2,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createOAuthState } from "@/lib/platforms/oauth-state";
-import { blueskyAdapter } from "@/lib/platforms/bluesky/adapter";
-import { runBlueskySync } from "@/lib/platforms/bluesky/sync";
+import { mastodonAdapter } from "@/lib/platforms/mastodon/adapter";
+import { runMastodonSync } from "@/lib/platforms/mastodon/sync";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { readPlatformAnalytics } from "@/lib/analytics/platform";
 import { getHealthReport } from "@/lib/health/types";
@@ -11,14 +11,14 @@ import { listAdapters, oauthPlatforms } from "@/lib/platforms";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
 
-describe.runIf(hasDb)("phase 14 Bluesky", () => {
+describe.runIf(hasDb)("phase 16 Mastodon", () => {
   const suffix = Date.now();
-  const email = `p14-${suffix}@example.com`;
+  const email = `p16-${suffix}@example.com`;
   let userId = "";
   let connectionId = "";
 
   beforeAll(async () => {
-    process.env.BLUESKY_USE_FIXTURES = "true";
+    process.env.MASTODON_USE_FIXTURES = "true";
     process.env.SESSION_SECRET =
       process.env.SESSION_SECRET ?? "test-session-secret-min-32-characters-long";
     process.env.TOKEN_ENCRYPTION_KEY =
@@ -31,12 +31,12 @@ describe.runIf(hasDb)("phase 14 Bluesky", () => {
     ).id;
 
     connectionId = (
-      await blueskyAdapter.handleOAuthCallback(userId, {
-        code: "fixture_bluesky_code",
+      await mastodonAdapter.handleOAuthCallback(userId, {
+        code: "fixture_mastodon_code",
         state: createOAuthState(userId).state,
       })
     ).connectionId;
-    await runBlueskySync({ userId, connectionId });
+    await runMastodonSync({ userId, connectionId });
   });
 
   afterAll(async () => {
@@ -44,40 +44,42 @@ describe.runIf(hasDb)("phase 14 Bluesky", () => {
     await prisma.$disconnect();
   });
 
-  it("registers Bluesky in adapters and oauth platforms", () => {
-    expect(listAdapters().map((a) => a.id)).toContain("bluesky");
-    expect(oauthPlatforms().some((a) => a.id === "bluesky")).toBe(true);
+  it("registers Mastodon in adapters and oauth platforms", () => {
+    expect(listAdapters().map((a) => a.id)).toContain("mastodon");
+    expect(oauthPlatforms().some((a) => a.id === "mastodon")).toBe(true);
   });
 
-  it("fixture sync fills Overview Bluesky cards", async () => {
+  it("fixture sync fills Overview Mastodon cards", async () => {
     const board = await readOverview(userId);
     expect(board.empty).toBe(false);
     expect(
-      board.wins.concat(board.issues).some((c) => c.platform === "bluesky"),
+      board.wins.concat(board.issues).some((c) => c.platform === "mastodon"),
     ).toBe(true);
   });
 
-  it("analytics surfaces Bluesky focus metrics", async () => {
-    const analytics = await readPlatformAnalytics(userId, "bluesky");
+  it("analytics surfaces Mastodon focus metrics", async () => {
+    const analytics = await readPlatformAnalytics(userId, "mastodon");
     expect(analytics.empty).toBe(false);
+    expect(analytics.metrics.some((m) => m.key === "replies")).toBe(true);
+    expect(analytics.metrics.some((m) => m.key === "reblogs")).toBe(true);
     expect(analytics.metrics.some((m) => m.key === "engagement_rate")).toBe(
       true,
     );
   });
 
-  it("health reports bluesky + phase 16", async () => {
+  it("health reports mastodon + phase 16", async () => {
     const report = await getHealthReport(userId);
     expect(report.phase).toBe(16);
-    expect(report.subsystems.find((s) => s.id === "bluesky")?.status).toBe(
+    expect(report.subsystems.find((s) => s.id === "mastodon")?.status).toBe(
       "ok",
     );
   });
 
-  it("disconnect clears Bluesky snapshots", async () => {
-    await blueskyAdapter.disconnect(userId, connectionId);
+  it("disconnect clears Mastodon snapshots", async () => {
+    await mastodonAdapter.disconnect(userId, connectionId);
     expect(
       await prisma.metricSnapshot.count({
-        where: { userId, platform: "bluesky" },
+        where: { userId, platform: "mastodon" },
       }),
     ).toBe(0);
   });

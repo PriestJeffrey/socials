@@ -61,6 +61,7 @@ jobs:
       PINTEREST_USE_FIXTURES: "true"
       BLUESKY_USE_FIXTURES: "true"
       REDDIT_USE_FIXTURES: "true"
+      MASTODON_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
     steps:
       - uses: actions/checkout@v4

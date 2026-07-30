@@ -12,6 +12,7 @@ export type RepurposePlatform =
   | "pinterest"
   | "bluesky"
   | "reddit"
+  | "mastodon"
   | "x";
 
 export function repurposeBody(
@@ -57,6 +58,10 @@ export function repurposeBody(
       return trimmed.length > 300
         ? `${trimmed.slice(0, 297)}…`
         : trimmed;
+    case "mastodon":
+      return trimmed.length > 500
+        ? `${trimmed.slice(0, 480)}…\n\nWhat do you think?`
+        : `${trimmed}\n\nWhat do you think?`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

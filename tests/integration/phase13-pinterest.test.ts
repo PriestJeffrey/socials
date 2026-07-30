@@ -65,9 +65,9 @@ describe.runIf(hasDb)("phase 13 Pinterest", () => {
     );
   });
 
-  it("health reports pinterest + phase 15", async () => {
+  it("health reports pinterest + phase 16", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBe(15);
+    expect(report.phase).toBe(16);
     expect(report.subsystems.find((s) => s.id === "pinterest")?.status).toBe(
       "ok",
     );

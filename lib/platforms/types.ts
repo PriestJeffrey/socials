@@ -8,6 +8,7 @@ export type PlatformId =
   | "pinterest"
   | "bluesky"
   | "reddit"
+  | "mastodon"
   | "x";
 
 export interface PlatformCapabilities {

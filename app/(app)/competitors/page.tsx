@@ -71,6 +71,7 @@ export default async function CompetitorsPage({
             <option value="pinterest">Pinterest</option>
             <option value="bluesky">Bluesky</option>
             <option value="reddit">Reddit</option>
+            <option value="mastodon">Mastodon</option>
             <option value="x">X</option>
             <option value="generic">Generic</option>
           </select>

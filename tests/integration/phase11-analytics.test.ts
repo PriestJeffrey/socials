@@ -62,7 +62,7 @@ describe.runIf(hasDb)("phase 11 analytics", () => {
 
   it("health reports phase 11", async () => {
     const report = await getHealthReport(userA);
-    expect(report.phase).toBe(15);
+    expect(report.phase).toBe(16);
   });
 
   it("hub marks Instagram connected after sync", async () => {

@@ -19,7 +19,8 @@ export type OverviewCard = {
     | "youtube"
     | "pinterest"
     | "bluesky"
-    | "reddit";
+    | "reddit"
+    | "mastodon";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -615,6 +616,58 @@ function pushRedditCards(
   }
 }
 
+function pushMastodonCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.3) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Mastodon: replies/reblogs vs favourites looks strong — conversation over vanity",
+      platform: "mastodon",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.12) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Mastodon: replies/reblogs soft vs favourites — ask one clear question",
+      platform: "mastodon",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const replies = byKey.get("replies");
+  if (replies && replies.value >= 15) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Mastodon: replies are flowing",
+      platform: "mastodon",
+      metricKey: replies.metricKey,
+      value: replies.value,
+    });
+  }
+
+  const reblogs = byKey.get("reblogs");
+  const favourites = byKey.get("favourites");
+  if (reblogs && favourites && reblogs.value > favourites.value * 0.4) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Mastodon: boosts are carrying distribution",
+      platform: "mastodon",
+      metricKey: reblogs.metricKey,
+      value: reblogs.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -640,6 +693,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "pinterest",
           "bluesky",
           "reddit",
+          "mastodon",
         ],
       },
     },
@@ -656,6 +710,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const pinByKey = new Map<string, (typeof latest)[0]>();
   const bskyByKey = new Map<string, (typeof latest)[0]>();
   const redditByKey = new Map<string, (typeof latest)[0]>();
+  const mastodonByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -674,7 +729,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
                     ? bskyByKey
                     : row.platform === "reddit"
                       ? redditByKey
-                      : igByKey;
+                      : row.platform === "mastodon"
+                        ? mastodonByKey
+                        : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -689,6 +746,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushPinterestCards(pinByKey, wins, issues);
   pushBlueskyCards(bskyByKey, wins, issues);
   pushRedditCards(redditByKey, wins, issues);
+  pushMastodonCards(mastodonByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
@@ -704,6 +762,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "pinterest",
           "bluesky",
           "reddit",
+          "mastodon",
         ],
       },
       status: { in: ["connected", "error"] },

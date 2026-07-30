@@ -8,6 +8,7 @@ import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { getRedditConfig } from "@/lib/platforms/reddit/config";
+import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -25,6 +26,7 @@ export type HealthSubsystem = {
     | "pinterest"
     | "bluesky"
     | "reddit"
+    | "mastodon"
     | "x"
     | "ai"
     | "runtime";
@@ -35,23 +37,23 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 15;
+  phase: 16;
   subsystems: HealthSubsystem[];
 };
 
 /** Anonymous /api/health — no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
-  phase: 15;
+  phase: 16;
   status: "ok" | "down";
 };
 
 export async function getPublicLiveness(): Promise<PublicLiveness> {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { ok: true, phase: 15, status: "ok" };
+    return { ok: true, phase: 16, status: "ok" };
   } catch {
-    return { ok: false, phase: 15, status: "down" };
+    return { ok: false, phase: 16, status: "down" };
   }
 }
 
@@ -66,7 +68,8 @@ async function platformHealth(
     | "youtube"
     | "pinterest"
     | "bluesky"
-    | "reddit",
+    | "reddit"
+    | "mastodon",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -119,6 +122,13 @@ async function platformHealth(
         : unconfiguredDetail;
   } else if (platform === "reddit") {
     const cfg = getRedditConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "mastodon") {
+    const cfg = getMastodonConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -262,9 +272,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "Reddit app configured — no connection yet",
   );
+  const mastodon = await platformHealth(
+    userId,
+    "mastodon",
+    checkedAt,
+    "MASTODON_CLIENT_ID/SECRET missing (or MASTODON_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Mastodon app configured — no connection yet",
+  );
 
   return {
-    phase: 15,
+    phase: 16,
     subsystems: [
       {
         id: "auth",
@@ -289,6 +307,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "pinterest", label: "Pinterest", ...pin },
       { id: "bluesky", label: "Bluesky", ...bsky },
       { id: "reddit", label: "Reddit", ...reddit },
+      { id: "mastodon", label: "Mastodon", ...mastodon },
       {
         id: "x",
         label: "X",

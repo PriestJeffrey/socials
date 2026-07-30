@@ -20,6 +20,7 @@ const PLATFORMS = new Set([
   "pinterest",
   "bluesky",
   "reddit",
+  "mastodon",
   "x",
 ]);
 

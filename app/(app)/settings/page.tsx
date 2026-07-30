@@ -22,6 +22,7 @@ import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { getRedditConfig } from "@/lib/platforms/reddit/config";
+import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -47,6 +48,10 @@ import {
   disconnectRedditAction,
   syncRedditAction,
 } from "@/app/actions/reddit";
+import {
+  disconnectMastodonAction,
+  syncMastodonAction,
+} from "@/app/actions/mastodon";
 
 function PlatformSection({
   title,
@@ -165,7 +170,8 @@ export default async function SettingsPage({
   const pinCfg = getPinterestConfig();
   const bskyCfg = getBlueskyConfig();
   const redditCfg = getRedditConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky, reddit] = await Promise.all([
+  const mastodonCfg = getMastodonConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -202,6 +208,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "reddit" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "mastodon" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -221,7 +231,9 @@ export default async function SettingsPage({
                   ? "Bluesky"
                   : p === "reddit"
                     ? "Reddit"
-                    : "Instagram";
+                    : p === "mastodon"
+                      ? "Mastodon"
+                      : "Instagram";
 
   return (
     <main>
@@ -354,6 +366,18 @@ export default async function SettingsPage({
         configHint="Configure REDDIT_CLIENT_ID + SECRET, or REDDIT_USE_FIXTURES=true."
         syncAction={syncRedditAction}
         disconnectAction={disconnectRedditAction}
+      />
+
+      <PlatformSection
+        title="Mastodon"
+        description="Connect Mastodon for statuses + replies/reblogs/favourites snapshots. Live status create deferred — fixtures for local UAT."
+        testIdPrefix="mastodon"
+        connectHref="/api/oauth/mastodon/start"
+        connection={mastodon}
+        configured={mastodonCfg.configured}
+        configHint="Configure MASTODON_CLIENT_ID + SECRET, or MASTODON_USE_FIXTURES=true."
+        syncAction={syncMastodonAction}
+        disconnectAction={disconnectMastodonAction}
       />
 
       <section

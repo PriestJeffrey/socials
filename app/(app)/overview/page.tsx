@@ -23,6 +23,7 @@ export default async function OverviewPage() {
           "pinterest",
           "bluesky",
           "reddit",
+          "mastodon",
         ],
       },
       status: { in: ["connected", "error"] },

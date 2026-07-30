@@ -132,6 +132,9 @@ export default async function CreatePage({
             <option value="reddit">
               Reddit{connected.has("reddit") ? "" : " (connect in Settings)"}
             </option>
+            <option value="mastodon">
+              Mastodon{connected.has("mastodon") ? "" : " (connect in Settings)"}
+            </option>
             <option value="x">X (copy only)</option>
           </select>
         </div>
@@ -256,6 +259,7 @@ export default async function CreatePage({
             <option value="pinterest">Pinterest</option>
             <option value="bluesky">Bluesky</option>
             <option value="reddit">Reddit</option>
+            <option value="mastodon">Mastodon</option>
             <option value="x">X</option>
           </select>
           <input
@@ -312,6 +316,7 @@ export default async function CreatePage({
                       "pinterest",
                       "bluesky",
                       "reddit",
+                      "mastodon",
                       "x",
                     ] as const
                   )
