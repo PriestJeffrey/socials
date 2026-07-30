@@ -9,13 +9,13 @@ export default async function OverviewPage() {
   if (!user) redirect("/login");
 
   const board = await readOverview(user.id);
-  const igConnected = await prisma.socialConnection.findFirst({
+  const anyConnected = await prisma.socialConnection.findFirst({
     where: {
       userId: user.id,
-      platform: "instagram",
+      platform: { in: ["instagram", "facebook"] },
       status: { in: ["connected", "error"] },
     },
-    select: { id: true, status: true },
+    select: { id: true },
   });
 
   return (
@@ -35,19 +35,19 @@ export default async function OverviewPage() {
           className="mt-8 max-w-xl rounded-xl border border-[var(--pb-line)] bg-white/80 p-8"
         >
           <p className="font-display text-xl font-semibold text-[var(--pb-ink)]">
-            {igConnected ? "Waiting on snapshots" : "Your board is ready"}
+            {anyConnected ? "Waiting on snapshots" : "Your board is ready"}
           </p>
           <p className="mt-3 text-[var(--pb-slate)]">
-            {igConnected
-              ? "Instagram is linked. Sync from Settings to fill what's broken and what's working."
-              : "Connect Instagram and sync to see what's broken, what's working, and what to post next."}
+            {anyConnected
+              ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
+              : "Connect Instagram or Facebook and sync to see what's broken, what's working, and what to post next."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/settings"
               className="rounded-md bg-[var(--pb-pulse)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--pb-pulse-deep)]"
             >
-              {igConnected ? "Open Settings to sync" : "Connect Instagram"}
+              {anyConnected ? "Open Settings to sync" : "Connect a platform"}
             </Link>
             <Link
               href="/settings/health"
@@ -61,7 +61,7 @@ export default async function OverviewPage() {
         <div className="mt-8 grid gap-4 sm:grid-cols-2" data-testid="overview-board">
           {[...board.issues, ...board.wins].map((card, i) => (
             <article
-              key={`${card.title}-${card.metricKey ?? i}`}
+              key={`${card.platform ?? "x"}-${card.title}-${card.metricKey ?? i}`}
               className="rounded-xl border border-[var(--pb-line)] bg-white/80 p-5"
             >
               <p
@@ -72,6 +72,7 @@ export default async function OverviewPage() {
                 }}
               >
                 {card.title}
+                {card.platform ? ` · ${card.platform}` : ""}
               </p>
               <p className="mt-2 text-sm text-[var(--pb-slate)]">{card.body}</p>
             </article>
