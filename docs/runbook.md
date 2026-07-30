@@ -1,22 +1,50 @@
-# Pulseboard Runbook (stub) — Phase 0
+# Pulseboard Runbook — Phase 8
 
 ## Local bootstrap
-1. `docker compose up -d`
-2. Copy `.env.example` → `.env` and set `TOKEN_ENCRYPTION_KEY` + `SESSION_SECRET`
+1. `docker compose up -d postgres`
+2. Copy `.env.example` → `.env`; set `TOKEN_ENCRYPTION_KEY` + `SESSION_SECRET`
 3. `npm install`
-4. `npx prisma migrate dev --name init`
-5. `npm run dev`
+4. `npx prisma migrate deploy`
+5. `npm run db:seed` (demo: `demo@pulseboard.local` / `pulseboard-demo`)
+6. `npm run dev`
 
-## Read path vs sync path
-- Overview reads DB snapshots only (empty in Phase 0).
-- Never call platform APIs from Overview RSC.
-- Sync belongs in `JobQueue` workers (Phase 1+).
+## Docker (full stack)
+1. Export `TOKEN_ENCRYPTION_KEY` (32-byte base64) and `SESSION_SECRET`
+2. `docker compose up --build`
+3. App: http://localhost:3000 — migrate runs on container start
 
-## Connection exhaustion (later)
-- Prefer pooled `DATABASE_POOL_URL` at deploy; keep `DATABASE_URL`/`DIRECT_URL` for migrations.
+## Production deploy checklist
+1. Provision Postgres (pooled URL for runtime; direct URL for migrate)
+2. Set secrets: `SESSION_SECRET`, `TOKEN_ENCRYPTION_KEY`, `CRON_SECRET`, platform keys or fixtures flags
+3. `COOKIE_SECURE=true` and HTTPS/`APP_URL` with `https://`
+4. Build: `npm ci && npx prisma generate && npm run build`
+5. Migrate: `npx prisma migrate deploy` (direct DB URL)
+6. Start: `node .next/standalone/server.js` (or Docker image)
+7. Schedule cron: `GET/POST /api/cron` with `Authorization: Bearer $CRON_SECRET` every minute
+8. Smoke: `npm run smoke -- https://your-host`
 
-## When to enable Redis
-- Multi-instance rate-limit bypass or hot Overview cache misses after S6.
+## How to read Health / logs
+- In-app: `/settings/health` — platform + AI + DB status
+- Structured logs: JSON-ish via `lib/logging/logger` (never tokens/passwords)
+- Optional: set `SENTRY_DSN` — stub logs until `@sentry/nextjs` is wired
 
-## Migrate vs runtime URL
-- Runtime: pooled. Migrate: direct. Never migrate from request path.
+## Incidents
+| Symptom | Action |
+|---|---|
+| Auth failures spike | Rotate `SESSION_SECRET`; users re-login |
+| Token decrypt errors | Do **not** rotate `TOKEN_ENCRYPTION_KEY` blindly — reconnect platforms after planned rotation |
+| Sync stuck | Check Health last sync error; re-run Sync; drain `/api/cron` |
+| Gemini quota | Set `GEMINI_USE_FIXTURES=true` or upgrade key |
+| Bad deploy | Rollback image/commit; re-run migrate only forward |
+
+## Rollback
+1. Redeploy previous image/commit
+2. Do not reverse migrations unless Human-approved down migration exists
+3. Verify `/api/health` and smoke
+
+## Security CI (L7)
+- Lint · SAST (`npm run sast`) · tests · `npm audit --omit=dev --audit-level=critical` · gitleaks
+
+## Windows SWC note
+If Next prints `next-swc… is not a valid Win32 application`, clear `.next` and reinstall:
+`npm install @next/swc-win32-x64-msvc@15.5.22 --force`

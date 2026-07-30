@@ -9,6 +9,30 @@ services:
       POSTGRES_DB: pulseboard
     volumes:
       - pulseboard_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pulseboard -d pulseboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://pulseboard:pulseboard@postgres:5432/pulseboard
+      APP_URL: http://localhost:3000
+      SESSION_SECRET: ${SESSION_SECRET:-replace-with-long-random-string-min-32-chars}
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY}
+      COOKIE_SECURE: "false"
+      META_USE_FIXTURES: "true"
+      LINKEDIN_USE_FIXTURES: "true"
+      GEMINI_USE_FIXTURES: "true"
+      CRON_SECRET: ${CRON_SECRET:-dev-cron-secret-change-me}
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   pulseboard_pg:

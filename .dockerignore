@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+coverage
+*.md
+!docs/runbook.md
+agent-transcripts
+canvases
+.dockerignore
+Dockerfile
+docker-compose.yml

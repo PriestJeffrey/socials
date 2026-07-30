@@ -21,6 +21,18 @@ jobs:
       - run: npx prisma generate
       - run: npm run lint
 
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run sast
+
   unit:
     runs-on: ubuntu-latest
     services:
@@ -41,6 +53,9 @@ jobs:
       DATABASE_URL: postgresql://pulseboard:pulseboard@localhost:5432/pulseboard_test
       TOKEN_ENCRYPTION_KEY: dGVzdC1rZXktMzItYnl0ZXMtYWJjZGVmZ2hpams=
       SESSION_SECRET: test-session-secret-min-32-characters-long
+      META_USE_FIXTURES: "true"
+      LINKEDIN_USE_FIXTURES: "true"
+      GEMINI_USE_FIXTURES: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -50,6 +65,18 @@ jobs:
       - run: npm ci
       - run: npx prisma migrate deploy || npx prisma db push
       - run: npm test
+
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      # Fail on critical production vulns; high remains advisory until Human upgrades
+      - run: npm audit --omit=dev --audit-level=critical
 
   secret-scan:
     runs-on: ubuntu-latest

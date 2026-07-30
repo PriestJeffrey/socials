@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getAiConfig } from "@/lib/ai/config";
+import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
 
@@ -13,7 +14,8 @@ export type HealthSubsystem = {
     | "facebook"
     | "linkedin"
     | "x"
-    | "ai";
+    | "ai"
+    | "runtime";
   label: string;
   status: HealthStatus;
   detail?: string;
@@ -21,7 +23,7 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 7;
+  phase: 8;
   subsystems: HealthSubsystem[];
 };
 
@@ -135,7 +137,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
   );
 
   return {
-    phase: 7,
+    phase: 8,
     subsystems: [
       {
         id: "auth",
@@ -162,6 +164,15 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
         checkedAt,
       },
       { id: "ai", label: "AI (Gemini)", ...aiHealth(checkedAt) },
+      {
+        id: "runtime",
+        label: "Runtime / monitoring",
+        status: "ok",
+        detail: sentryConfigured()
+          ? "SENTRY_DSN set (stub capture until SDK wired)"
+          : `NODE_ENV=${process.env.NODE_ENV ?? "undefined"} · Sentry unset`,
+        checkedAt,
+      },
     ],
   };
 }
