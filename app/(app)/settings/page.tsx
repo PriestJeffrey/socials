@@ -18,6 +18,7 @@ import {
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
+import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -27,6 +28,10 @@ import {
   disconnectTikTokAction,
   syncTikTokAction,
 } from "@/app/actions/tiktok";
+import {
+  disconnectYouTubeAction,
+  syncYouTubeAction,
+} from "@/app/actions/youtube";
 
 function PlatformSection({
   title,
@@ -141,7 +146,8 @@ export default async function SettingsPage({
   const liCfg = getLinkedInConfig();
   const thCfg = getThreadsConfig();
   const ttCfg = getTikTokConfig();
-  const [ig, fb, li, th, tt] = await Promise.all([
+  const ytCfg = getYouTubeConfig();
+  const [ig, fb, li, th, tt, yt] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -162,6 +168,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "tiktok" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "youtube" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -173,7 +183,9 @@ export default async function SettingsPage({
           ? "Threads"
           : p === "tiktok"
             ? "TikTok"
-            : "Instagram";
+            : p === "youtube"
+              ? "YouTube"
+              : "Instagram";
 
   return (
     <main>
@@ -258,6 +270,18 @@ export default async function SettingsPage({
         configHint="Configure TIKTOK_CLIENT_KEY + SECRET, or TIKTOK_USE_FIXTURES=true."
         syncAction={syncTikTokAction}
         disconnectAction={disconnectTikTokAction}
+      />
+
+      <PlatformSection
+        title="YouTube"
+        description="Connect YouTube for channel video stats (Data API v3 readonly). Live upload deferred — fixtures for local UAT."
+        testIdPrefix="youtube"
+        connectHref="/api/oauth/youtube/start"
+        connection={yt}
+        configured={ytCfg.configured}
+        configHint="Configure YOUTUBE_CLIENT_ID + SECRET, or YOUTUBE_USE_FIXTURES=true."
+        syncAction={syncYouTubeAction}
+        disconnectAction={disconnectYouTubeAction}
       />
 
       <section

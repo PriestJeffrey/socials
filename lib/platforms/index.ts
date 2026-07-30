@@ -4,18 +4,20 @@ import { facebookAdapter } from "./facebook/adapter";
 import { linkedinAdapter } from "./linkedin/adapter";
 import { threadsAdapter } from "./threads/adapter";
 import { tiktokAdapter } from "./tiktok/adapter";
+import { youtubeAdapter } from "./youtube/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 10: + TikTok. */
+/** Registered adapters. Phase 12: + YouTube. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
   linkedinAdapter,
   threadsAdapter,
   tiktokAdapter,
+  youtubeAdapter,
   xAdapter,
 ];
 

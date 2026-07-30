@@ -15,6 +15,7 @@ export const ANALYTICS_PLATFORMS = [
   "linkedin",
   "threads",
   "tiktok",
+  "youtube",
   "x",
 ] as const;
 
@@ -121,6 +122,19 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "comments", label: "Comments", format: "number" },
       { key: "shares", label: "Shares", format: "number" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+    ],
+  },
+  youtube: {
+    label: "YouTube",
+    focus: "Watch duration proxy and engagement — hook and retain.",
+    keys: [
+      { key: "avg_view_duration_proxy", label: "View duration proxy", highlight: true, format: "pct" },
+      { key: "engagement_rate", label: "Engagement rate", highlight: true, format: "pct" },
+      { key: "video_views", label: "Video views", highlight: true, format: "number" },
+      { key: "likes", label: "Likes", format: "number" },
+      { key: "comments", label: "Comments", format: "number" },
+      { key: "subscribers_delta_7d", label: "Subscribers Δ 7d", format: "delta" },
+      { key: "subscribers_count", label: "Subscribers", format: "number" },
     ],
   },
 };

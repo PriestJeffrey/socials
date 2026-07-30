@@ -10,7 +10,7 @@ export type OverviewCard = {
   kind: "win" | "issue";
   title: string;
   body: string;
-  platform?: "instagram" | "facebook" | "linkedin" | "threads" | "tiktok";
+  platform?: "instagram" | "facebook" | "linkedin" | "threads" | "tiktok" | "youtube";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -343,6 +343,75 @@ function pushTikTokCards(
   }
 }
 
+function pushYouTubeCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.05) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "YouTube: engagement rate looks strong",
+      platform: "youtube",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.02) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "YouTube: engagement is soft — tighten the opening hook",
+      platform: "youtube",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const watch = byKey.get("avg_view_duration_proxy");
+  if (watch && watch.value > 0 && watch.value < 0.25) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "YouTube: view duration proxy is low — cut the intro tighter",
+      platform: "youtube",
+      metricKey: watch.metricKey,
+      value: watch.value,
+    });
+  } else if (watch && watch.value >= 0.4) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "YouTube: view duration proxy looks healthy",
+      platform: "youtube",
+      metricKey: watch.metricKey,
+      value: watch.value,
+    });
+  }
+
+  const subs = byKey.get("subscribers_delta_7d");
+  if (subs && subs.value < 0) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "YouTube: subscriber delta is negative on recent signal",
+      platform: "youtube",
+      metricKey: subs.metricKey,
+      value: subs.value,
+    });
+  } else if (subs && subs.value > 0) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "YouTube: subscribers are trending up",
+      platform: "youtube",
+      metricKey: subs.metricKey,
+      value: subs.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -358,7 +427,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
     where: {
       userId,
       platform: {
-        in: ["instagram", "facebook", "linkedin", "threads", "tiktok"],
+        in: ["instagram", "facebook", "linkedin", "threads", "tiktok", "youtube"],
       },
     },
     orderBy: { capturedAt: "desc" },
@@ -370,6 +439,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const liByKey = new Map<string, (typeof latest)[0]>();
   const thByKey = new Map<string, (typeof latest)[0]>();
   const ttByKey = new Map<string, (typeof latest)[0]>();
+  const ytByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -380,7 +450,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
             ? thByKey
             : row.platform === "tiktok"
               ? ttByKey
-              : igByKey;
+              : row.platform === "youtube"
+                ? ytByKey
+                : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -391,12 +463,13 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushLiCards(liByKey, wins, issues);
   pushThreadsCards(thByKey, wins, issues);
   pushTikTokCards(ttByKey, wins, issues);
+  pushYouTubeCards(ytByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
       userId,
       platform: {
-        in: ["instagram", "facebook", "linkedin", "threads", "tiktok"],
+        in: ["instagram", "facebook", "linkedin", "threads", "tiktok", "youtube"],
       },
       status: { in: ["connected", "error"] },
     },

@@ -13,7 +13,7 @@ export default async function OverviewPage() {
     where: {
       userId: user.id,
       platform: {
-        in: ["instagram", "facebook", "linkedin", "threads", "tiktok"],
+        in: ["instagram", "facebook", "linkedin", "threads", "tiktok", "youtube"],
       },
       status: { in: ["connected", "error"] },
     },
@@ -51,7 +51,7 @@ export default async function OverviewPage() {
           <p className="mt-3 text-[var(--pb-slate)]">
             {anyConnected
               ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
-              : "Connect Instagram, Facebook, LinkedIn, Threads, or TikTok and sync to see what's broken, what's working, and what to post next."}
+              : "Connect Instagram, Facebook, LinkedIn, Threads, TikTok, or YouTube and sync to see what's broken, what's working, and what to post next."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

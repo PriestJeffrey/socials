@@ -67,6 +67,7 @@ export default async function CompetitorsPage({
             <option value="linkedin">LinkedIn</option>
             <option value="threads">Threads</option>
             <option value="tiktok">TikTok</option>
+            <option value="youtube">YouTube</option>
             <option value="x">X</option>
             <option value="generic">Generic</option>
           </select>

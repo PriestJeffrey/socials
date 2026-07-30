@@ -4,6 +4,7 @@ export type PlatformId =
   | "linkedin"
   | "threads"
   | "tiktok"
+  | "youtube"
   | "x";
 
 export interface PlatformCapabilities {

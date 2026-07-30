@@ -4,6 +4,7 @@ import { runFacebookSync } from "@/lib/platforms/facebook/sync";
 import { runLinkedInSync } from "@/lib/platforms/linkedin/sync";
 import { runThreadsSync } from "@/lib/platforms/threads/sync";
 import { runTikTokSync } from "@/lib/platforms/tiktok/sync";
+import { runYouTubeSync } from "@/lib/platforms/youtube/sync";
 import { runPublishDraft } from "@/lib/content/publish";
 import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
@@ -39,6 +40,10 @@ export async function processPendingJobs(
         const connectionId = String(job.payload.connectionId ?? "");
         if (!connectionId) throw new Error("Missing connectionId");
         await runTikTokSync({ userId: job.userId, connectionId });
+      } else if (job.type === "sync" && job.payload.platform === "youtube") {
+        const connectionId = String(job.payload.connectionId ?? "");
+        if (!connectionId) throw new Error("Missing connectionId");
+        await runYouTubeSync({ userId: job.userId, connectionId });
       } else if (job.type === "publish") {
         const draftId = String(job.payload.draftId ?? "");
         if (!draftId) throw new Error("Missing draftId");

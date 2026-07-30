@@ -10,6 +10,7 @@ describe("phase 4 X honest adapter", () => {
       "linkedin",
       "threads",
       "tiktok",
+      "youtube",
       "x",
     ]);
 

@@ -52,8 +52,8 @@ export default async function CreatePage({
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
         Draft once, preview, then publish or schedule to Instagram / Facebook /
-        LinkedIn / Threads / TikTok. X is copy-only. Live Graph/TikTok posting is
-        deferred — “Publish” writes a local fixture post when fixtures are on.
+        LinkedIn / Threads / TikTok / YouTube. X is copy-only. Live Graph/TikTok/YouTube
+        posting is deferred — “Publish” writes a local fixture post when fixtures are on.
       </p>
 
       <p
@@ -118,6 +118,9 @@ export default async function CreatePage({
             </option>
             <option value="tiktok">
               TikTok{connected.has("tiktok") ? "" : " (connect in Settings)"}
+            </option>
+            <option value="youtube">
+              YouTube{connected.has("youtube") ? "" : " (connect in Settings)"}
             </option>
             <option value="x">X (copy only)</option>
           </select>
@@ -239,6 +242,7 @@ export default async function CreatePage({
             <option value="linkedin">LinkedIn</option>
             <option value="threads">Threads</option>
             <option value="tiktok">TikTok</option>
+            <option value="youtube">YouTube</option>
             <option value="x">X</option>
           </select>
           <input
@@ -291,6 +295,7 @@ export default async function CreatePage({
                       "linkedin",
                       "threads",
                       "tiktok",
+                      "youtube",
                       "x",
                     ] as const
                   )
