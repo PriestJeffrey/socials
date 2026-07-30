@@ -209,7 +209,8 @@ export async function fetchSlackConversations(accessToken: string): Promise<
   Array<{ id: string; name: string }>
 > {
   const u = new URL("https://slack.com/api/users.conversations");
-  u.searchParams.set("types", "public_channel,private_channel");
+  // public_channel only — channels:read; private needs groups:read (deferred)
+  u.searchParams.set("types", "public_channel");
   u.searchParams.set("exclude_archived", "true");
   u.searchParams.set("limit", "100");
   const res = await fetch(u.toString(), {
