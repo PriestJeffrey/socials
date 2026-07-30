@@ -1,9 +1,9 @@
 # Pulseboard — Phase 21 Restatement (Locked)
 
-**Status:** Phase 21 **in progress** → toward **S7**.  
+**Status:** Phase 21 **implemented** → Human UAT / sign toward **S7**.  
 **Platform:** Vimeo (OAuth2, free developer app)  
 **Branch tip:** from phase-20 tip `5f67d16` → `phase-21`  
-**gstack:** Research → restatement → `/plan-eng-review` → build → `/review` before Human sign.
+**gstack:** Research → restatement → `/plan-eng-review` → `/cso` → build → `/review` (`docs/gstack-review-phase21.md`, **ship-with-nits**) before Human sign.
 
 ## Research summary (go)
 
