@@ -56,6 +56,7 @@ jobs:
       META_USE_FIXTURES: "true"
       LINKEDIN_USE_FIXTURES: "true"
       THREADS_USE_FIXTURES: "true"
+      TIKTOK_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
     steps:
       - uses: actions/checkout@v4

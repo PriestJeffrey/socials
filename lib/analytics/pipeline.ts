@@ -10,7 +10,7 @@ export type OverviewCard = {
   kind: "win" | "issue";
   title: string;
   body: string;
-  platform?: "instagram" | "facebook" | "linkedin" | "threads";
+  platform?: "instagram" | "facebook" | "linkedin" | "threads" | "tiktok";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -274,6 +274,75 @@ function pushThreadsCards(
   }
 }
 
+function pushTikTokCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.05) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "TikTok: engagement rate looks strong",
+      platform: "tiktok",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.02) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "TikTok: engagement is soft — tighten the opening hook",
+      platform: "tiktok",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const watch = byKey.get("avg_watch_ratio");
+  if (watch && watch.value > 0 && watch.value < 0.25) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "TikTok: watch ratio is low — cut the first three seconds tighter",
+      platform: "tiktok",
+      metricKey: watch.metricKey,
+      value: watch.value,
+    });
+  } else if (watch && watch.value >= 0.4) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "TikTok: watch ratio looks healthy",
+      platform: "tiktok",
+      metricKey: watch.metricKey,
+      value: watch.value,
+    });
+  }
+
+  const followers = byKey.get("followers_delta_7d");
+  if (followers && followers.value < 0) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "TikTok: follower delta is negative on recent signal",
+      platform: "tiktok",
+      metricKey: followers.metricKey,
+      value: followers.value,
+    });
+  } else if (followers && followers.value > 0) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "TikTok: followers are trending up",
+      platform: "tiktok",
+      metricKey: followers.metricKey,
+      value: followers.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -288,16 +357,19 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const latest = await prisma.metricSnapshot.findMany({
     where: {
       userId,
-      platform: { in: ["instagram", "facebook", "linkedin", "threads"] },
+      platform: {
+        in: ["instagram", "facebook", "linkedin", "threads", "tiktok"],
+      },
     },
     orderBy: { capturedAt: "desc" },
-    take: 160,
+    take: 200,
   });
 
   const igByKey = new Map<string, (typeof latest)[0]>();
   const fbByKey = new Map<string, (typeof latest)[0]>();
   const liByKey = new Map<string, (typeof latest)[0]>();
   const thByKey = new Map<string, (typeof latest)[0]>();
+  const ttByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -306,7 +378,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           ? liByKey
           : row.platform === "threads"
             ? thByKey
-            : igByKey;
+            : row.platform === "tiktok"
+              ? ttByKey
+              : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -316,11 +390,14 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushFbCards(fbByKey, wins, issues);
   pushLiCards(liByKey, wins, issues);
   pushThreadsCards(thByKey, wins, issues);
+  pushTikTokCards(ttByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
       userId,
-      platform: { in: ["instagram", "facebook", "linkedin", "threads"] },
+      platform: {
+        in: ["instagram", "facebook", "linkedin", "threads", "tiktok"],
+      },
       status: { in: ["connected", "error"] },
     },
     orderBy: { lastSyncAt: "desc" },

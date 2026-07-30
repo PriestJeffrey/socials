@@ -3,6 +3,7 @@ import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getAiConfig } from "@/lib/ai/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
+import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -15,6 +16,7 @@ export type HealthSubsystem = {
     | "facebook"
     | "linkedin"
     | "threads"
+    | "tiktok"
     | "x"
     | "ai"
     | "runtime";
@@ -25,13 +27,13 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 9;
+  phase: 10;
   subsystems: HealthSubsystem[];
 };
 
 async function platformHealth(
   userId: string | undefined,
-  platform: "instagram" | "facebook" | "linkedin" | "threads",
+  platform: "instagram" | "facebook" | "linkedin" | "threads" | "tiktok",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -49,6 +51,13 @@ async function platformHealth(
         : unconfiguredDetail;
   } else if (platform === "threads") {
     const cfg = getThreadsConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "tiktok") {
+    const cfg = getTikTokConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -152,9 +161,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "Threads app configured — no connection yet",
   );
+  const tt = await platformHealth(
+    userId,
+    "tiktok",
+    checkedAt,
+    "TIKTOK_CLIENT_KEY/SECRET missing (or TIKTOK_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "TikTok app configured — no connection yet",
+  );
 
   return {
-    phase: 9,
+    phase: 10,
     subsystems: [
       {
         id: "auth",
@@ -174,6 +191,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "facebook", label: "Facebook", ...fb },
       { id: "linkedin", label: "LinkedIn", ...li },
       { id: "threads", label: "Threads", ...th },
+      { id: "tiktok", label: "TikTok", ...tt },
       {
         id: "x",
         label: "X",

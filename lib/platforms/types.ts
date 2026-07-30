@@ -3,6 +3,7 @@ export type PlatformId =
   | "facebook"
   | "linkedin"
   | "threads"
+  | "tiktok"
   | "x";
 
 export interface PlatformCapabilities {

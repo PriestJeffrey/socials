@@ -17,11 +17,16 @@ import {
 } from "@/app/actions/linkedin";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
+import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
   syncThreadsAction,
 } from "@/app/actions/threads";
+import {
+  disconnectTikTokAction,
+  syncTikTokAction,
+} from "@/app/actions/tiktok";
 
 function PlatformSection({
   title,
@@ -135,7 +140,8 @@ export default async function SettingsPage({
   const cfg = getMetaConfig();
   const liCfg = getLinkedInConfig();
   const thCfg = getThreadsConfig();
-  const [ig, fb, li, th] = await Promise.all([
+  const ttCfg = getTikTokConfig();
+  const [ig, fb, li, th, tt] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -152,6 +158,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "threads" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "tiktok" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -161,7 +171,9 @@ export default async function SettingsPage({
         ? "LinkedIn"
         : p === "threads"
           ? "Threads"
-          : "Instagram";
+          : p === "tiktok"
+            ? "TikTok"
+            : "Instagram";
 
   return (
     <main>
@@ -234,6 +246,18 @@ export default async function SettingsPage({
         configHint="Configure THREADS_APP_ID + SECRET (or META_*), or THREADS_USE_FIXTURES=true."
         syncAction={syncThreadsAction}
         disconnectAction={disconnectThreadsAction}
+      />
+
+      <PlatformSection
+        title="TikTok"
+        description="Connect TikTok for video list + engagement snapshots (Display API). Live Content Posting needs TikTok app audit — fixtures for local UAT."
+        testIdPrefix="tiktok"
+        connectHref="/api/oauth/tiktok/start"
+        connection={tt}
+        configured={ttCfg.configured}
+        configHint="Configure TIKTOK_CLIENT_KEY + SECRET, or TIKTOK_USE_FIXTURES=true."
+        syncAction={syncTikTokAction}
+        disconnectAction={disconnectTikTokAction}
       />
 
       <section

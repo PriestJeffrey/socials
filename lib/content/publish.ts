@@ -4,8 +4,15 @@ import { writeAudit } from "@/lib/audit/log";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
+import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 
-const PUBLISHABLE = new Set(["instagram", "facebook", "linkedin", "threads"]);
+const PUBLISHABLE = new Set([
+  "instagram",
+  "facebook",
+  "linkedin",
+  "threads",
+  "tiktok",
+]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
 export async function runPublishDraft(input: {
@@ -43,7 +50,9 @@ export async function runPublishDraft(input: {
       ? getLinkedInConfig().useFixtures
       : draft.platform === "threads"
         ? getThreadsConfig().useFixtures
-        : getMetaConfig().useFixtures;
+        : draft.platform === "tiktok"
+          ? getTikTokConfig().useFixtures
+          : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

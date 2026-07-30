@@ -7,6 +7,7 @@ export type RepurposePlatform =
   | "facebook"
   | "linkedin"
   | "threads"
+  | "tiktok"
   | "x";
 
 export function repurposeBody(
@@ -31,6 +32,10 @@ export function repurposeBody(
       return trimmed.length > 500
         ? `${trimmed.slice(0, 480)}…\n\nReply with your take.`
         : `${trimmed}\n\nReply with your take.`;
+    case "tiktok":
+      return trimmed.length > 2200
+        ? `${trimmed.slice(0, 2180)}…\n\n(On-screen text / VO note)`
+        : `${trimmed}\n\n(On-screen text / VO note)`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

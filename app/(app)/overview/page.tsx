@@ -12,7 +12,9 @@ export default async function OverviewPage() {
   const anyConnected = await prisma.socialConnection.findFirst({
     where: {
       userId: user.id,
-      platform: { in: ["instagram", "facebook", "linkedin", "threads"] },
+      platform: {
+        in: ["instagram", "facebook", "linkedin", "threads", "tiktok"],
+      },
       status: { in: ["connected", "error"] },
     },
     select: { id: true },
@@ -49,7 +51,7 @@ export default async function OverviewPage() {
           <p className="mt-3 text-[var(--pb-slate)]">
             {anyConnected
               ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
-              : "Connect Instagram, Facebook, LinkedIn, or Threads and sync to see what's broken, what's working, and what to post next."}
+              : "Connect Instagram, Facebook, LinkedIn, Threads, or TikTok and sync to see what's broken, what's working, and what to post next."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

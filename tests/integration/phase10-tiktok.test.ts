@@ -2,22 +2,22 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createOAuthState } from "@/lib/platforms/oauth-state";
-import { threadsAdapter } from "@/lib/platforms/threads/adapter";
-import { runThreadsSync } from "@/lib/platforms/threads/sync";
+import { tiktokAdapter } from "@/lib/platforms/tiktok/adapter";
+import { runTikTokSync } from "@/lib/platforms/tiktok/sync";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { getHealthReport } from "@/lib/health/types";
 import { listAdapters, oauthPlatforms } from "@/lib/platforms";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
 
-describe.runIf(hasDb)("phase 9 Threads", () => {
+describe.runIf(hasDb)("phase 10 TikTok", () => {
   const suffix = Date.now();
-  const email = `p9-${suffix}@example.com`;
+  const email = `p10-${suffix}@example.com`;
   let userId = "";
   let connectionId = "";
 
   beforeAll(async () => {
-    process.env.THREADS_USE_FIXTURES = "true";
+    process.env.TIKTOK_USE_FIXTURES = "true";
     process.env.SESSION_SECRET =
       process.env.SESSION_SECRET ?? "test-session-secret-min-32-characters-long";
     process.env.TOKEN_ENCRYPTION_KEY =
@@ -30,12 +30,12 @@ describe.runIf(hasDb)("phase 9 Threads", () => {
     ).id;
 
     connectionId = (
-      await threadsAdapter.handleOAuthCallback(userId, {
-        code: "fixture_threads_code",
+      await tiktokAdapter.handleOAuthCallback(userId, {
+        code: "fixture_tiktok_code",
         state: createOAuthState(userId).state,
       })
     ).connectionId;
-    await runThreadsSync({ userId, connectionId });
+    await runTikTokSync({ userId, connectionId });
   });
 
   afterAll(async () => {
@@ -43,30 +43,30 @@ describe.runIf(hasDb)("phase 9 Threads", () => {
     await prisma.$disconnect();
   });
 
-  it("registers Threads in adapters and oauth platforms", () => {
-    expect(listAdapters().map((a) => a.id)).toContain("threads");
-    expect(oauthPlatforms().some((a) => a.id === "threads")).toBe(true);
+  it("registers TikTok in adapters and oauth platforms", () => {
+    expect(listAdapters().map((a) => a.id)).toContain("tiktok");
+    expect(oauthPlatforms().some((a) => a.id === "tiktok")).toBe(true);
   });
 
-  it("sync fills Overview with Threads cards", async () => {
+  it("sync fills Overview with TikTok cards", async () => {
     const board = await readOverview(userId);
     expect(board.empty).toBe(false);
-    const th = [...board.wins, ...board.issues].filter(
-      (c) => c.platform === "threads",
+    const tt = [...board.wins, ...board.issues].filter(
+      (c) => c.platform === "tiktok",
     );
-    expect(th.length).toBeGreaterThan(0);
+    expect(tt.length).toBeGreaterThan(0);
   });
 
-  it("Health includes Threads ok", async () => {
+  it("Health includes TikTok ok at phase 10", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBeGreaterThanOrEqual(9);
-    expect(report.subsystems.find((s) => s.id === "threads")?.status).toBe(
+    expect(report.phase).toBe(10);
+    expect(report.subsystems.find((s) => s.id === "tiktok")?.status).toBe(
       "ok",
     );
   });
 
-  it("disconnect clears Threads snapshots", async () => {
-    await threadsAdapter.disconnect(userId, connectionId);
+  it("disconnect clears TikTok snapshots", async () => {
+    await tiktokAdapter.disconnect(userId, connectionId);
     expect(
       await prisma.metricSnapshot.count({ where: { connectionId } }),
     ).toBe(0);
