@@ -16,6 +16,7 @@ export const ANALYTICS_PLATFORMS = [
   "threads",
   "tiktok",
   "youtube",
+  "pinterest",
   "x",
 ] as const;
 
@@ -135,6 +136,19 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "comments", label: "Comments", format: "number" },
       { key: "subscribers_delta_7d", label: "Subscribers Δ 7d", format: "delta" },
       { key: "subscribers_count", label: "Subscribers", format: "number" },
+    ],
+  },
+  pinterest: {
+    label: "Pinterest",
+    focus: "Saves and outbound clicks — pin-worthy creative over vanity impressions.",
+    keys: [
+      { key: "save_rate", label: "Save rate", highlight: true, format: "pct" },
+      { key: "saves", label: "Saves", highlight: true, format: "number" },
+      { key: "outbound_clicks", label: "Outbound clicks", highlight: true, format: "number" },
+      { key: "pin_clicks", label: "Pin clicks", format: "number" },
+      { key: "impressions", label: "Impressions", format: "number" },
+      { key: "engagement_rate", label: "Engagement rate", format: "pct" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
     ],
   },
 };

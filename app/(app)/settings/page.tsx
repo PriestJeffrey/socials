@@ -19,6 +19,7 @@ import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
+import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -32,6 +33,10 @@ import {
   disconnectYouTubeAction,
   syncYouTubeAction,
 } from "@/app/actions/youtube";
+import {
+  disconnectPinterestAction,
+  syncPinterestAction,
+} from "@/app/actions/pinterest";
 
 function PlatformSection({
   title,
@@ -147,7 +152,8 @@ export default async function SettingsPage({
   const thCfg = getThreadsConfig();
   const ttCfg = getTikTokConfig();
   const ytCfg = getYouTubeConfig();
-  const [ig, fb, li, th, tt, yt] = await Promise.all([
+  const pinCfg = getPinterestConfig();
+  const [ig, fb, li, th, tt, yt, pin] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -172,6 +178,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "youtube" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "pinterest" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -185,7 +195,9 @@ export default async function SettingsPage({
             ? "TikTok"
             : p === "youtube"
               ? "YouTube"
-              : "Instagram";
+              : p === "pinterest"
+                ? "Pinterest"
+                : "Instagram";
 
   return (
     <main>
@@ -282,6 +294,18 @@ export default async function SettingsPage({
         configHint="Configure YOUTUBE_CLIENT_ID + SECRET, or YOUTUBE_USE_FIXTURES=true."
         syncAction={syncYouTubeAction}
         disconnectAction={disconnectYouTubeAction}
+      />
+
+      <PlatformSection
+        title="Pinterest"
+        description="Connect Pinterest for pin + board read metrics (API v5). Live pin create deferred — fixtures for local UAT."
+        testIdPrefix="pinterest"
+        connectHref="/api/oauth/pinterest/start"
+        connection={pin}
+        configured={pinCfg.configured}
+        configHint="Configure PINTEREST_APP_ID + SECRET, or PINTEREST_USE_FIXTURES=true."
+        syncAction={syncPinterestAction}
+        disconnectAction={disconnectPinterestAction}
       />
 
       <section

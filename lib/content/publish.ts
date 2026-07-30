@@ -6,6 +6,7 @@ import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
+import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -14,6 +15,7 @@ const PUBLISHABLE = new Set([
   "threads",
   "tiktok",
   "youtube",
+  "pinterest",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -56,7 +58,9 @@ export async function runPublishDraft(input: {
           ? getTikTokConfig().useFixtures
           : draft.platform === "youtube"
             ? getYouTubeConfig().useFixtures
-            : getMetaConfig().useFixtures;
+            : draft.platform === "pinterest"
+              ? getPinterestConfig().useFixtures
+              : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

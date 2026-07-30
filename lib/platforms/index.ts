@@ -5,12 +5,13 @@ import { linkedinAdapter } from "./linkedin/adapter";
 import { threadsAdapter } from "./threads/adapter";
 import { tiktokAdapter } from "./tiktok/adapter";
 import { youtubeAdapter } from "./youtube/adapter";
+import { pinterestAdapter } from "./pinterest/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 12: + YouTube. */
+/** Registered adapters. Phase 13: + Pinterest. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
@@ -18,6 +19,7 @@ export const adapters: PlatformAdapter[] = [
   threadsAdapter,
   tiktokAdapter,
   youtubeAdapter,
+  pinterestAdapter,
   xAdapter,
 ];
 

@@ -10,7 +10,14 @@ export type OverviewCard = {
   kind: "win" | "issue";
   title: string;
   body: string;
-  platform?: "instagram" | "facebook" | "linkedin" | "threads" | "tiktok" | "youtube";
+  platform?:
+    | "instagram"
+    | "facebook"
+    | "linkedin"
+    | "threads"
+    | "tiktok"
+    | "youtube"
+    | "pinterest";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -412,6 +419,66 @@ function pushYouTubeCards(
   }
 }
 
+function pushPinterestCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const saves = byKey.get("save_rate");
+  if (saves && saves.value >= 0.03) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Pinterest: save rate looks healthy",
+      platform: "pinterest",
+      metricKey: saves.metricKey,
+      value: saves.value,
+    });
+  } else if (saves && saves.value > 0 && saves.value < 0.01) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Pinterest: save rate is soft — tighten the pin hook",
+      platform: "pinterest",
+      metricKey: saves.metricKey,
+      value: saves.value,
+    });
+  }
+
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.05) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Pinterest: engagement rate looks strong",
+      platform: "pinterest",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.02) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Pinterest: engagement is soft — test a clearer CTA",
+      platform: "pinterest",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const outbound = byKey.get("outbound_clicks");
+  if (outbound && outbound.value > 50) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Pinterest: outbound clicks are moving",
+      platform: "pinterest",
+      metricKey: outbound.metricKey,
+      value: outbound.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -427,7 +494,15 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
     where: {
       userId,
       platform: {
-        in: ["instagram", "facebook", "linkedin", "threads", "tiktok", "youtube"],
+        in: [
+          "instagram",
+          "facebook",
+          "linkedin",
+          "threads",
+          "tiktok",
+          "youtube",
+          "pinterest",
+        ],
       },
     },
     orderBy: { capturedAt: "desc" },
@@ -440,6 +515,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const thByKey = new Map<string, (typeof latest)[0]>();
   const ttByKey = new Map<string, (typeof latest)[0]>();
   const ytByKey = new Map<string, (typeof latest)[0]>();
+  const pinByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -452,7 +528,9 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
               ? ttByKey
               : row.platform === "youtube"
                 ? ytByKey
-                : igByKey;
+                : row.platform === "pinterest"
+                  ? pinByKey
+                  : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
 
@@ -464,12 +542,21 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushThreadsCards(thByKey, wins, issues);
   pushTikTokCards(ttByKey, wins, issues);
   pushYouTubeCards(ytByKey, wins, issues);
+  pushPinterestCards(pinByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
       userId,
       platform: {
-        in: ["instagram", "facebook", "linkedin", "threads", "tiktok", "youtube"],
+        in: [
+          "instagram",
+          "facebook",
+          "linkedin",
+          "threads",
+          "tiktok",
+          "youtube",
+          "pinterest",
+        ],
       },
       status: { in: ["connected", "error"] },
     },

@@ -12,6 +12,7 @@ const PLATFORMS = new Set([
   "threads",
   "tiktok",
   "youtube",
+  "pinterest",
   "x",
   "generic",
 ]);

@@ -5,6 +5,7 @@ import { getAiConfig } from "@/lib/ai/config";
 import { getThreadsConfig } from "@/lib/platforms/threads/config";
 import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
 import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
+import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -19,6 +20,7 @@ export type HealthSubsystem = {
     | "threads"
     | "tiktok"
     | "youtube"
+    | "pinterest"
     | "x"
     | "ai"
     | "runtime";
@@ -29,23 +31,23 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 12;
+  phase: 13;
   subsystems: HealthSubsystem[];
 };
 
 /** Anonymous /api/health — no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
-  phase: 12;
+  phase: 13;
   status: "ok" | "down";
 };
 
 export async function getPublicLiveness(): Promise<PublicLiveness> {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { ok: true, phase: 12, status: "ok" };
+    return { ok: true, phase: 13, status: "ok" };
   } catch {
-    return { ok: false, phase: 12, status: "down" };
+    return { ok: false, phase: 13, status: "down" };
   }
 }
 
@@ -57,7 +59,8 @@ async function platformHealth(
     | "linkedin"
     | "threads"
     | "tiktok"
-    | "youtube",
+    | "youtube"
+    | "pinterest",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -89,6 +92,13 @@ async function platformHealth(
         : unconfiguredDetail;
   } else if (platform === "youtube") {
     const cfg = getYouTubeConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "pinterest") {
+    const cfg = getPinterestConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -208,9 +218,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "YouTube app configured — no connection yet",
   );
+  const pin = await platformHealth(
+    userId,
+    "pinterest",
+    checkedAt,
+    "PINTEREST_APP_ID/SECRET missing (or PINTEREST_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Pinterest app configured — no connection yet",
+  );
 
   return {
-    phase: 12,
+    phase: 13,
     subsystems: [
       {
         id: "auth",
@@ -232,6 +250,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "threads", label: "Threads", ...th },
       { id: "tiktok", label: "TikTok", ...tt },
       { id: "youtube", label: "YouTube", ...yt },
+      { id: "pinterest", label: "Pinterest", ...pin },
       {
         id: "x",
         label: "X",
