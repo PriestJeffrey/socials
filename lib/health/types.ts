@@ -1,11 +1,19 @@
 import { prisma } from "@/lib/db/prisma";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
+import { getAiConfig } from "@/lib/ai/config";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
 
 export type HealthSubsystem = {
-  id: "auth" | "database" | "instagram" | "facebook" | "linkedin" | "x";
+  id:
+    | "auth"
+    | "database"
+    | "instagram"
+    | "facebook"
+    | "linkedin"
+    | "x"
+    | "ai";
   label: string;
   status: HealthStatus;
   detail?: string;
@@ -13,7 +21,7 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 5;
+  phase: 6;
   subsystems: HealthSubsystem[];
 };
 
@@ -67,6 +75,29 @@ async function platformHealth(
   return { status, detail, checkedAt };
 }
 
+function aiHealth(checkedAt: string): Omit<HealthSubsystem, "id" | "label"> {
+  const cfg = getAiConfig();
+  if (cfg.useFixtures) {
+    return {
+      status: "ok",
+      detail: "Fixture AI mode enabled",
+      checkedAt,
+    };
+  }
+  if (cfg.apiKey) {
+    return {
+      status: "ok",
+      detail: `Gemini configured (${cfg.model})`,
+      checkedAt,
+    };
+  }
+  return {
+    status: "down",
+    detail: "Set GEMINI_USE_FIXTURES=true or GEMINI_API_KEY",
+    checkedAt,
+  };
+}
+
 export async function getHealthReport(userId?: string): Promise<HealthReport> {
   const checkedAt = new Date().toISOString();
   let dbStatus: HealthStatus = "ok";
@@ -104,7 +135,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
   );
 
   return {
-    phase: 5,
+    phase: 6,
     subsystems: [
       {
         id: "auth",
@@ -130,6 +161,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
         detail: "Manual compose + copy only — no API / not auto-publish",
         checkedAt,
       },
+      { id: "ai", label: "AI (Gemini)", ...aiHealth(checkedAt) },
     ],
   };
 }

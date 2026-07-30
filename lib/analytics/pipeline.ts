@@ -13,6 +13,7 @@ export type OverviewCard = {
   platform?: "instagram" | "facebook" | "linkedin";
   metricKey?: string;
   value?: number;
+  why?: string;
 };
 
 export type OverviewBoard = {
@@ -21,6 +22,7 @@ export type OverviewBoard = {
   wins: OverviewCard[];
   issues: OverviewCard[];
   syncedAt: string | null;
+  why?: string | null;
 };
 
 type Snap = { metricKey: string; value: number };
@@ -258,12 +260,26 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   });
 
   const empty = wins.length === 0 && issues.length === 0;
+  let why: string | null = null;
+  if (!empty) {
+    try {
+      const { explainOverviewWhy } = await import("@/lib/ai/features/overview-why");
+      why = await explainOverviewWhy({
+        userId,
+        cards: [...issues, ...wins],
+      });
+    } catch {
+      why = null;
+    }
+  }
+
   const board: OverviewBoard = {
     userId,
     empty,
     wins,
     issues,
     syncedAt: conn?.lastSyncAt?.toISOString() ?? latest[0]?.capturedAt.toISOString() ?? null,
+    why,
   };
 
   await cacheStore.set(cacheKey, JSON.stringify(board), 60_000);

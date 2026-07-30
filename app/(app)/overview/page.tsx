@@ -28,6 +28,15 @@ export default async function OverviewPage() {
           Snapshot as of {board.syncedAt}
         </p>
       ) : null}
+      {board.why ? (
+        <p
+          className="mt-3 max-w-2xl text-sm text-[var(--pb-ink)]"
+          data-testid="overview-why"
+        >
+          <span className="font-semibold">Why: </span>
+          {board.why}
+        </p>
+      ) : null}
 
       {board.empty ? (
         <div

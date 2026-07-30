@@ -153,3 +153,32 @@ export async function publishExistingDraftAction(formData: FormData) {
   revalidatePath("/calendar");
   redirect(`/calendar?published=${draft.id}`);
 }
+
+export async function draftAssistAction(formData: FormData) {
+  const user = await getSessionUser();
+  if (!user) redirect("/login");
+
+  const platform = formStr(formData, "platform") || "instagram";
+  const goalTag = formStr(formData, "goalTag") || null;
+  const seed = formStr(formData, "seed") || null;
+
+  if (!PLATFORMS.has(platform)) {
+    redirect("/create?error=Invalid%20platform");
+  }
+
+  try {
+    const { draftAssist } = await import("@/lib/ai/features/draft-assist");
+    const body = await draftAssist({
+      userId: user.id,
+      platform,
+      goalTag,
+      seed,
+    });
+    redirect(
+      `/create?suggested=1&body=${encodeURIComponent(body)}&platform=${encodeURIComponent(platform)}`,
+    );
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "AI draft failed";
+    redirect(`/create?error=${encodeURIComponent(message)}`);
+  }
+}

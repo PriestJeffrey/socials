@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { previewForPlatform } from "@/lib/content/repurpose";
 import {
   createDraftAction,
+  draftAssistAction,
   repurposeDraftAction,
 } from "@/app/actions/create";
 
@@ -21,6 +22,10 @@ export default async function CreatePage({
   const saved = typeof params.saved === "string" ? params.saved : null;
   const published = typeof params.published === "string" ? params.published : null;
   const repurposed = typeof params.repurposed === "string" ? params.repurposed : null;
+  const suggested =
+    typeof params.suggested === "string" ? params.suggested : null;
+  const suggestBody =
+    typeof params.body === "string" ? decodeURIComponent(params.body) : "";
 
   const [connections, recent] = await Promise.all([
     prisma.socialConnection.findMany({
@@ -71,6 +76,11 @@ export default async function CreatePage({
           Repurposed into {repurposed} draft(s).
         </p>
       ) : null}
+      {suggested ? (
+        <p className="mt-4 text-sm text-[var(--pb-ok)]" data-testid="create-suggested">
+          AI draft filled below — review before save/publish.
+        </p>
+      ) : null}
 
       <form action={createDraftAction} className="mt-8 max-w-xl space-y-4" data-testid="create-form">
         <div>
@@ -109,6 +119,7 @@ export default async function CreatePage({
             data-testid="create-body"
             className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
             placeholder="Write the post…"
+            defaultValue={suggestBody}
           />
           <p className="mt-1 text-xs text-[var(--pb-slate)]">
             Preview trim example: {samplePreview.slice(0, 80)}…
@@ -190,6 +201,46 @@ export default async function CreatePage({
             Schedule
           </button>
         </div>
+      </form>
+
+      <form
+        action={draftAssistAction}
+        className="mt-4 max-w-xl space-y-2 rounded-lg border border-[var(--pb-line)] bg-white/60 p-4"
+        data-testid="draft-assist-form"
+      >
+        <p className="text-sm font-medium text-[var(--pb-ink)]">AI draft assist</p>
+        <p className="text-xs text-[var(--pb-slate)]">
+          Suggests a body from platform + goal. Review before publish.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <select
+            name="platform"
+            className="rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            defaultValue="instagram"
+          >
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="x">X</option>
+          </select>
+          <input
+            name="goalTag"
+            placeholder="Goal"
+            className="rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+          />
+        </div>
+        <input
+          name="seed"
+          placeholder="Optional seed notes"
+          className="w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+        />
+        <button
+          type="submit"
+          data-testid="create-ai-suggest"
+          className="rounded-md border border-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-[var(--pb-pulse-deep)]"
+        >
+          Suggest draft
+        </button>
       </form>
 
       {recent.length > 0 ? (

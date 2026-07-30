@@ -20,6 +20,7 @@ model User {
   snapshots    MetricSnapshot[]
   jobs         Job[]
   drafts       Draft[]
+  hookLibrary  HookLibraryItem[]
 }
 
 model Session {
@@ -145,5 +146,21 @@ model Draft {
   updatedAt       DateTime  @updatedAt
 
   @@index([userId, status, scheduledAt])
+  @@index([userId, createdAt])
+}
+
+/// Phase 6 — competitor hook library (AI-analyzed paste)
+model HookLibraryItem {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform   String
+  hook       String
+  structure  String?
+  cta        String?
+  sourceHash String?
+  tags       Json?
+  createdAt  DateTime @default(now())
+
   @@index([userId, createdAt])
 }
