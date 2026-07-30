@@ -11,7 +11,7 @@ import { listAdapters, oauthPlatforms } from "@/lib/platforms";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
 
-describe.runIf(hasDb)("phase 18 Mastodon", () => {
+describe.runIf(hasDb)("phase 19 Mastodon", () => {
   const suffix = Date.now();
   const email = `p16-${suffix}@example.com`;
   let userId = "";
@@ -67,9 +67,9 @@ describe.runIf(hasDb)("phase 18 Mastodon", () => {
     );
   });
 
-  it("health reports mastodon + phase 18", async () => {
+  it("health reports mastodon + phase 19", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBe(18);
+    expect(report.phase).toBe(19);
     expect(report.subsystems.find((s) => s.id === "mastodon")?.status).toBe(
       "ok",
     );

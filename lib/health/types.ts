@@ -11,6 +11,7 @@ import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
+import { getDiscordConfig } from "@/lib/platforms/discord/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -31,6 +32,7 @@ export type HealthSubsystem = {
     | "mastodon"
     | "tumblr"
     | "twitch"
+    | "discord"
     | "x"
     | "ai"
     | "runtime";
@@ -41,23 +43,23 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 18;
+  phase: 19;
   subsystems: HealthSubsystem[];
 };
 
 /** Anonymous /api/health — no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
-  phase: 18;
+  phase: 19;
   status: "ok" | "down";
 };
 
 export async function getPublicLiveness(): Promise<PublicLiveness> {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { ok: true, phase: 18, status: "ok" };
+    return { ok: true, phase: 19, status: "ok" };
   } catch {
-    return { ok: false, phase: 18, status: "down" };
+    return { ok: false, phase: 19, status: "down" };
   }
 }
 
@@ -75,7 +77,8 @@ async function platformHealth(
     | "reddit"
     | "mastodon"
     | "tumblr"
-    | "twitch",
+    | "twitch"
+    | "discord",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -149,6 +152,13 @@ async function platformHealth(
         : unconfiguredDetail;
   } else if (platform === "twitch") {
     const cfg = getTwitchConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else if (platform === "discord") {
+    const cfg = getDiscordConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -316,9 +326,17 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "Twitch app configured — no connection yet",
   );
+  const discord = await platformHealth(
+    userId,
+    "discord",
+    checkedAt,
+    "DISCORD_CLIENT_ID/SECRET missing (or DISCORD_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Discord app configured — no connection yet",
+  );
 
   return {
-    phase: 18,
+    phase: 19,
     subsystems: [
       {
         id: "auth",
@@ -346,6 +364,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "mastodon", label: "Mastodon", ...mastodon },
       { id: "tumblr", label: "Tumblr", ...tumblr },
       { id: "twitch", label: "Twitch", ...twitch },
+      { id: "discord", label: "Discord", ...discord },
       {
         id: "x",
         label: "X",

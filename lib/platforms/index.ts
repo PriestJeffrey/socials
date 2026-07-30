@@ -11,12 +11,13 @@ import { redditAdapter } from "./reddit/adapter";
 import { mastodonAdapter } from "./mastodon/adapter";
 import { tumblrAdapter } from "./tumblr/adapter";
 import { twitchAdapter } from "./twitch/adapter";
+import { discordAdapter } from "./discord/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 18: + Twitch. */
+/** Registered adapters. Phase 19: + Discord. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
@@ -30,6 +31,7 @@ export const adapters: PlatformAdapter[] = [
   mastodonAdapter,
   tumblrAdapter,
   twitchAdapter,
+  discordAdapter,
   xAdapter,
 ];
 

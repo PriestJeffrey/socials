@@ -11,6 +11,7 @@ import { runRedditSync } from "@/lib/platforms/reddit/sync";
 import { runMastodonSync } from "@/lib/platforms/mastodon/sync";
 import { runTumblrSync } from "@/lib/platforms/tumblr/sync";
 import { runTwitchSync } from "@/lib/platforms/twitch/sync";
+import { runDiscordSync } from "@/lib/platforms/discord/sync";
 import { runPublishDraft } from "@/lib/content/publish";
 import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
@@ -74,6 +75,10 @@ export async function processPendingJobs(
         const connectionId = String(job.payload.connectionId ?? "");
         if (!connectionId) throw new Error("Missing connectionId");
         await runTwitchSync({ userId: job.userId, connectionId });
+      } else if (job.type === "sync" && job.payload.platform === "discord") {
+        const connectionId = String(job.payload.connectionId ?? "");
+        if (!connectionId) throw new Error("Missing connectionId");
+        await runDiscordSync({ userId: job.userId, connectionId });
       } else if (job.type === "publish") {
         const draftId = String(job.payload.draftId ?? "");
         if (!draftId) throw new Error("Missing draftId");

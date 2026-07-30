@@ -148,6 +148,9 @@ export default async function CreatePage({
             <option value="twitch">
               Twitch{connected.has("twitch") ? "" : " (connect in Settings)"}
             </option>
+            <option value="discord">
+              Discord{connected.has("discord") ? "" : " (connect in Settings)"}
+            </option>
             <option value="x">X (copy only)</option>
           </select>
         </div>
@@ -275,6 +278,7 @@ export default async function CreatePage({
             <option value="mastodon">Mastodon</option>
             <option value="tumblr">Tumblr</option>
             <option value="twitch">Twitch</option>
+            <option value="discord">Discord</option>
             <option value="x">X</option>
           </select>
           <input
@@ -334,6 +338,7 @@ export default async function CreatePage({
                       "mastodon",
                       "tumblr",
                       "twitch",
+                      "discord",
                       "x",
                     ] as const
                   )

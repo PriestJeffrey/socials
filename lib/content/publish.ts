@@ -12,6 +12,7 @@ import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
+import { getDiscordConfig } from "@/lib/platforms/discord/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -26,6 +27,7 @@ const PUBLISHABLE = new Set([
   "mastodon",
   "tumblr",
   "twitch",
+  "discord",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -80,7 +82,9 @@ export async function runPublishDraft(input: {
                       ? getTumblrConfig().useFixtures
                       : draft.platform === "twitch"
                         ? getTwitchConfig().useFixtures
-                        : getMetaConfig().useFixtures;
+                        : draft.platform === "discord"
+                          ? getDiscordConfig().useFixtures
+                          : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

@@ -11,6 +11,7 @@ export type PlatformId =
   | "mastodon"
   | "tumblr"
   | "twitch"
+  | "discord"
   | "x";
 
 export interface PlatformCapabilities {

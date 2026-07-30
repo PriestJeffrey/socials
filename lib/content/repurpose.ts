@@ -15,6 +15,7 @@ export type RepurposePlatform =
   | "mastodon"
   | "tumblr"
   | "twitch"
+  | "discord"
   | "x";
 
 export function repurposeBody(
@@ -71,6 +72,10 @@ export function repurposeBody(
       return trimmed.length > 500
         ? `${trimmed.slice(0, 480)}…\n\n(On-stream / VO note)`
         : `${trimmed}\n\n(On-stream / VO note)`;
+    case "discord":
+      return trimmed.length > 2000
+        ? `${trimmed.slice(0, 1980)}…\n\nWhat do you think?`
+        : `${trimmed}\n\nWhat do you think?`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

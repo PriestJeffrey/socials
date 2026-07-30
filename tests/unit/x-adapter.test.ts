@@ -17,6 +17,7 @@ describe("phase 4 X honest adapter", () => {
       "mastodon",
       "tumblr",
       "twitch",
+      "discord",
       "x",
     ]);
 

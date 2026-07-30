@@ -25,6 +25,7 @@ import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
+import { getDiscordConfig } from "@/lib/platforms/discord/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -62,6 +63,10 @@ import {
   disconnectTwitchAction,
   syncTwitchAction,
 } from "@/app/actions/twitch";
+import {
+  disconnectDiscordAction,
+  syncDiscordAction,
+} from "@/app/actions/discord";
 
 function PlatformSection({
   title,
@@ -183,7 +188,8 @@ export default async function SettingsPage({
   const mastodonCfg = getMastodonConfig();
   const tumblrCfg = getTumblrConfig();
   const twitchCfg = getTwitchConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch] =
+  const discordCfg = getDiscordConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch, discord] =
     await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
@@ -233,6 +239,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "twitch" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "discord" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -258,7 +268,9 @@ export default async function SettingsPage({
                         ? "Tumblr"
                         : p === "twitch"
                           ? "Twitch"
-                          : "Instagram";
+                          : p === "discord"
+                            ? "Discord"
+                            : "Instagram";
 
   return (
     <main>
@@ -427,6 +439,18 @@ export default async function SettingsPage({
         configHint="Configure TWITCH_CLIENT_ID + SECRET, or TWITCH_USE_FIXTURES=true."
         syncAction={syncTwitchAction}
         disconnectAction={disconnectTwitchAction}
+      />
+
+      <PlatformSection
+        title="Discord"
+        description="Connect Discord for fixture message/reaction metrics (live guild list). Channel history + message create deferred."
+        testIdPrefix="discord"
+        connectHref="/api/oauth/discord/start"
+        connection={discord}
+        configured={discordCfg.configured}
+        configHint="Configure DISCORD_CLIENT_ID + SECRET, or DISCORD_USE_FIXTURES=true."
+        syncAction={syncDiscordAction}
+        disconnectAction={disconnectDiscordAction}
       />
 
       <section
