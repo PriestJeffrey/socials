@@ -207,6 +207,31 @@ export default async function SettingsPage({
         disconnectAction={disconnectLinkedInAction}
       />
 
+      <section
+        className="mt-8 max-w-xl rounded-xl border border-[var(--pb-line)] bg-white/80 p-6"
+        data-testid="x-settings"
+      >
+        <h2 className="font-display text-xl font-semibold text-[var(--pb-ink)]">
+          X
+        </h2>
+        <p className="mt-2 text-sm text-[var(--pb-slate)]">
+          X is manual only — no OAuth, no API tokens, no auto-publish. Compose
+          and copy from the X page, then paste into X yourself.
+        </p>
+        <p className="mt-3 text-xs font-medium uppercase tracking-wide text-[var(--pb-slate)]">
+          Capability: manualCopy · not auto-publish
+        </p>
+        <div className="mt-5">
+          <Link
+            href="/x"
+            data-testid="x-open-compose"
+            className="inline-flex rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
+          >
+            Open X compose
+          </Link>
+        </div>
+      </section>
+
       <ul className="mt-8 space-y-2 text-sm">
         <li>
           <Link

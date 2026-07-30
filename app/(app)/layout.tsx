@@ -7,6 +7,7 @@ const NAV = [
   { href: "/overview", label: "Overview", testId: "nav-overview" },
   { href: "/analytics", label: "Analytics ▾", testId: "nav-analytics" },
   { href: "/create", label: "Create", testId: "nav-create" },
+  { href: "/x", label: "X", testId: "nav-x" },
   { href: "/calendar", label: "Calendar", testId: "nav-calendar" },
   { href: "/competitors", label: "Competitors", testId: "nav-competitors" },
   { href: "/approvals", label: "Approvals", testId: "nav-approvals" },

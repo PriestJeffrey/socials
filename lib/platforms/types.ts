@@ -1,15 +1,19 @@
 export type PlatformId = "instagram" | "facebook" | "linkedin" | "x";
 
+export interface PlatformCapabilities {
+  oauth: boolean;
+  readMetrics: boolean;
+  readPosts: boolean;
+  publish: boolean;
+  schedule: boolean;
+  comments: boolean;
+  /** Phase 4: compose locally and copy — no network publish */
+  manualCopy: boolean;
+}
+
 export interface PlatformAdapter {
   id: PlatformId;
-  capabilities: {
-    oauth: boolean;
-    readMetrics: boolean;
-    readPosts: boolean;
-    publish: boolean;
-    schedule: boolean;
-    comments: boolean;
-  };
+  capabilities: PlatformCapabilities;
   beginOAuth(userId: string): Promise<string>;
   handleOAuthCallback(
     userId: string,
@@ -24,5 +28,3 @@ export interface PlatformAdapter {
   ): Promise<unknown>;
   publish(connectionId: string, payload: unknown): Promise<unknown>;
 }
-
-/** Prefer importing adapters from `@/lib/platforms` (index registers stubs). */

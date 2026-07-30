@@ -5,7 +5,7 @@ import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
 
 export type HealthSubsystem = {
-  id: "auth" | "database" | "instagram" | "facebook" | "linkedin";
+  id: "auth" | "database" | "instagram" | "facebook" | "linkedin" | "x";
   label: string;
   status: HealthStatus;
   detail?: string;
@@ -13,7 +13,7 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 3;
+  phase: 4;
   subsystems: HealthSubsystem[];
 };
 
@@ -104,7 +104,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
   );
 
   return {
-    phase: 3,
+    phase: 4,
     subsystems: [
       {
         id: "auth",
@@ -123,6 +123,13 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "instagram", label: "Instagram", ...ig },
       { id: "facebook", label: "Facebook", ...fb },
       { id: "linkedin", label: "LinkedIn", ...li },
+      {
+        id: "x",
+        label: "X",
+        status: "ok",
+        detail: "Manual compose + copy only — no API / not auto-publish",
+        checkedAt,
+      },
     ],
   };
 }

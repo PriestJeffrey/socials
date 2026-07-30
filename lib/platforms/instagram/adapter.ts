@@ -34,6 +34,7 @@ export const instagramAdapter: PlatformAdapter = {
     publish: false,
     schedule: false,
     comments: false,
+    manualCopy: false,
   },
 
   async beginOAuth(userId: string): Promise<string> {
