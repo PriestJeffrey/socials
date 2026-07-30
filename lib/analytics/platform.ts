@@ -20,6 +20,7 @@ export const ANALYTICS_PLATFORMS = [
   "bluesky",
   "reddit",
   "mastodon",
+  "tumblr",
   "x",
 ] as const;
 
@@ -186,6 +187,17 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "reblogs", label: "Reblogs", highlight: true, format: "number" },
       { key: "favourites", label: "Favourites", highlight: true, format: "number" },
       { key: "engagement_rate", label: "Engagement (replies+reblogs)", format: "pct" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+      { key: "posts_7d", label: "Posts (7d)", format: "number" },
+    ],
+  },
+  tumblr: {
+    label: "Tumblr",
+    focus: "Notes and average notes — reblogs/replies over vanity impressions.",
+    keys: [
+      { key: "notes", label: "Notes", highlight: true, format: "number" },
+      { key: "avg_notes", label: "Avg notes", highlight: true, format: "number" },
+      { key: "engagement_rate", label: "Engagement (notes)", highlight: true, format: "pct" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
       { key: "posts_7d", label: "Posts (7d)", format: "number" },
     ],

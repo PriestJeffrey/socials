@@ -13,6 +13,7 @@ export type RepurposePlatform =
   | "bluesky"
   | "reddit"
   | "mastodon"
+  | "tumblr"
   | "x";
 
 export function repurposeBody(
@@ -62,6 +63,10 @@ export function repurposeBody(
       return trimmed.length > 500
         ? `${trimmed.slice(0, 480)}…\n\nWhat do you think?`
         : `${trimmed}\n\nWhat do you think?`;
+    case "tumblr":
+      return trimmed.length > 1000
+        ? `${trimmed.slice(0, 980)}…\n\n#pulseboard`
+        : `${trimmed}\n\n#pulseboard`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

@@ -24,6 +24,7 @@ export default async function OverviewPage() {
           "bluesky",
           "reddit",
           "mastodon",
+          "tumblr",
         ],
       },
       status: { in: ["connected", "error"] },

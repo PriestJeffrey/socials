@@ -65,9 +65,9 @@ describe.runIf(hasDb)("phase 14 Bluesky", () => {
     );
   });
 
-  it("health reports bluesky + phase 16", async () => {
+  it("health reports bluesky + phase 17", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBe(16);
+    expect(report.phase).toBe(17);
     expect(report.subsystems.find((s) => s.id === "bluesky")?.status).toBe(
       "ok",
     );

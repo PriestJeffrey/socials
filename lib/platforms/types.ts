@@ -9,6 +9,7 @@ export type PlatformId =
   | "bluesky"
   | "reddit"
   | "mastodon"
+  | "tumblr"
   | "x";
 
 export interface PlatformCapabilities {

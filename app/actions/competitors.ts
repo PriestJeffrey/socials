@@ -16,6 +16,7 @@ const PLATFORMS = new Set([
   "bluesky",
   "reddit",
   "mastodon",
+  "tumblr",
   "x",
   "generic",
 ]);

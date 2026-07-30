@@ -9,6 +9,7 @@ import { runPinterestSync } from "@/lib/platforms/pinterest/sync";
 import { runBlueskySync } from "@/lib/platforms/bluesky/sync";
 import { runRedditSync } from "@/lib/platforms/reddit/sync";
 import { runMastodonSync } from "@/lib/platforms/mastodon/sync";
+import { runTumblrSync } from "@/lib/platforms/tumblr/sync";
 import { runPublishDraft } from "@/lib/content/publish";
 import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
@@ -64,6 +65,10 @@ export async function processPendingJobs(
         const connectionId = String(job.payload.connectionId ?? "");
         if (!connectionId) throw new Error("Missing connectionId");
         await runMastodonSync({ userId: job.userId, connectionId });
+      } else if (job.type === "sync" && job.payload.platform === "tumblr") {
+        const connectionId = String(job.payload.connectionId ?? "");
+        if (!connectionId) throw new Error("Missing connectionId");
+        await runTumblrSync({ userId: job.userId, connectionId });
       } else if (job.type === "publish") {
         const draftId = String(job.payload.draftId ?? "");
         if (!draftId) throw new Error("Missing draftId");

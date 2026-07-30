@@ -2,8 +2,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createOAuthState } from "@/lib/platforms/oauth-state";
-import { redditAdapter } from "@/lib/platforms/reddit/adapter";
-import { runRedditSync } from "@/lib/platforms/reddit/sync";
+import { tumblrAdapter } from "@/lib/platforms/tumblr/adapter";
+import { runTumblrSync } from "@/lib/platforms/tumblr/sync";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { readPlatformAnalytics } from "@/lib/analytics/platform";
 import { getHealthReport } from "@/lib/health/types";
@@ -11,14 +11,14 @@ import { listAdapters, oauthPlatforms } from "@/lib/platforms";
 
 const hasDb = Boolean(process.env.DATABASE_URL);
 
-describe.runIf(hasDb)("phase 17 Reddit", () => {
+describe.runIf(hasDb)("phase 17 Tumblr", () => {
   const suffix = Date.now();
-  const email = `p15-${suffix}@example.com`;
+  const email = `p17-${suffix}@example.com`;
   let userId = "";
   let connectionId = "";
 
   beforeAll(async () => {
-    process.env.REDDIT_USE_FIXTURES = "true";
+    process.env.TUMBLR_USE_FIXTURES = "true";
     process.env.SESSION_SECRET =
       process.env.SESSION_SECRET ?? "test-session-secret-min-32-characters-long";
     process.env.TOKEN_ENCRYPTION_KEY =
@@ -31,12 +31,12 @@ describe.runIf(hasDb)("phase 17 Reddit", () => {
     ).id;
 
     connectionId = (
-      await redditAdapter.handleOAuthCallback(userId, {
-        code: "fixture_reddit_code",
+      await tumblrAdapter.handleOAuthCallback(userId, {
+        code: "fixture_tumblr_code",
         state: createOAuthState(userId).state,
       })
     ).connectionId;
-    await runRedditSync({ userId, connectionId });
+    await runTumblrSync({ userId, connectionId });
   });
 
   afterAll(async () => {
@@ -44,42 +44,42 @@ describe.runIf(hasDb)("phase 17 Reddit", () => {
     await prisma.$disconnect();
   });
 
-  it("registers Reddit in adapters and oauth platforms", () => {
-    expect(listAdapters().map((a) => a.id)).toContain("reddit");
-    expect(oauthPlatforms().some((a) => a.id === "reddit")).toBe(true);
+  it("registers Tumblr in adapters and oauth platforms", () => {
+    expect(listAdapters().map((a) => a.id)).toContain("tumblr");
+    expect(oauthPlatforms().some((a) => a.id === "tumblr")).toBe(true);
   });
 
-  it("fixture sync fills Overview Reddit cards", async () => {
+  it("fixture sync fills Overview Tumblr cards", async () => {
     const board = await readOverview(userId);
     expect(board.empty).toBe(false);
     expect(
-      board.wins.concat(board.issues).some((c) => c.platform === "reddit"),
+      board.wins.concat(board.issues).some((c) => c.platform === "tumblr"),
     ).toBe(true);
   });
 
-  it("analytics surfaces Reddit focus metrics", async () => {
-    const analytics = await readPlatformAnalytics(userId, "reddit");
+  it("analytics surfaces Tumblr focus metrics", async () => {
+    const analytics = await readPlatformAnalytics(userId, "tumblr");
     expect(analytics.empty).toBe(false);
-    expect(analytics.metrics.some((m) => m.key === "comments")).toBe(true);
-    expect(analytics.metrics.some((m) => m.key === "upvote_ratio")).toBe(true);
+    expect(analytics.metrics.some((m) => m.key === "notes")).toBe(true);
+    expect(analytics.metrics.some((m) => m.key === "avg_notes")).toBe(true);
     expect(analytics.metrics.some((m) => m.key === "engagement_rate")).toBe(
       true,
     );
   });
 
-  it("health reports reddit + phase 17", async () => {
+  it("health reports tumblr + phase 17", async () => {
     const report = await getHealthReport(userId);
     expect(report.phase).toBe(17);
-    expect(report.subsystems.find((s) => s.id === "reddit")?.status).toBe(
+    expect(report.subsystems.find((s) => s.id === "tumblr")?.status).toBe(
       "ok",
     );
   });
 
-  it("disconnect clears Reddit snapshots", async () => {
-    await redditAdapter.disconnect(userId, connectionId);
+  it("disconnect clears Tumblr snapshots", async () => {
+    await tumblrAdapter.disconnect(userId, connectionId);
     expect(
       await prisma.metricSnapshot.count({
-        where: { userId, platform: "reddit" },
+        where: { userId, platform: "tumblr" },
       }),
     ).toBe(0);
   });

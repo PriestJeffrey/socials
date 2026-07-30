@@ -10,6 +10,7 @@ import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
+import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -22,6 +23,7 @@ const PUBLISHABLE = new Set([
   "bluesky",
   "reddit",
   "mastodon",
+  "tumblr",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -72,7 +74,9 @@ export async function runPublishDraft(input: {
                   ? getRedditConfig().useFixtures
                   : draft.platform === "mastodon"
                     ? getMastodonConfig().useFixtures
-                    : getMetaConfig().useFixtures;
+                    : draft.platform === "tumblr"
+                      ? getTumblrConfig().useFixtures
+                      : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

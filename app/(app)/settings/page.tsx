@@ -23,6 +23,7 @@ import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
 import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
 import { getRedditConfig } from "@/lib/platforms/reddit/config";
 import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
+import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -52,6 +53,10 @@ import {
   disconnectMastodonAction,
   syncMastodonAction,
 } from "@/app/actions/mastodon";
+import {
+  disconnectTumblrAction,
+  syncTumblrAction,
+} from "@/app/actions/tumblr";
 
 function PlatformSection({
   title,
@@ -171,7 +176,9 @@ export default async function SettingsPage({
   const bskyCfg = getBlueskyConfig();
   const redditCfg = getRedditConfig();
   const mastodonCfg = getMastodonConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon] = await Promise.all([
+  const tumblrCfg = getTumblrConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr] =
+    await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -212,6 +219,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "mastodon" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "tumblr" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -233,7 +244,9 @@ export default async function SettingsPage({
                     ? "Reddit"
                     : p === "mastodon"
                       ? "Mastodon"
-                      : "Instagram";
+                      : p === "tumblr"
+                        ? "Tumblr"
+                        : "Instagram";
 
   return (
     <main>
@@ -378,6 +391,18 @@ export default async function SettingsPage({
         configHint="Configure MASTODON_CLIENT_ID + SECRET, or MASTODON_USE_FIXTURES=true."
         syncAction={syncMastodonAction}
         disconnectAction={disconnectMastodonAction}
+      />
+
+      <PlatformSection
+        title="Tumblr"
+        description="Connect Tumblr for primary blog posts + notes snapshots. Live NPF create deferred — fixtures for local UAT."
+        testIdPrefix="tumblr"
+        connectHref="/api/oauth/tumblr/start"
+        connection={tumblr}
+        configured={tumblrCfg.configured}
+        configHint="Configure TUMBLR_CLIENT_ID + SECRET, or TUMBLR_USE_FIXTURES=true."
+        syncAction={syncTumblrAction}
+        disconnectAction={disconnectTumblrAction}
       />
 
       <section

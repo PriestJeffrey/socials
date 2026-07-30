@@ -9,12 +9,13 @@ import { pinterestAdapter } from "./pinterest/adapter";
 import { blueskyAdapter } from "./bluesky/adapter";
 import { redditAdapter } from "./reddit/adapter";
 import { mastodonAdapter } from "./mastodon/adapter";
+import { tumblrAdapter } from "./tumblr/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 16: + Mastodon. */
+/** Registered adapters. Phase 17: + Tumblr. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
@@ -26,6 +27,7 @@ export const adapters: PlatformAdapter[] = [
   blueskyAdapter,
   redditAdapter,
   mastodonAdapter,
+  tumblrAdapter,
   xAdapter,
 ];
 

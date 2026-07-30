@@ -59,7 +59,7 @@ describe.runIf(hasDb)("phase 10 TikTok", () => {
 
   it("Health includes TikTok ok at phase 10", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBe(16);
+    expect(report.phase).toBe(17);
     expect(report.subsystems.find((s) => s.id === "tiktok")?.status).toBe(
       "ok",
     );
