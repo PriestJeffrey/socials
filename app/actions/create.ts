@@ -24,6 +24,7 @@ const PLATFORMS = new Set([
   "tumblr",
   "twitch",
   "discord",
+  "slack",
   "x",
 ]);
 

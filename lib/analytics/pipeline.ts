@@ -23,7 +23,8 @@ export type OverviewCard = {
     | "mastodon"
     | "tumblr"
     | "twitch"
-    | "discord";
+    | "discord"
+    | "slack";
   metricKey?: string;
   value?: number;
   why?: string;
@@ -818,6 +819,57 @@ function pushDiscordCards(
   }
 }
 
+function pushSlackCards(
+  byKey: Map<string, Snap>,
+  wins: OverviewCard[],
+  issues: OverviewCard[],
+) {
+  const eng = byKey.get("engagement_rate");
+  if (eng && eng.value >= 0.28) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Slack: replies/reactions look strong — conversation over vanity",
+      platform: "slack",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  } else if (eng && eng.value > 0 && eng.value < 0.1) {
+    issues.push({
+      kind: "issue",
+      title: "Broken",
+      body: "Slack: engagement is soft — ask one clear question in the first line",
+      platform: "slack",
+      metricKey: eng.metricKey,
+      value: eng.value,
+    });
+  }
+
+  const replies = byKey.get("replies");
+  if (replies && replies.value >= 10) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Slack: thread replies are flowing",
+      platform: "slack",
+      metricKey: replies.metricKey,
+      value: replies.value,
+    });
+  }
+
+  const channels = byKey.get("channels");
+  if (channels && channels.value >= 3) {
+    wins.push({
+      kind: "win",
+      title: "Working",
+      body: "Slack: present across multiple channels",
+      platform: "slack",
+      metricKey: channels.metricKey,
+      value: channels.value,
+    });
+  }
+}
+
 export async function readOverview(userId: string): Promise<OverviewBoard> {
   const cacheKey = `overview:v1:${userId}`;
   const cached = await cacheStore.get(cacheKey);
@@ -847,6 +899,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "tumblr",
           "twitch",
           "discord",
+          "slack",
         ],
       },
     },
@@ -867,6 +920,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   const tumblrByKey = new Map<string, (typeof latest)[0]>();
   const twitchByKey = new Map<string, (typeof latest)[0]>();
   const discordByKey = new Map<string, (typeof latest)[0]>();
+  const slackByKey = new Map<string, (typeof latest)[0]>();
   for (const row of latest) {
     const map =
       row.platform === "facebook"
@@ -893,6 +947,8 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
                             ? twitchByKey
                             : row.platform === "discord"
                               ? discordByKey
+                              : row.platform === "slack"
+                                ? slackByKey
                               : igByKey;
     if (!map.has(row.metricKey)) map.set(row.metricKey, row);
   }
@@ -912,6 +968,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
   pushTumblrCards(tumblrByKey, wins, issues);
   pushTwitchCards(twitchByKey, wins, issues);
   pushDiscordCards(discordByKey, wins, issues);
+  pushSlackCards(slackByKey, wins, issues);
 
   const conn = await prisma.socialConnection.findFirst({
     where: {
@@ -931,6 +988,7 @@ export async function readOverview(userId: string): Promise<OverviewBoard> {
           "tumblr",
           "twitch",
           "discord",
+          "slack",
         ],
       },
       status: { in: ["connected", "error"] },

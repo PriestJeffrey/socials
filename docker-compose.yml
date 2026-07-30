@@ -37,6 +37,7 @@ services:
       TUMBLR_USE_FIXTURES: "true"
       TWITCH_USE_FIXTURES: "true"
       DISCORD_USE_FIXTURES: "true"
+      SLACK_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
       CRON_SECRET: ${CRON_SECRET:?Set CRON_SECRET in .env — no weak default}
       NODE_ENV: production

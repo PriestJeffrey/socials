@@ -12,6 +12,7 @@ export type PlatformId =
   | "tumblr"
   | "twitch"
   | "discord"
+  | "slack"
   | "x";
 
 export interface PlatformCapabilities {

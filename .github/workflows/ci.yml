@@ -65,6 +65,7 @@ jobs:
       TUMBLR_USE_FIXTURES: "true"
       TWITCH_USE_FIXTURES: "true"
       DISCORD_USE_FIXTURES: "true"
+      SLACK_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
     steps:
       - uses: actions/checkout@v4

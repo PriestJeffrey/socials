@@ -16,6 +16,7 @@ export type RepurposePlatform =
   | "tumblr"
   | "twitch"
   | "discord"
+  | "slack"
   | "x";
 
 export function repurposeBody(
@@ -76,6 +77,10 @@ export function repurposeBody(
       return trimmed.length > 2000
         ? `${trimmed.slice(0, 1980)}…\n\nWhat do you think?`
         : `${trimmed}\n\nWhat do you think?`;
+    case "slack":
+      return trimmed.length > 3000
+        ? `${trimmed.slice(0, 2980)}…\n\nThoughts?`
+        : `${trimmed}\n\nThoughts?`;
     case "x":
       return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:

@@ -26,6 +26,7 @@ import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 import { getDiscordConfig } from "@/lib/platforms/discord/config";
+import { getSlackConfig } from "@/lib/platforms/slack/config";
 import { deleteAccountAction } from "@/app/actions/account";
 import {
   disconnectThreadsAction,
@@ -67,6 +68,10 @@ import {
   disconnectDiscordAction,
   syncDiscordAction,
 } from "@/app/actions/discord";
+import {
+  disconnectSlackAction,
+  syncSlackAction,
+} from "@/app/actions/slack";
 
 function PlatformSection({
   title,
@@ -189,7 +194,8 @@ export default async function SettingsPage({
   const tumblrCfg = getTumblrConfig();
   const twitchCfg = getTwitchConfig();
   const discordCfg = getDiscordConfig();
-  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch, discord] =
+  const slackCfg = getSlackConfig();
+  const [ig, fb, li, th, tt, yt, pin, bsky, reddit, mastodon, tumblr, twitch, discord, slack] =
     await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
@@ -243,6 +249,10 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "discord" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "slack" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const label = (p: string | null) =>
@@ -270,6 +280,8 @@ export default async function SettingsPage({
                           ? "Twitch"
                           : p === "discord"
                             ? "Discord"
+                            : p === "slack"
+                              ? "Slack"
                             : "Instagram";
 
   return (
@@ -451,6 +463,18 @@ export default async function SettingsPage({
         configHint="Configure DISCORD_CLIENT_ID + SECRET, or DISCORD_USE_FIXTURES=true."
         syncAction={syncDiscordAction}
         disconnectAction={disconnectDiscordAction}
+      />
+
+      <PlatformSection
+        title="Slack"
+        description="Connect Slack for fixture message/reaction metrics (live channel list). conversations.history + chat.postMessage deferred."
+        testIdPrefix="slack"
+        connectHref="/api/oauth/slack/start"
+        connection={slack}
+        configured={slackCfg.configured}
+        configHint="Configure SLACK_CLIENT_ID + SECRET, or SLACK_USE_FIXTURES=true."
+        syncAction={syncSlackAction}
+        disconnectAction={disconnectSlackAction}
       />
 
       <section

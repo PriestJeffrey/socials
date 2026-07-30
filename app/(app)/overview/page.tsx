@@ -27,6 +27,7 @@ export default async function OverviewPage() {
           "tumblr",
           "twitch",
           "discord",
+          "slack",
         ],
       },
       status: { in: ["connected", "error"] },

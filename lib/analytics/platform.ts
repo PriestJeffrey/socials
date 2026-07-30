@@ -23,6 +23,7 @@ export const ANALYTICS_PLATFORMS = [
   "tumblr",
   "twitch",
   "discord",
+  "slack",
   "x",
 ] as const;
 
@@ -224,6 +225,18 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
       { key: "engagement_rate", label: "Engagement", highlight: true, format: "pct" },
       { key: "messages", label: "Messages", format: "number" },
       { key: "guilds", label: "Servers", format: "number" },
+      { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
+    ],
+  },
+  slack: {
+    label: "Slack",
+    focus: "Thread replies and reactions — channel conversation over vanity.",
+    keys: [
+      { key: "replies", label: "Replies", highlight: true, format: "number" },
+      { key: "reactions", label: "Reactions", highlight: true, format: "number" },
+      { key: "engagement_rate", label: "Engagement", highlight: true, format: "pct" },
+      { key: "messages", label: "Messages", format: "number" },
+      { key: "channels", label: "Channels", format: "number" },
       { key: "followers_delta_7d", label: "Followers Δ 7d", format: "delta" },
     ],
   },

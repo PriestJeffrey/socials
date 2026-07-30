@@ -65,9 +65,9 @@ describe.runIf(hasDb)("phase 12 YouTube", () => {
     );
   });
 
-  it("health reports youtube + phase 19", async () => {
+  it("health reports youtube + phase 20", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBe(19);
+    expect(report.phase).toBe(20);
     expect(report.subsystems.find((s) => s.id === "youtube")?.status).toBe(
       "ok",
     );

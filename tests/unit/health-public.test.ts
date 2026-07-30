@@ -5,7 +5,7 @@ import { getPublicLiveness } from "@/lib/health/types";
 describe("health public surface", () => {
   it("public liveness has no fixture/config strings", async () => {
     const live = await getPublicLiveness();
-    expect(live).toMatchObject({ phase: 19 });
+    expect(live).toMatchObject({ phase: 20 });
     expect(live).toHaveProperty("ok");
     expect(live).toHaveProperty("status");
     expect(JSON.stringify(live)).not.toMatch(/FIXTURE|SECRET|GEMINI|META_/i);
@@ -15,7 +15,7 @@ describe("health public surface", () => {
     const res = await GET();
     expect(res.status).toBe(200);
     const body = (await res.json()) as Record<string, unknown>;
-    expect(body.phase).toBe(19);
+    expect(body.phase).toBe(20);
     expect(body).not.toHaveProperty("subsystems");
     expect(JSON.stringify(body)).not.toMatch(/Fixture mode|APP_SECRET|CLIENT_SECRET/i);
   });

@@ -13,6 +13,7 @@ import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
 import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
 import { getTwitchConfig } from "@/lib/platforms/twitch/config";
 import { getDiscordConfig } from "@/lib/platforms/discord/config";
+import { getSlackConfig } from "@/lib/platforms/slack/config";
 
 const PUBLISHABLE = new Set([
   "instagram",
@@ -28,6 +29,7 @@ const PUBLISHABLE = new Set([
   "tumblr",
   "twitch",
   "discord",
+  "slack",
 ]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
@@ -84,6 +86,8 @@ export async function runPublishDraft(input: {
                         ? getTwitchConfig().useFixtures
                         : draft.platform === "discord"
                           ? getDiscordConfig().useFixtures
+                          : draft.platform === "slack"
+                            ? getSlackConfig().useFixtures
                           : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
