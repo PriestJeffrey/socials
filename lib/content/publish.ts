@@ -5,6 +5,7 @@ import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 
 const PUBLISHABLE = new Set(["instagram", "facebook", "linkedin"]);
+const CLAIMABLE = ["draft", "scheduled", "failed"] as const;
 
 export async function runPublishDraft(input: {
   userId: string;
@@ -41,62 +42,107 @@ export async function runPublishDraft(input: {
       ? getLinkedInConfig().useFixtures
       : getMetaConfig().useFixtures;
 
-  // Live Graph publish deferred — fixtures (or empty live) persist a local Post row for S3 path
-  if (!useFixtures && !connection.accessTokenEnc) {
+  if (!useFixtures) {
+    throw new Error(
+      "Live Graph/LinkedIn publish is not implemented — enable platform fixtures for local publish, or wait for live API wiring",
+    );
+  }
+  if (!connection.accessTokenEnc) {
     throw new Error("Missing token — reconnect platform");
   }
 
-  const platformPostId = useFixtures
-    ? `fixture_pub_${draft.id}`
-    : `local_pub_${draft.id}`;
-
-  const post = await prisma.post.upsert({
+  const claimed = await prisma.draft.updateMany({
     where: {
-      connectionId_platformPostId: {
+      id: draft.id,
+      userId: input.userId,
+      status: { in: [...CLAIMABLE] },
+    },
+    data: { status: "publishing", connectionId: connection.id },
+  });
+  if (claimed.count !== 1) {
+    const again = await prisma.draft.findFirst({
+      where: { id: draft.id, userId: input.userId },
+    });
+    if (again?.status === "published" && again.publishedPostId) {
+      return { postId: again.publishedPostId };
+    }
+    throw new Error("Draft is not in a publishable state");
+  }
+
+  const platformPostId = `fixture_pub_${draft.id}`;
+
+  try {
+    const post = await prisma.post.upsert({
+      where: {
+        connectionId_platformPostId: {
+          connectionId: connection.id,
+          platformPostId,
+        },
+      },
+      create: {
+        userId: input.userId,
         connectionId: connection.id,
         platformPostId,
+        kind: "STATUS",
+        caption: draft.body.slice(0, 2000),
+        permalink: `https://example.local/${draft.platform}/${draft.id}`,
+        publishedAt: clock.now(),
+        raw: {
+          draftId: draft.id,
+          goalTag: draft.goalTag,
+          fixture: true,
+        },
       },
-    },
-    create: {
+      update: {
+        caption: draft.body.slice(0, 2000),
+        publishedAt: clock.now(),
+      },
+    });
+
+    const finalized = await prisma.draft.updateMany({
+      where: {
+        id: draft.id,
+        userId: input.userId,
+        status: "publishing",
+      },
+      data: {
+        status: "published",
+        publishedPostId: post.id,
+        connectionId: connection.id,
+        scheduledAt: null,
+      },
+    });
+    if (finalized.count !== 1) {
+      const again = await prisma.draft.findFirst({
+        where: { id: draft.id, userId: input.userId },
+      });
+      if (again?.status === "published" && again.publishedPostId) {
+        return { postId: again.publishedPostId };
+      }
+      throw new Error("Failed to finalize draft publish");
+    }
+
+    await writeAudit({
       userId: input.userId,
-      connectionId: connection.id,
-      platformPostId,
-      kind: "STATUS",
-      caption: draft.body.slice(0, 2000),
-      permalink: useFixtures ? `https://example.local/${draft.platform}/${draft.id}` : null,
-      publishedAt: clock.now(),
-      raw: {
+      action: "content.published",
+      metadata: {
         draftId: draft.id,
-        goalTag: draft.goalTag,
-        fixture: useFixtures,
+        platform: draft.platform,
+        postId: post.id,
+        fixture: true,
       },
-    },
-    update: {
-      caption: draft.body.slice(0, 2000),
-      publishedAt: clock.now(),
-    },
-  });
+    });
 
-  await prisma.draft.update({
-    where: { id: draft.id },
-    data: {
-      status: "published",
-      publishedPostId: post.id,
-      connectionId: connection.id,
-      scheduledAt: null,
-    },
-  });
-
-  await writeAudit({
-    userId: input.userId,
-    action: "content.published",
-    metadata: {
-      draftId: draft.id,
-      platform: draft.platform,
-      postId: post.id,
-      fixture: useFixtures,
-    },
-  });
-
-  return { postId: post.id };
+    return { postId: post.id };
+  } catch (err) {
+    await prisma.draft.updateMany({
+      where: {
+        id: draft.id,
+        userId: input.userId,
+        status: "publishing",
+      },
+      data: { status: "failed" },
+    });
+    throw err;
+  }
 }

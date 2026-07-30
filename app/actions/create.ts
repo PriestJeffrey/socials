@@ -59,7 +59,7 @@ export async function createDraftAction(formData: FormData) {
       payload: { draftId: draft.id },
       idempotencyKey: `publish:${draft.id}`,
     });
-    await processPendingJobs(5);
+    await processPendingJobs(5, user.id);
     revalidatePath("/calendar");
     redirect(`/create?published=${draft.id}`);
   }
@@ -149,7 +149,7 @@ export async function publishExistingDraftAction(formData: FormData) {
     payload: { draftId: draft.id },
     idempotencyKey: `publish:${draft.id}:manual:${clock.now().toISOString()}`,
   });
-  await processPendingJobs(5);
+  await processPendingJobs(5, user.id);
   revalidatePath("/calendar");
   redirect(`/calendar?published=${draft.id}`);
 }

@@ -21,8 +21,8 @@ describe("phase 4 X honest adapter", () => {
     const x = getAdapter("x")!;
     await expect(x.beginOAuth("u1")).rejects.toThrow(/no OAuth/i);
     await expect(x.publish("c1", {})).rejects.toThrow(/not available|copy/i);
-    await expect(x.fetchMetrics("c1", { from: new Date(), to: new Date() })).rejects.toThrow(
-      /not connected|unavailable/i,
-    );
+    await expect(
+      x.fetchMetrics("u1", "c1", { from: new Date(), to: new Date() }),
+    ).rejects.toThrow(/not connected|unavailable/i);
   });
 });

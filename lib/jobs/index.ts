@@ -13,7 +13,7 @@ export interface JobRecord {
 }
 
 export interface JobRunner {
-  claim(limit: number): Promise<JobRecord[]>;
+  claim(limit: number, userId?: string): Promise<JobRecord[]>;
   markDone(id: string): Promise<void>;
   markFailed(id: string, error: string): Promise<void>;
 }
@@ -32,7 +32,7 @@ export class NoopJobQueue implements JobQueue {
 }
 
 export class NoopJobRunner implements JobRunner {
-  async claim(_limit: number): Promise<JobRecord[]> {
+  async claim(_limit: number, _userId?: string): Promise<JobRecord[]> {
     return [];
   }
   async markDone(_id: string): Promise<void> {}
@@ -86,10 +86,14 @@ export class DbJobQueue implements JobQueue {
 }
 
 export class DbJobRunner implements JobRunner {
-  async claim(limit: number): Promise<JobRecord[]> {
+  async claim(limit: number, userId?: string): Promise<JobRecord[]> {
     const now = clock.now();
     const pending = await prisma.job.findMany({
-      where: { status: "pending", runAfter: { lte: now } },
+      where: {
+        status: "pending",
+        runAfter: { lte: now },
+        ...(userId ? { userId } : {}),
+      },
       orderBy: { runAfter: "asc" },
       take: limit,
     });

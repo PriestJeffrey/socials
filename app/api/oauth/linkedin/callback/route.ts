@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const li = getAdapter("linkedin");
     if (!li) throw new Error("LinkedIn adapter missing");
     await li.handleOAuthCallback(user.id, query);
-    await processPendingJobs(3);
+    await processPendingJobs(3, user.id);
     return NextResponse.redirect(new URL("/settings?connected=linkedin", appUrl));
   } catch (err) {
     const message = err instanceof Error ? err.message : "OAuth failed";

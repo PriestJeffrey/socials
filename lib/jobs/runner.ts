@@ -6,10 +6,13 @@ import { runPublishDraft } from "@/lib/content/publish";
 import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
 
-/** Claim pending jobs and run handlers. Safe to call from route or after connect. */
-export async function processPendingJobs(limit = 5): Promise<number> {
+/** Claim pending jobs and run handlers. Pass userId to scope to one tenant. */
+export async function processPendingJobs(
+  limit = 5,
+  userId?: string,
+): Promise<number> {
   const requestId = createRequestId();
-  const claimed = await jobRunner.claim(limit);
+  const claimed = await jobRunner.claim(limit, userId);
   let done = 0;
 
   for (const job of claimed) {
@@ -40,7 +43,11 @@ export async function processPendingJobs(limit = 5): Promise<number> {
       await jobRunner.markFailed(job.id, message);
       if (job.type === "publish" && job.payload.draftId) {
         await prisma.draft.updateMany({
-          where: { id: String(job.payload.draftId), userId: job.userId },
+          where: {
+            id: String(job.payload.draftId),
+            userId: job.userId,
+            status: { in: ["draft", "scheduled", "publishing", "failed"] },
+          },
           data: { status: "failed" },
         });
       }

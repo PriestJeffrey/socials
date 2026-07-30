@@ -1,7 +1,8 @@
 # Pulseboard — Phase 4 exit (draft)
 
 **Status:** Implementation complete — awaiting Human messaging UAT.  
-**Date:** 2026-07-30
+**Date:** 2026-07-30  
+**Note:** `/x` added to middleware PROTECTED (gstack remediation).
 
 ## Delivered
 
@@ -16,4 +17,4 @@
 1. Open **X** in nav → see “Not auto-publish”
 2. Type draft → Copy → paste elsewhere works
 3. Settings has no X Connect button
-4. Reply when ready to sign Phase 4 / continue to Phase 5
+4. Reply when ready to sign Phase 4 / continue

@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     const ig = getAdapter("instagram");
     if (!ig) throw new Error("Instagram adapter missing");
     await ig.handleOAuthCallback(user.id, query);
-    await processPendingJobs(3);
+    await processPendingJobs(3, user.id);
     return NextResponse.redirect(new URL("/settings?connected=instagram", appUrl));
   } catch (err) {
     const message = err instanceof Error ? err.message : "OAuth failed";

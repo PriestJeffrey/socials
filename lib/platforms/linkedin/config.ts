@@ -12,9 +12,7 @@ export function getLinkedInConfig(): LinkedInConfig {
   const redirectUri =
     process.env.LINKEDIN_REDIRECT_URI?.trim() ||
     `${process.env.APP_URL ?? "http://localhost:3000"}/api/oauth/linkedin/callback`;
-  const useFixtures =
-    process.env.LINKEDIN_USE_FIXTURES === "true" ||
-    process.env.META_USE_FIXTURES === "true";
+  const useFixtures = process.env.LINKEDIN_USE_FIXTURES === "true";
   return {
     clientId,
     clientSecret,

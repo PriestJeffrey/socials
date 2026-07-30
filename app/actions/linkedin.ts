@@ -18,7 +18,7 @@ export async function disconnectLinkedInAction(formData: FormData) {
   });
   if (!conn) redirect("/settings");
 
-  await getAdapter("linkedin")?.disconnect(conn.id);
+  await getAdapter("linkedin")?.disconnect(user.id, conn.id);
   redirect("/settings?disconnected=linkedin");
 }
 
@@ -43,6 +43,6 @@ export async function syncLinkedInAction(formData: FormData) {
     payload: { platform: "linkedin", connectionId: conn.id },
     idempotencyKey: `sync:linkedin:${conn.id}:${clock.now().toISOString()}`,
   });
-  await processPendingJobs(3);
+  await processPendingJobs(3, user.id);
   redirect("/overview");
 }

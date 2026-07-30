@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     const fb = getAdapter("facebook");
     if (!fb) throw new Error("Facebook adapter missing");
     await fb.handleOAuthCallback(user.id, query);
-    await processPendingJobs(3);
+    await processPendingJobs(3, user.id);
     return NextResponse.redirect(new URL("/settings?connected=facebook", appUrl));
   } catch (err) {
     const message = err instanceof Error ? err.message : "OAuth failed";

@@ -121,13 +121,13 @@ export const linkedinAdapter: PlatformAdapter = {
     return { connectionId: connection.id };
   },
 
-  async refreshToken(_connectionId: string): Promise<void> {
+  async refreshToken(_userId: string, _connectionId: string): Promise<void> {
     throw new Error("LinkedIn refresh not implemented in Phase 3 — reconnect");
   },
 
-  async disconnect(connectionId: string): Promise<void> {
+  async disconnect(userId: string, connectionId: string): Promise<void> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "linkedin" },
+      where: { id: connectionId, userId, platform: "linkedin" },
     });
     if (!conn) return;
 
@@ -147,18 +147,23 @@ export const linkedinAdapter: PlatformAdapter = {
     ]);
 
     const { cacheStore } = await import("@/lib/cache");
-    await cacheStore.delByPrefix(`overview:v1:${conn.userId}`);
+    await cacheStore.delByPrefix(`overview:v1:${userId}`);
 
     await writeAudit({
-      userId: conn.userId,
+      userId,
       action: "platform.linkedin.disconnected",
       metadata: { connectionId },
     });
   },
 
-  async fetchPosts(connectionId: string): Promise<unknown> {
+  async fetchPosts(userId: string, connectionId: string): Promise<unknown> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "linkedin", status: "connected" },
+      where: {
+        id: connectionId,
+        userId,
+        platform: "linkedin",
+        status: "connected",
+      },
     });
     if (!conn?.accessTokenEnc) throw new Error("Not connected");
     decryptAesGcm(conn.accessTokenEnc);
@@ -169,11 +174,17 @@ export const linkedinAdapter: PlatformAdapter = {
   },
 
   async fetchMetrics(
+    userId: string,
     connectionId: string,
     _range: { from: Date; to: Date },
   ): Promise<unknown> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "linkedin", status: "connected" },
+      where: {
+        id: connectionId,
+        userId,
+        platform: "linkedin",
+        status: "connected",
+      },
     });
     if (!conn?.accessTokenEnc) throw new Error("Not connected");
     decryptAesGcm(conn.accessTokenEnc);

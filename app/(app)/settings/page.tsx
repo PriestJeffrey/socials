@@ -202,7 +202,7 @@ export default async function SettingsPage({
         connectHref="/api/oauth/linkedin/start"
         connection={li}
         configured={liCfg.configured}
-        configHint="Configure LINKEDIN_CLIENT_ID + SECRET, or set LINKEDIN_USE_FIXTURES=true (META_USE_FIXTURES also enables LI fixtures)."
+        configHint="Configure LINKEDIN_CLIENT_ID + SECRET, or set LINKEDIN_USE_FIXTURES=true."
         syncAction={syncLinkedInAction}
         disconnectAction={disconnectLinkedInAction}
       />

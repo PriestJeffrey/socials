@@ -84,7 +84,7 @@ describe.runIf(hasDb)("phase 3 linkedin + formulas", () => {
   });
 
   it("disconnect LI leaves Facebook snapshots", async () => {
-    await linkedinAdapter.disconnect(liId);
+    await linkedinAdapter.disconnect(userId, liId);
     expect(
       await prisma.metricSnapshot.count({ where: { connectionId: liId } }),
     ).toBe(0);

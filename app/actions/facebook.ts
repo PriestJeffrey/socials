@@ -19,7 +19,7 @@ export async function disconnectFacebookAction(formData: FormData) {
   if (!conn) redirect("/settings");
 
   const fb = getAdapter("facebook");
-  await fb?.disconnect(conn.id);
+  await fb?.disconnect(user.id, conn.id);
   redirect("/settings?disconnected=facebook");
 }
 
@@ -44,6 +44,6 @@ export async function syncFacebookAction(formData: FormData) {
     payload: { platform: "facebook", connectionId: conn.id },
     idempotencyKey: `sync:facebook:${conn.id}:${clock.now().toISOString()}`,
   });
-  await processPendingJobs(3);
+  await processPendingJobs(3, user.id);
   redirect("/overview");
 }

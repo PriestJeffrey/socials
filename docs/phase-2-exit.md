@@ -1,7 +1,8 @@
 # Pulseboard — Phase 2 exit (draft)
 
-**Status:** Implementation complete — awaiting Human UAT (fixtures OK).  
-**Date:** 2026-07-30
+**Status:** Implementation complete — awaiting Human UAT / S2 (with Phase 3).  
+**Date:** 2026-07-30  
+**Note:** Adapter disconnect now requires `userId` (gstack remediation).
 
 ## Delivered
 

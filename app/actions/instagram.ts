@@ -19,7 +19,7 @@ export async function disconnectInstagramAction(formData: FormData) {
   if (!conn) redirect("/settings");
 
   const ig = getAdapter("instagram");
-  await ig?.disconnect(conn.id);
+  await ig?.disconnect(user.id, conn.id);
   redirect("/settings?disconnected=instagram");
 }
 
@@ -44,6 +44,6 @@ export async function syncInstagramAction(formData: FormData) {
     payload: { platform: "instagram", connectionId: conn.id },
     idempotencyKey: `sync:instagram:${conn.id}:${clock.now().toISOString()}`,
   });
-  await processPendingJobs(3);
+  await processPendingJobs(3, user.id);
   redirect("/overview");
 }

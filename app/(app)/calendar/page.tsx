@@ -13,8 +13,8 @@ export default async function CalendarPage({
   const user = await getSessionUser();
   if (!user) redirect("/login");
 
-  // Drain due scheduled publishes when Human opens calendar
-  await processPendingJobs(10);
+  // Drain this user's due jobs only — global drain is /api/cron
+  await processPendingJobs(10, user.id);
 
   const params = (await searchParams) ?? {};
   const flash =
@@ -41,7 +41,8 @@ export default async function CalendarPage({
         Calendar
       </h1>
       <p className="mt-2 text-sm text-[var(--pb-slate)]">
-        Scheduled and recent drafts. Due jobs run when you open this page.
+        Scheduled and recent drafts. Your due jobs run when you open this page;
+        production uses /api/cron.
       </p>
       {flash ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]" data-testid="calendar-flash">

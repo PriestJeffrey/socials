@@ -94,7 +94,7 @@ describe.runIf(hasDb)("phase 2 facebook fixtures + tenancy", () => {
     await runInstagramSync({ userId: userAId, connectionId: igConnectionId });
     await runFacebookSync({ userId: userAId, connectionId: fbConnectionId });
 
-    await facebookAdapter.disconnect(fbConnectionId);
+    await facebookAdapter.disconnect(userAId, fbConnectionId);
 
     expect(
       await prisma.metricSnapshot.count({

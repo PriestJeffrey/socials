@@ -110,7 +110,7 @@ describe.runIf(hasDb)("phase 1 instagram fixtures + tenancy", () => {
     await runInstagramSync({ userId: userAId, connectionId: connectionAId });
     expect((await readOverview(userAId)).empty).toBe(false);
 
-    await instagramAdapter.disconnect(connectionAId);
+    await instagramAdapter.disconnect(userAId, connectionAId);
 
     const posts = await prisma.post.count({ where: { connectionId: connectionAId } });
     const snaps = await prisma.metricSnapshot.count({

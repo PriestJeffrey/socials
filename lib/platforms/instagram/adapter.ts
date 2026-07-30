@@ -126,9 +126,9 @@ export const instagramAdapter: PlatformAdapter = {
     return { connectionId: connection.id };
   },
 
-  async refreshToken(connectionId: string): Promise<void> {
+  async refreshToken(userId: string, connectionId: string): Promise<void> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "instagram" },
+      where: { id: connectionId, userId, platform: "instagram" },
     });
     if (!conn?.accessTokenEnc) throw new Error("Connection not found");
     const current = decryptAesGcm(conn.accessTokenEnc);
@@ -144,9 +144,9 @@ export const instagramAdapter: PlatformAdapter = {
     });
   },
 
-  async disconnect(connectionId: string): Promise<void> {
+  async disconnect(userId: string, connectionId: string): Promise<void> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "instagram" },
+      where: { id: connectionId, userId, platform: "instagram" },
     });
     if (!conn) return;
 
@@ -166,18 +166,23 @@ export const instagramAdapter: PlatformAdapter = {
     ]);
 
     const { cacheStore } = await import("@/lib/cache");
-    await cacheStore.delByPrefix(`overview:v1:${conn.userId}`);
+    await cacheStore.delByPrefix(`overview:v1:${userId}`);
 
     await writeAudit({
-      userId: conn.userId,
+      userId,
       action: "platform.instagram.disconnected",
       metadata: { connectionId },
     });
   },
 
-  async fetchPosts(connectionId: string): Promise<unknown> {
+  async fetchPosts(userId: string, connectionId: string): Promise<unknown> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "instagram", status: "connected" },
+      where: {
+        id: connectionId,
+        userId,
+        platform: "instagram",
+        status: "connected",
+      },
     });
     if (!conn?.accessTokenEnc) throw new Error("Not connected");
     const token = decryptAesGcm(conn.accessTokenEnc);
@@ -185,11 +190,17 @@ export const instagramAdapter: PlatformAdapter = {
   },
 
   async fetchMetrics(
+    userId: string,
     connectionId: string,
     _range: { from: Date; to: Date },
   ): Promise<unknown> {
     const conn = await prisma.socialConnection.findFirst({
-      where: { id: connectionId, platform: "instagram", status: "connected" },
+      where: {
+        id: connectionId,
+        userId,
+        platform: "instagram",
+        status: "connected",
+      },
     });
     if (!conn?.accessTokenEnc) throw new Error("Not connected");
     const token = decryptAesGcm(conn.accessTokenEnc);

@@ -100,7 +100,7 @@ describe.runIf(hasDb)("phase 5 drafts + publish", () => {
       runAfter: when,
     });
     // Drain any due jobs (e.g. leftover syncs) — future publish must remain pending
-    await processPendingJobs(10);
+    await processPendingJobs(10, userA);
     const still = await prisma.draft.findUniqueOrThrow({ where: { id: draft.id } });
     expect(still.status).toBe("scheduled");
     const futureJob = await prisma.job.findFirst({
@@ -111,6 +111,25 @@ describe.runIf(hasDb)("phase 5 drafts + publish", () => {
       },
     });
     expect(futureJob?.status).toBe("pending");
+  });
+
+  it("refuses live publish when fixtures are off", async () => {
+    const prev = process.env.META_USE_FIXTURES;
+    process.env.META_USE_FIXTURES = "false";
+    const draft = await prisma.draft.create({
+      data: {
+        userId: userA,
+        platform: "instagram",
+        body: "must not fake live",
+        status: "draft",
+      },
+    });
+    await expect(
+      runPublishDraft({ userId: userA, draftId: draft.id }),
+    ).rejects.toThrow(/not implemented/i);
+    const still = await prisma.draft.findUniqueOrThrow({ where: { id: draft.id } });
+    expect(still.status).toBe("draft");
+    process.env.META_USE_FIXTURES = prev ?? "true";
   });
 
   it("repurpose creates sibling body for X", () => {
