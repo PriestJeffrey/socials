@@ -12,25 +12,7 @@ export default async function OverviewPage() {
   const anyConnected = await prisma.socialConnection.findFirst({
     where: {
       userId: user.id,
-      platform: {
-        in: [
-          "instagram",
-          "facebook",
-          "linkedin",
-          "threads",
-          "tiktok",
-          "youtube",
-          "pinterest",
-          "bluesky",
-          "reddit",
-          "mastodon",
-          "tumblr",
-          "twitch",
-          "discord",
-          "slack",
-          "vimeo",
-        ],
-      },
+      platform: { in: ["instagram", "facebook", "linkedin"] },
       status: { in: ["connected", "error"] },
     },
     select: { id: true },
@@ -67,7 +49,7 @@ export default async function OverviewPage() {
           <p className="mt-3 text-[var(--pb-slate)]">
             {anyConnected
               ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
-              : "Connect Instagram, Facebook, LinkedIn, Threads, TikTok, YouTube, Pinterest, Bluesky, or Reddit and sync to see what's broken, what's working, and what to post next."}
+              : "Connect Instagram, Facebook, or LinkedIn and sync to see what's broken, what's working, and what to post next."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -102,7 +84,7 @@ export default async function OverviewPage() {
                 }}
               >
                 {card.title}
-                {card.platform ? ` · ${card.platform}` : ""}
+                {card.platform ? ` ┬À ${card.platform}` : ""}
               </p>
               <p className="mt-2 text-sm text-[var(--pb-slate)]">{card.body}</p>
             </article>

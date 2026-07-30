@@ -79,7 +79,7 @@ describe.runIf(hasDb)("phase 3 linkedin + formulas", () => {
 
   it("Health phase includes LinkedIn ok", async () => {
     const report = await getHealthReport(userId);
-    expect(report.phase).toBeGreaterThanOrEqual(3);
+    expect(report.phase).toBe(8);
     expect(report.subsystems.find((s) => s.id === "linkedin")?.status).toBe("ok");
   });
 

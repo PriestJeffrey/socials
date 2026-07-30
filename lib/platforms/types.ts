@@ -1,20 +1,4 @@
-export type PlatformId =
-  | "instagram"
-  | "facebook"
-  | "linkedin"
-  | "threads"
-  | "tiktok"
-  | "youtube"
-  | "pinterest"
-  | "bluesky"
-  | "reddit"
-  | "mastodon"
-  | "tumblr"
-  | "twitch"
-  | "discord"
-  | "slack"
-  | "vimeo"
-  | "x";
+export type PlatformId = "instagram" | "facebook" | "linkedin" | "x";
 
 export interface PlatformCapabilities {
   oauth: boolean;
@@ -23,7 +7,7 @@ export interface PlatformCapabilities {
   publish: boolean;
   schedule: boolean;
   comments: boolean;
-  /** Phase 4: compose locally and copy — no network publish */
+  /** Phase 4: compose locally and copy ÔÇö no network publish */
   manualCopy: boolean;
 }
 

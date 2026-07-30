@@ -2,18 +2,6 @@ import { jobRunner } from "@/lib/jobs";
 import { runInstagramSync } from "@/lib/platforms/instagram/sync";
 import { runFacebookSync } from "@/lib/platforms/facebook/sync";
 import { runLinkedInSync } from "@/lib/platforms/linkedin/sync";
-import { runThreadsSync } from "@/lib/platforms/threads/sync";
-import { runTikTokSync } from "@/lib/platforms/tiktok/sync";
-import { runYouTubeSync } from "@/lib/platforms/youtube/sync";
-import { runPinterestSync } from "@/lib/platforms/pinterest/sync";
-import { runBlueskySync } from "@/lib/platforms/bluesky/sync";
-import { runRedditSync } from "@/lib/platforms/reddit/sync";
-import { runMastodonSync } from "@/lib/platforms/mastodon/sync";
-import { runTumblrSync } from "@/lib/platforms/tumblr/sync";
-import { runTwitchSync } from "@/lib/platforms/twitch/sync";
-import { runDiscordSync } from "@/lib/platforms/discord/sync";
-import { runSlackSync } from "@/lib/platforms/slack/sync";
-import { runVimeoSync } from "@/lib/platforms/vimeo/sync";
 import { runPublishDraft } from "@/lib/content/publish";
 import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
@@ -41,54 +29,6 @@ export async function processPendingJobs(
         const connectionId = String(job.payload.connectionId ?? "");
         if (!connectionId) throw new Error("Missing connectionId");
         await runLinkedInSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "threads") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runThreadsSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "tiktok") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runTikTokSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "youtube") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runYouTubeSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "pinterest") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runPinterestSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "bluesky") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runBlueskySync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "reddit") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runRedditSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "mastodon") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runMastodonSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "tumblr") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runTumblrSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "twitch") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runTwitchSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "discord") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runDiscordSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "slack") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runSlackSync({ userId: job.userId, connectionId });
-      } else if (job.type === "sync" && job.payload.platform === "vimeo") {
-        const connectionId = String(job.payload.connectionId ?? "");
-        if (!connectionId) throw new Error("Missing connectionId");
-        await runVimeoSync({ userId: job.userId, connectionId });
       } else if (job.type === "publish") {
         const draftId = String(job.payload.draftId ?? "");
         if (!draftId) throw new Error("Missing draftId");

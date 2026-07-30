@@ -81,7 +81,7 @@ describe.runIf(hasDb)("phase 1 instagram fixtures + tenancy", () => {
 
   it("Health reports Instagram connected after sync", async () => {
     const report = await getHealthReport(userAId);
-    expect(report.phase).toBeGreaterThanOrEqual(1);
+    expect(report.phase).toBe(8);
     const ig = report.subsystems.find((s) => s.id === "instagram");
     expect(ig?.status).toBe("ok");
   });

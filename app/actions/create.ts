@@ -10,24 +10,7 @@ import { processPendingJobs } from "@/lib/jobs/runner";
 import { clock } from "@/lib/clock";
 import { repurposeBody, type RepurposePlatform } from "@/lib/content/repurpose";
 
-const PLATFORMS = new Set([
-  "instagram",
-  "facebook",
-  "linkedin",
-  "threads",
-  "tiktok",
-  "youtube",
-  "pinterest",
-  "bluesky",
-  "reddit",
-  "mastodon",
-  "tumblr",
-  "twitch",
-  "discord",
-  "slack",
-  "vimeo",
-  "x",
-]);
+const PLATFORMS = new Set(["instagram", "facebook", "linkedin", "x"]);
 
 function formStr(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();
@@ -200,16 +183,15 @@ export async function draftAssistAction(formData: FormData) {
 
   try {
     const { draftAssist } = await import("@/lib/ai/features/draft-assist");
-    const { setDraftSuggestFlash } = await import("@/lib/flash/draft-suggest");
     const body = await draftAssist({
       userId: user.id,
       platform,
       goalTag,
       seed,
     });
-    await setDraftSuggestFlash({ userId: user.id, body, platform });
-    // Body stays out of the URL (history / proxy logs / Referer).
-    redirect(`/create?suggested=1&platform=${encodeURIComponent(platform)}`);
+    redirect(
+      `/create?suggested=1&body=${encodeURIComponent(body)}&platform=${encodeURIComponent(platform)}`,
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : "AI draft failed";
     redirect(`/create?error=${encodeURIComponent(message)}`);

@@ -3,36 +3,8 @@ import { clock } from "@/lib/clock";
 import { writeAudit } from "@/lib/audit/log";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
-import { getThreadsConfig } from "@/lib/platforms/threads/config";
-import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
-import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
-import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
-import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
-import { getRedditConfig } from "@/lib/platforms/reddit/config";
-import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
-import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
-import { getTwitchConfig } from "@/lib/platforms/twitch/config";
-import { getDiscordConfig } from "@/lib/platforms/discord/config";
-import { getSlackConfig } from "@/lib/platforms/slack/config";
-import { getVimeoConfig } from "@/lib/platforms/vimeo/config";
 
-const PUBLISHABLE = new Set([
-  "instagram",
-  "facebook",
-  "linkedin",
-  "threads",
-  "tiktok",
-  "youtube",
-  "pinterest",
-  "bluesky",
-  "reddit",
-  "mastodon",
-  "tumblr",
-  "twitch",
-  "discord",
-  "slack",
-  "vimeo",
-]);
+const PUBLISHABLE = new Set(["instagram", "facebook", "linkedin"]);
 const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
 export async function runPublishDraft(input: {
@@ -68,31 +40,7 @@ export async function runPublishDraft(input: {
   const useFixtures =
     draft.platform === "linkedin"
       ? getLinkedInConfig().useFixtures
-      : draft.platform === "threads"
-        ? getThreadsConfig().useFixtures
-        : draft.platform === "tiktok"
-          ? getTikTokConfig().useFixtures
-          : draft.platform === "youtube"
-            ? getYouTubeConfig().useFixtures
-            : draft.platform === "pinterest"
-              ? getPinterestConfig().useFixtures
-              : draft.platform === "bluesky"
-                ? getBlueskyConfig().useFixtures
-                : draft.platform === "reddit"
-                  ? getRedditConfig().useFixtures
-                  : draft.platform === "mastodon"
-                    ? getMastodonConfig().useFixtures
-                    : draft.platform === "tumblr"
-                      ? getTumblrConfig().useFixtures
-                      : draft.platform === "twitch"
-                        ? getTwitchConfig().useFixtures
-                        : draft.platform === "discord"
-                          ? getDiscordConfig().useFixtures
-                          : draft.platform === "slack"
-                            ? getSlackConfig().useFixtures
-                            : draft.platform === "vimeo"
-                              ? getVimeoConfig().useFixtures
-                          : getMetaConfig().useFixtures;
+      : getMetaConfig().useFixtures;
 
   if (!useFixtures) {
     throw new Error(

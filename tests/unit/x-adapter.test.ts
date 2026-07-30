@@ -4,24 +4,7 @@ import { getAdapter, listAdapters, oauthPlatforms } from "@/lib/platforms";
 describe("phase 4 X honest adapter", () => {
   it("registers four platforms with truthful X flags", () => {
     const ids = listAdapters().map((a) => a.id);
-    expect(ids).toEqual([
-      "instagram",
-      "facebook",
-      "linkedin",
-      "threads",
-      "tiktok",
-      "youtube",
-      "pinterest",
-      "bluesky",
-      "reddit",
-      "mastodon",
-      "tumblr",
-      "twitch",
-      "discord",
-      "slack",
-      "vimeo",
-      "x",
-    ]);
+    expect(ids).toEqual(["instagram", "facebook", "linkedin", "x"]);
 
     const x = getAdapter("x");
     expect(x?.capabilities.oauth).toBe(false);

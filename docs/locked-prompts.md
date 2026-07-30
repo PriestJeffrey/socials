@@ -16,6 +16,7 @@ Single place for AI/agent operating prompts derived from the Complete SDLC and r
 8. Scalability: use seams (`RateLimiter`, `CacheStore`, `JobQueue`, `Clock`); Overview never live-fetches platforms; always `userId`-scope queries.
 9. Crypto: AES-256-GCM for secrets at rest; Argon2id/bcrypt for passwords; never SHA-as-encryption.
 10. Do not build until Human says **run Phase N**.
+11. **Scope freeze (2026-07-30):** V1 core only until Human ends the freeze. See `docs/scope-freeze-v1-core.md`. Do **not** add Wave B platforms on “continue building.” Parked adapters stay; expansion needs Human name + go.
 
 ---
 
@@ -27,6 +28,7 @@ Single place for AI/agent operating prompts derived from the Complete SDLC and r
 | Stack details inside approved design, implementation, tests | AI |
 | Security strength if cost/time tradeoff | Human (AI recommends) |
 | New platform start order | Human |
+| **Wave B expansion resume** | **Human only** (name platform + go) |
 | Paid API spend | Human only |
 | Scale upgrades (Redis, queue, replicas) | Human on measured triggers |
 

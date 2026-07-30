@@ -109,6 +109,6 @@ describe.runIf(hasDb)("phase 7 approvals + deletion", () => {
 
   it("Health phase is 7", async () => {
     const report = await getHealthReport(userA);
-    expect(report.phase).toBeGreaterThanOrEqual(7);
+    expect(report.phase).toBe(8);
   });
 });

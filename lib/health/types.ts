@@ -2,18 +2,6 @@ import { prisma } from "@/lib/db/prisma";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 import { getAiConfig } from "@/lib/ai/config";
-import { getThreadsConfig } from "@/lib/platforms/threads/config";
-import { getTikTokConfig } from "@/lib/platforms/tiktok/config";
-import { getYouTubeConfig } from "@/lib/platforms/youtube/config";
-import { getPinterestConfig } from "@/lib/platforms/pinterest/config";
-import { getBlueskyConfig } from "@/lib/platforms/bluesky/config";
-import { getRedditConfig } from "@/lib/platforms/reddit/config";
-import { getMastodonConfig } from "@/lib/platforms/mastodon/config";
-import { getTumblrConfig } from "@/lib/platforms/tumblr/config";
-import { getTwitchConfig } from "@/lib/platforms/twitch/config";
-import { getDiscordConfig } from "@/lib/platforms/discord/config";
-import { getSlackConfig } from "@/lib/platforms/slack/config";
-import { getVimeoConfig } from "@/lib/platforms/vimeo/config";
 import { sentryConfigured } from "@/lib/monitoring/sentry";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
@@ -25,18 +13,6 @@ export type HealthSubsystem = {
     | "instagram"
     | "facebook"
     | "linkedin"
-    | "threads"
-    | "tiktok"
-    | "youtube"
-    | "pinterest"
-    | "bluesky"
-    | "reddit"
-    | "mastodon"
-    | "tumblr"
-    | "twitch"
-    | "discord"
-    | "slack"
-    | "vimeo"
     | "x"
     | "ai"
     | "runtime";
@@ -47,44 +23,29 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 21;
+  phase: 8;
   subsystems: HealthSubsystem[];
 };
 
 /** Anonymous /api/health — no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
-  phase: 21;
+  phase: 8;
   status: "ok" | "down";
 };
 
 export async function getPublicLiveness(): Promise<PublicLiveness> {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return { ok: true, phase: 21, status: "ok" };
+    return { ok: true, phase: 8, status: "ok" };
   } catch {
-    return { ok: false, phase: 21, status: "down" };
+    return { ok: false, phase: 8, status: "down" };
   }
 }
 
 async function platformHealth(
   userId: string | undefined,
-  platform:
-    | "instagram"
-    | "facebook"
-    | "linkedin"
-    | "threads"
-    | "tiktok"
-    | "youtube"
-    | "pinterest"
-    | "bluesky"
-    | "reddit"
-    | "mastodon"
-    | "tumblr"
-    | "twitch"
-    | "discord"
-    | "slack"
-    | "vimeo",
+  platform: "instagram" | "facebook" | "linkedin",
   checkedAt: string,
   unconfiguredDetail: string,
   fixtureDetail: string,
@@ -95,90 +56,6 @@ async function platformHealth(
 
   if (platform === "linkedin") {
     const cfg = getLinkedInConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "threads") {
-    const cfg = getThreadsConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "tiktok") {
-    const cfg = getTikTokConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "youtube") {
-    const cfg = getYouTubeConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "pinterest") {
-    const cfg = getPinterestConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "bluesky") {
-    const cfg = getBlueskyConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "reddit") {
-    const cfg = getRedditConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "mastodon") {
-    const cfg = getMastodonConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "tumblr") {
-    const cfg = getTumblrConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "twitch") {
-    const cfg = getTwitchConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "discord") {
-    const cfg = getDiscordConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "slack") {
-    const cfg = getSlackConfig();
-    detail = cfg.useFixtures
-      ? fixtureDetail
-      : cfg.configured
-        ? configuredDetail
-        : unconfiguredDetail;
-  } else if (platform === "vimeo") {
-    const cfg = getVimeoConfig();
     detail = cfg.useFixtures
       ? fixtureDetail
       : cfg.configured
@@ -274,105 +151,9 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     "Fixture mode enabled",
     "LinkedIn app configured — no connection yet",
   );
-  const th = await platformHealth(
-    userId,
-    "threads",
-    checkedAt,
-    "THREADS_APP_ID/SECRET missing (or THREADS_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Threads app configured — no connection yet",
-  );
-  const tt = await platformHealth(
-    userId,
-    "tiktok",
-    checkedAt,
-    "TIKTOK_CLIENT_KEY/SECRET missing (or TIKTOK_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "TikTok app configured — no connection yet",
-  );
-  const yt = await platformHealth(
-    userId,
-    "youtube",
-    checkedAt,
-    "YOUTUBE_CLIENT_ID/SECRET missing (or YOUTUBE_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "YouTube app configured — no connection yet",
-  );
-  const pin = await platformHealth(
-    userId,
-    "pinterest",
-    checkedAt,
-    "PINTEREST_APP_ID/SECRET missing (or PINTEREST_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Pinterest app configured — no connection yet",
-  );
-  const bsky = await platformHealth(
-    userId,
-    "bluesky",
-    checkedAt,
-    "Set BLUESKY_USE_FIXTURES=true (live OAuth deferred)",
-    "Fixture mode enabled",
-    "Bluesky service URL set — live OAuth deferred",
-  );
-  const reddit = await platformHealth(
-    userId,
-    "reddit",
-    checkedAt,
-    "REDDIT_CLIENT_ID/SECRET missing (or REDDIT_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Reddit app configured — no connection yet",
-  );
-  const mastodon = await platformHealth(
-    userId,
-    "mastodon",
-    checkedAt,
-    "MASTODON_CLIENT_ID/SECRET missing (or MASTODON_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Mastodon app configured — no connection yet",
-  );
-  const tumblr = await platformHealth(
-    userId,
-    "tumblr",
-    checkedAt,
-    "TUMBLR_CLIENT_ID/SECRET missing (or TUMBLR_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Tumblr app configured — no connection yet",
-  );
-  const twitch = await platformHealth(
-    userId,
-    "twitch",
-    checkedAt,
-    "TWITCH_CLIENT_ID/SECRET missing (or TWITCH_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Twitch app configured — no connection yet",
-  );
-  const discord = await platformHealth(
-    userId,
-    "discord",
-    checkedAt,
-    "DISCORD_CLIENT_ID/SECRET missing (or DISCORD_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Discord app configured — no connection yet",
-  );
-  const slack = await platformHealth(
-    userId,
-    "slack",
-    checkedAt,
-    "SLACK_CLIENT_ID/SECRET missing (or SLACK_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Slack app configured — no connection yet",
-  );
-  const vimeo = await platformHealth(
-    userId,
-    "vimeo",
-    checkedAt,
-    "VIMEO_CLIENT_ID/SECRET missing (or VIMEO_USE_FIXTURES=true)",
-    "Fixture mode enabled",
-    "Vimeo app configured — no connection yet",
-  );
 
   return {
-    phase: 21,
+    phase: 8,
     subsystems: [
       {
         id: "auth",
@@ -391,18 +172,6 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
       { id: "instagram", label: "Instagram", ...ig },
       { id: "facebook", label: "Facebook", ...fb },
       { id: "linkedin", label: "LinkedIn", ...li },
-      { id: "threads", label: "Threads", ...th },
-      { id: "tiktok", label: "TikTok", ...tt },
-      { id: "youtube", label: "YouTube", ...yt },
-      { id: "pinterest", label: "Pinterest", ...pin },
-      { id: "bluesky", label: "Bluesky", ...bsky },
-      { id: "reddit", label: "Reddit", ...reddit },
-      { id: "mastodon", label: "Mastodon", ...mastodon },
-      { id: "tumblr", label: "Tumblr", ...tumblr },
-      { id: "twitch", label: "Twitch", ...twitch },
-      { id: "discord", label: "Discord", ...discord },
-      { id: "slack", label: "Slack", ...slack },
-      { id: "vimeo", label: "Vimeo", ...vimeo },
       {
         id: "x",
         label: "X",

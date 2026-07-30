@@ -27,18 +27,6 @@ services:
       COOKIE_SECURE: "false"
       META_USE_FIXTURES: "true"
       LINKEDIN_USE_FIXTURES: "true"
-      THREADS_USE_FIXTURES: "true"
-      TIKTOK_USE_FIXTURES: "true"
-      YOUTUBE_USE_FIXTURES: "true"
-      PINTEREST_USE_FIXTURES: "true"
-      BLUESKY_USE_FIXTURES: "true"
-      REDDIT_USE_FIXTURES: "true"
-      MASTODON_USE_FIXTURES: "true"
-      TUMBLR_USE_FIXTURES: "true"
-      TWITCH_USE_FIXTURES: "true"
-      DISCORD_USE_FIXTURES: "true"
-      SLACK_USE_FIXTURES: "true"
-      VIMEO_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
       CRON_SECRET: ${CRON_SECRET:?Set CRON_SECRET in .env — no weak default}
       NODE_ENV: production

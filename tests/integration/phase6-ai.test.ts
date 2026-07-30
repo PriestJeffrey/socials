@@ -63,7 +63,7 @@ describe.runIf(hasDb)("phase 6 AI + hook library", () => {
 
   it("Health phase includes AI subsystem", async () => {
     const report = await getHealthReport(userA);
-    expect(report.phase).toBeGreaterThanOrEqual(6);
+    expect(report.phase).toBe(8);
     expect(report.subsystems.find((s) => s.id === "ai")?.status).toBe("ok");
   });
 });

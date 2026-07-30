@@ -16,13 +16,14 @@ describe("ai redaction L9", () => {
     expect(out).toMatch(/\[REDACTED\]/);
   });
 
-  it("redacts Threads and TikTok secret env names", () => {
+  it("redacts V1 core secret env names", () => {
     const raw =
-      "THREADS_APP_SECRET=thsec123 TIKTOK_CLIENT_SECRET=ttsec456 TIKTOK_CLIENT_KEY=ttkey789";
+      "META_APP_SECRET=metasec123 LINKEDIN_CLIENT_SECRET=lisec456 GEMINI_API_KEY=gemkey789 CRON_SECRET=cronsec000";
     const out = redactSecrets(raw);
-    expect(out).not.toMatch(/thsec123/);
-    expect(out).not.toMatch(/ttsec456/);
-    expect(out).not.toMatch(/ttkey789/);
+    expect(out).not.toMatch(/metasec123/);
+    expect(out).not.toMatch(/lisec456/);
+    expect(out).not.toMatch(/gemkey789/);
+    expect(out).not.toMatch(/cronsec000/);
     expect(out).toMatch(/\[REDACTED\]/);
   });
 

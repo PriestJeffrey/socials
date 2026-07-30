@@ -2,40 +2,16 @@ import type { PlatformAdapter, PlatformId } from "./types";
 import { instagramAdapter } from "./instagram/adapter";
 import { facebookAdapter } from "./facebook/adapter";
 import { linkedinAdapter } from "./linkedin/adapter";
-import { threadsAdapter } from "./threads/adapter";
-import { tiktokAdapter } from "./tiktok/adapter";
-import { youtubeAdapter } from "./youtube/adapter";
-import { pinterestAdapter } from "./pinterest/adapter";
-import { blueskyAdapter } from "./bluesky/adapter";
-import { redditAdapter } from "./reddit/adapter";
-import { mastodonAdapter } from "./mastodon/adapter";
-import { tumblrAdapter } from "./tumblr/adapter";
-import { twitchAdapter } from "./twitch/adapter";
-import { discordAdapter } from "./discord/adapter";
-import { slackAdapter } from "./slack/adapter";
-import { vimeoAdapter } from "./vimeo/adapter";
 import { xAdapter } from "./x/adapter";
 
 export type { PlatformAdapter, PlatformId, PlatformCapabilities } from "./types";
 export { createOAuthState, verifyOAuthState } from "./oauth-state";
 
-/** Registered adapters. Phase 21: + Vimeo. */
+/** Registered adapters. Phase 4: IG + FB + LinkedIn + honest X stub. */
 export const adapters: PlatformAdapter[] = [
   instagramAdapter,
   facebookAdapter,
   linkedinAdapter,
-  threadsAdapter,
-  tiktokAdapter,
-  youtubeAdapter,
-  pinterestAdapter,
-  blueskyAdapter,
-  redditAdapter,
-  mastodonAdapter,
-  tumblrAdapter,
-  twitchAdapter,
-  discordAdapter,
-  slackAdapter,
-  vimeoAdapter,
   xAdapter,
 ];
 
@@ -47,6 +23,7 @@ export function listAdapters(): PlatformAdapter[] {
   return [...adapters];
 }
 
+/** Platforms that support live OAuth connect in Settings. */
 export function oauthPlatforms(): PlatformAdapter[] {
   return adapters.filter((a) => a.capabilities.oauth);
 }

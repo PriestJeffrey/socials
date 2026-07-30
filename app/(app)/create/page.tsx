@@ -59,8 +59,7 @@ export default async function CreatePage({
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
         Draft once, preview, then publish or schedule to Instagram / Facebook /
-        LinkedIn / Threads / TikTok / YouTube / Pinterest / Bluesky. X is copy-only. Live
-        Graph/TikTok/YouTube/Pinterest/Bluesky posting is deferred — “Publish” writes a
+        LinkedIn. X is copy-only. Live Graph posting is deferred — “Publish” writes a
         local fixture post when fixtures are on.
       </p>
 
@@ -68,8 +67,8 @@ export default async function CreatePage({
         className="mt-4 max-w-xl rounded-md border border-[var(--pb-line)] bg-white/70 px-3 py-2 text-xs text-[var(--pb-slate)]"
         data-testid="create-fixture-banner"
       >
-        Local / fixture publish only. Nothing is sent to Meta, LinkedIn, Threads,
-        or TikTok until live posting is wired. X never auto-publishes — use Compose
+        Local / fixture publish only. Nothing is sent to Meta or LinkedIn
+        until live posting is wired. X never auto-publishes — use Compose
         X to copy.
       </p>
 
@@ -120,42 +119,6 @@ export default async function CreatePage({
             </option>
             <option value="linkedin">
               LinkedIn{connected.has("linkedin") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="threads">
-              Threads{connected.has("threads") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="tiktok">
-              TikTok{connected.has("tiktok") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="youtube">
-              YouTube{connected.has("youtube") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="pinterest">
-              Pinterest{connected.has("pinterest") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="bluesky">
-              Bluesky{connected.has("bluesky") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="reddit">
-              Reddit{connected.has("reddit") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="mastodon">
-              Mastodon{connected.has("mastodon") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="tumblr">
-              Tumblr{connected.has("tumblr") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="twitch">
-              Twitch{connected.has("twitch") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="discord">
-              Discord{connected.has("discord") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="slack">
-              Slack{connected.has("slack") ? "" : " (connect in Settings)"}
-            </option>
-            <option value="vimeo">
-              Vimeo{connected.has("vimeo") ? "" : " (connect in Settings)"}
             </option>
             <option value="x">X (copy only)</option>
           </select>
@@ -275,18 +238,6 @@ export default async function CreatePage({
             <option value="instagram">Instagram</option>
             <option value="facebook">Facebook</option>
             <option value="linkedin">LinkedIn</option>
-            <option value="threads">Threads</option>
-            <option value="tiktok">TikTok</option>
-            <option value="youtube">YouTube</option>
-            <option value="pinterest">Pinterest</option>
-            <option value="bluesky">Bluesky</option>
-            <option value="reddit">Reddit</option>
-            <option value="mastodon">Mastodon</option>
-            <option value="tumblr">Tumblr</option>
-            <option value="twitch">Twitch</option>
-            <option value="discord">Discord</option>
-            <option value="slack">Slack</option>
-            <option value="vimeo">Vimeo</option>
             <option value="x">X</option>
           </select>
           <input
@@ -337,18 +288,6 @@ export default async function CreatePage({
                       "instagram",
                       "facebook",
                       "linkedin",
-                      "threads",
-                      "tiktok",
-                      "youtube",
-                      "pinterest",
-                      "bluesky",
-                      "reddit",
-                      "mastodon",
-                      "tumblr",
-                      "twitch",
-                      "discord",
-                      "slack",
-                      "vimeo",
                       "x",
                     ] as const
                   )

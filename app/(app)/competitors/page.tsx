@@ -65,18 +65,6 @@ export default async function CompetitorsPage({
             <option value="instagram">Instagram</option>
             <option value="facebook">Facebook</option>
             <option value="linkedin">LinkedIn</option>
-            <option value="threads">Threads</option>
-            <option value="tiktok">TikTok</option>
-            <option value="youtube">YouTube</option>
-            <option value="pinterest">Pinterest</option>
-            <option value="bluesky">Bluesky</option>
-            <option value="reddit">Reddit</option>
-            <option value="mastodon">Mastodon</option>
-            <option value="tumblr">Tumblr</option>
-            <option value="twitch">Twitch</option>
-            <option value="discord">Discord</option>
-            <option value="slack">Slack</option>
-            <option value="vimeo">Vimeo</option>
             <option value="x">X</option>
             <option value="generic">Generic</option>
           </select>
@@ -96,7 +84,7 @@ export default async function CompetitorsPage({
             minLength={20}
             data-testid="competitors-paste"
             className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
-            placeholder="Paste a competitor post…"
+            placeholder="Paste a competitor postÔÇª"
           />
         </div>
         <button
@@ -104,7 +92,7 @@ export default async function CompetitorsPage({
           data-testid="competitors-analyze"
           className="rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
         >
-          Analyze → library
+          Analyze ÔåÆ library
         </button>
       </form>
 

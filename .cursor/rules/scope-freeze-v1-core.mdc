@@ -1,0 +1,23 @@
+---
+description: Wave B expansion is frozen — V1 core only until Human resumes
+alwaysApply: true
+---
+
+# Scope freeze — V1 core
+
+Human locked (2026-07-30): **keep V1 core; pause Wave B expansion.** Full text: `docs/scope-freeze-v1-core.md`.
+
+## Must
+
+- Focus on V1 core (IG / FB / LinkedIn / X + existing product surfaces).
+- Leave already-built Wave B adapters **as-is** (do not delete; do not keep expanding).
+- On “continue building,” do **not** start a new platform phase.
+
+## Must not
+
+- Auto-pick the next network (Slack, Discord, Vimeo, Telegram, …).
+- Treat “continue building” as Wave B go-ahead.
+
+## Resume expansion only when
+
+Human **names** a platform (or explicit non-platform track) and says **go** — then research → go/no-go → gstack → build.
