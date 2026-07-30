@@ -6,6 +6,8 @@ import {
   fetchFbInsights,
   fetchFbPosts,
   fixtureFbSyncPayload,
+  type FbInsightPoint,
+  type FbPostItem,
 } from "@/lib/platforms/facebook/meta-client";
 
 /**
@@ -27,8 +29,8 @@ export async function runFacebookSync(input: {
   if (!conn) throw new Error("Connection not found or not connected");
 
   const cfg = getMetaConfig();
-  let postsData;
-  let insights;
+  let postsData: FbPostItem[];
+  let insights: FbInsightPoint[];
 
   try {
     if (cfg.useFixtures) {

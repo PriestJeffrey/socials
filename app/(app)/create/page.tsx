@@ -52,7 +52,17 @@ export default async function CreatePage({
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
         Draft once, preview, then publish or schedule to Instagram / Facebook /
-        LinkedIn. X is copy-only.
+        LinkedIn / Threads / TikTok. X is copy-only. Live Graph/TikTok posting is
+        deferred — “Publish” writes a local fixture post when fixtures are on.
+      </p>
+
+      <p
+        className="mt-4 max-w-xl rounded-md border border-[var(--pb-line)] bg-white/70 px-3 py-2 text-xs text-[var(--pb-slate)]"
+        data-testid="create-fixture-banner"
+      >
+        Local / fixture publish only. Nothing is sent to Meta, LinkedIn, Threads,
+        or TikTok until live posting is wired. X never auto-publishes — use Compose
+        X to copy.
       </p>
 
       {error ? (
@@ -65,7 +75,7 @@ export default async function CreatePage({
       ) : null}
       {published ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]">
-          Publish queued/complete.{" "}
+          Local/fixture publish queued or complete.{" "}
           <Link href="/calendar" className="underline">
             Calendar
           </Link>
@@ -195,7 +205,7 @@ export default async function CreatePage({
             data-testid="create-publish"
             className="rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
           >
-            Publish now
+            Publish locally
           </button>
           <button
             type="submit"

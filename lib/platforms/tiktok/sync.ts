@@ -6,6 +6,8 @@ import {
   fetchTikTokVideos,
   fixtureTikTokSyncPayload,
   insightsFromVideos,
+  type TikTokInsightPoint,
+  type TikTokVideoItem,
 } from "@/lib/platforms/tiktok/client";
 
 export async function runTikTokSync(input: {
@@ -23,8 +25,8 @@ export async function runTikTokSync(input: {
   if (!conn) throw new Error("Connection not found or not connected");
 
   const cfg = getTikTokConfig();
-  let videos;
-  let insights;
+  let videos: TikTokVideoItem[];
+  let insights: TikTokInsightPoint[];
 
   try {
     if (cfg.useFixtures) {

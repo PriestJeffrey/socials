@@ -13,7 +13,8 @@ export default async function HealthPage() {
         Health
       </h1>
       <p data-testid="health-summary" className="mt-2 text-sm text-[var(--pb-slate)]">
-        Phase {report.phase} — auth, database, and Instagram sync status.
+        Phase {report.phase} — auth, database, platforms (IG/FB/LI/Threads/TikTok/X),
+        AI, analytics snapshots, and runtime.
       </p>
       <ul className="mt-8 space-y-3">
         {report.subsystems.map((s) => (

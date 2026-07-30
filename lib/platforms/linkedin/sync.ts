@@ -1,7 +1,12 @@
 import { prisma } from "@/lib/db/prisma";
 import { clock } from "@/lib/clock";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
-import { fixtureLiSyncPayload, allowlistPostRaw } from "@/lib/platforms/linkedin/client";
+import {
+  fixtureLiSyncPayload,
+  allowlistPostRaw,
+  type LiInsightPoint,
+  type LiPostItem,
+} from "@/lib/platforms/linkedin/client";
 
 export async function runLinkedInSync(input: {
   userId: string;
@@ -18,8 +23,8 @@ export async function runLinkedInSync(input: {
   if (!conn) throw new Error("Connection not found or not connected");
 
   const cfg = getLinkedInConfig();
-  let postsData;
-  let insights;
+  let postsData: LiPostItem[];
+  let insights: LiInsightPoint[];
 
   try {
     if (cfg.useFixtures) {

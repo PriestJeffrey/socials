@@ -27,6 +27,8 @@ services:
       COOKIE_SECURE: "false"
       META_USE_FIXTURES: "true"
       LINKEDIN_USE_FIXTURES: "true"
+      THREADS_USE_FIXTURES: "true"
+      TIKTOK_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
       CRON_SECRET: ${CRON_SECRET:-dev-cron-secret-change-me}
       NODE_ENV: production

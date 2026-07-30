@@ -27,9 +27,25 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 10;
+  phase: 11;
   subsystems: HealthSubsystem[];
 };
+
+/** Anonymous /api/health — no fixture or env-config posture. */
+export type PublicLiveness = {
+  ok: boolean;
+  phase: 11;
+  status: "ok" | "down";
+};
+
+export async function getPublicLiveness(): Promise<PublicLiveness> {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return { ok: true, phase: 11, status: "ok" };
+  } catch {
+    return { ok: false, phase: 11, status: "down" };
+  }
+}
 
 async function platformHealth(
   userId: string | undefined,
@@ -171,7 +187,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
   );
 
   return {
-    phase: 10,
+    phase: 11,
     subsystems: [
       {
         id: "auth",

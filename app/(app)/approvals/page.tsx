@@ -48,8 +48,17 @@ export default async function ApprovalsPage({
         Approvals
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
-        Workflow: draft → in review → approved → published. Publish now from
-        Create still auto-approves for solo use.
+        Workflow: draft → in review → approved → published. Publish from Create
+        still auto-approves for solo use. Publishing is local/fixture-only until
+        live Graph/TikTok posting ships.
+      </p>
+
+      <p
+        className="mt-4 max-w-xl rounded-md border border-[var(--pb-line)] bg-white/70 px-3 py-2 text-xs text-[var(--pb-slate)]"
+        data-testid="approvals-fixture-banner"
+      >
+        “Publish approved” creates a local fixture post when fixtures are enabled.
+        It does not post to the live platform API.
       </p>
 
       {flash ? (
@@ -137,7 +146,7 @@ export default async function ApprovalsPage({
                       data-testid={`publish-approved-${d.id}`}
                       className="rounded-md bg-[var(--pb-pulse)] px-3 py-1.5 text-xs font-semibold text-white"
                     >
-                      Publish approved
+                      Publish approved (local)
                     </button>
                   </form>
                 ) : null}

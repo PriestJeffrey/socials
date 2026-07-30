@@ -1,13 +1,28 @@
+import { timingSafeEqual } from "crypto";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { processPendingJobs } from "@/lib/jobs/runner";
 
+function secretsEqual(provided: string, expected: string): boolean {
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) {
+    timingSafeEqual(b, b);
+    return false;
+  }
+  return timingSafeEqual(a, b);
+}
+
 function authorized(request: NextRequest): boolean {
   const secret = process.env.CRON_SECRET?.trim();
   if (!secret) return false;
+
   const header = request.headers.get("authorization") ?? "";
-  if (header === `Bearer ${secret}`) return true;
-  return request.headers.get("x-cron-secret") === secret;
+  const bearer = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : "";
+  if (bearer && secretsEqual(bearer, secret)) return true;
+
+  const headerSecret = request.headers.get("x-cron-secret") ?? "";
+  return Boolean(headerSecret) && secretsEqual(headerSecret, secret);
 }
 
 /** Global job drain for scheduled publishes/syncs. Requires CRON_SECRET. */

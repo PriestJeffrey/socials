@@ -6,6 +6,8 @@ import {
   fetchThreadsInsights,
   fetchThreadsMedia,
   fixtureThreadsSyncPayload,
+  type ThreadsInsightPoint,
+  type ThreadsMediaItem,
 } from "@/lib/platforms/threads/client";
 
 export async function runThreadsSync(input: {
@@ -23,8 +25,8 @@ export async function runThreadsSync(input: {
   if (!conn) throw new Error("Connection not found or not connected");
 
   const cfg = getThreadsConfig();
-  let media;
-  let insights;
+  let media: ThreadsMediaItem[];
+  let insights: ThreadsInsightPoint[];
 
   try {
     if (cfg.useFixtures) {

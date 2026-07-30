@@ -6,6 +6,8 @@ import {
   fetchIgInsights,
   fetchIgMedia,
   fixtureSyncPayload,
+  type IgInsightPoint,
+  type IgMediaItem,
 } from "@/lib/platforms/instagram/meta-client";
 
 /**
@@ -27,8 +29,8 @@ export async function runInstagramSync(input: {
   if (!conn) throw new Error("Connection not found or not connected");
 
   const cfg = getMetaConfig();
-  let media;
-  let insights;
+  let media: IgMediaItem[];
+  let insights: IgInsightPoint[];
 
   try {
     if (cfg.useFixtures) {
