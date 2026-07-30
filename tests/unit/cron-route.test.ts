@@ -23,4 +23,15 @@ describe("cron route auth", () => {
     );
     expect(res.status).toBe(401);
   });
+
+  it("returns 503 on known placeholder CRON_SECRET", async () => {
+    process.env.CRON_SECRET = "dev-cron-secret-change-me";
+    const res = await POST(
+      new NextRequest("http://localhost/api/cron", {
+        method: "POST",
+        headers: { authorization: "Bearer dev-cron-secret-change-me" },
+      }),
+    );
+    expect(res.status).toBe(503);
+  });
 });

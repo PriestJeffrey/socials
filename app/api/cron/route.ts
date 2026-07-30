@@ -2,6 +2,7 @@ import { timingSafeEqual } from "crypto";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { processPendingJobs } from "@/lib/jobs/runner";
+import { isWeakSecret } from "@/lib/security/secrets";
 
 function secretsEqual(provided: string, expected: string): boolean {
   const a = Buffer.from(provided);
@@ -13,12 +14,17 @@ function secretsEqual(provided: string, expected: string): boolean {
   return timingSafeEqual(a, b);
 }
 
-function authorized(request: NextRequest): boolean {
+function cronSecret(): string | null {
   const secret = process.env.CRON_SECRET?.trim();
-  if (!secret) return false;
+  if (!secret || isWeakSecret(secret)) return null;
+  return secret;
+}
 
+function authorized(request: NextRequest, secret: string): boolean {
   const header = request.headers.get("authorization") ?? "";
-  const bearer = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : "";
+  const bearer = header.startsWith("Bearer ")
+    ? header.slice("Bearer ".length)
+    : "";
   if (bearer && secretsEqual(bearer, secret)) return true;
 
   const headerSecret = request.headers.get("x-cron-secret") ?? "";
@@ -27,13 +33,17 @@ function authorized(request: NextRequest): boolean {
 
 /** Global job drain for scheduled publishes/syncs. Requires CRON_SECRET. */
 export async function POST(request: NextRequest) {
-  if (!process.env.CRON_SECRET?.trim()) {
+  const secret = cronSecret();
+  if (!secret) {
     return NextResponse.json(
-      { error: "CRON_SECRET is not configured" },
+      {
+        error:
+          "CRON_SECRET is not configured or is a known placeholder — set a strong secret",
+      },
       { status: 503 },
     );
   }
-  if (!authorized(request)) {
+  if (!authorized(request, secret)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

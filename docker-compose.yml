@@ -22,8 +22,8 @@ services:
     environment:
       DATABASE_URL: postgresql://pulseboard:pulseboard@postgres:5432/pulseboard
       APP_URL: http://localhost:3000
-      SESSION_SECRET: ${SESSION_SECRET:-replace-with-long-random-string-min-32-chars}
-      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env — no weak default}
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?Set TOKEN_ENCRYPTION_KEY in .env}
       COOKIE_SECURE: "false"
       META_USE_FIXTURES: "true"
       LINKEDIN_USE_FIXTURES: "true"
@@ -37,7 +37,7 @@ services:
       TUMBLR_USE_FIXTURES: "true"
       TWITCH_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
-      CRON_SECRET: ${CRON_SECRET:-dev-cron-secret-change-me}
+      CRON_SECRET: ${CRON_SECRET:?Set CRON_SECRET in .env — no weak default}
       NODE_ENV: production
     depends_on:
       postgres:

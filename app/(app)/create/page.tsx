@@ -24,8 +24,15 @@ export default async function CreatePage({
   const repurposed = typeof params.repurposed === "string" ? params.repurposed : null;
   const suggested =
     typeof params.suggested === "string" ? params.suggested : null;
-  const suggestBody =
-    typeof params.body === "string" ? decodeURIComponent(params.body) : "";
+  const flashPlatform =
+    typeof params.platform === "string" ? params.platform : null;
+
+  const { takeDraftSuggestFlash } = await import("@/lib/flash/draft-suggest");
+  const flash = suggested
+    ? await takeDraftSuggestFlash(user.id)
+    : null;
+  const suggestBody = flash?.body ?? "";
+  const suggestPlatform = flash?.platform ?? flashPlatform ?? "instagram";
 
   const [connections, recent] = await Promise.all([
     prisma.socialConnection.findMany({
@@ -103,7 +110,7 @@ export default async function CreatePage({
             name="platform"
             data-testid="create-platform"
             className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
-            defaultValue="instagram"
+            defaultValue={suggestPlatform}
           >
             <option value="instagram">
               Instagram{connected.has("instagram") ? "" : " (connect in Settings)"}

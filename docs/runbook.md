@@ -9,9 +9,14 @@
 6. `npm run dev`
 
 ## Docker (full stack)
-1. Export `TOKEN_ENCRYPTION_KEY` (32-byte base64) and `SESSION_SECRET`
-2. `docker compose up --build`
+1. Copy `.env.example` → `.env` and set **strong** secrets (no placeholders):
+   - `SESSION_SECRET` (≥16 chars, random)
+   - `TOKEN_ENCRYPTION_KEY` (32-byte base64)
+   - `CRON_SECRET` (≥16 chars, random — required for compose; no default)
+2. `docker compose up --build` (compose **fails** if secrets are unset)
 3. App: http://localhost:3000 — migrate runs on container start
+
+**Do not** commit or reuse compose placeholders like `dev-cron-secret-change-me` or `replace-with-long-random-string-min-32-chars` — the app rejects them.
 
 ## Production deploy checklist
 1. Provision Postgres (pooled URL for runtime; direct URL for migrate)

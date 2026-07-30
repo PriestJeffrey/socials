@@ -1,14 +1,11 @@
 import { createHmac, randomBytes, timingSafeEqual } from "crypto";
 import { clock } from "@/lib/clock";
+import { requireStrongSecret } from "@/lib/security/secrets";
 
 const TTL_MS = 10 * 60 * 1000;
 
 function secret(): string {
-  const s = process.env.SESSION_SECRET;
-  if (!s || s.length < 16) {
-    throw new Error("SESSION_SECRET required for OAuth state (min 16 chars)");
-  }
-  return s;
+  return requireStrongSecret("SESSION_SECRET", process.env.SESSION_SECRET);
 }
 
 /**
