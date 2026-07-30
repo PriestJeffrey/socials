@@ -17,4 +17,5 @@ export interface AiProvider {
 export type AiFeature =
   | "competitor_analyze"
   | "draft_assist"
-  | "overview_why";
+  | "overview_why"
+  | "sentiment";

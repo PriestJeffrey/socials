@@ -23,6 +23,12 @@ export const fixtureAiProvider: AiProvider = {
     } else if (blob.includes("draft") || blob.includes("compose")) {
       text =
         "Fixture draft: Here's a clear take your audience can act on today. Lead with the tension, prove it in one line, then invite a reply.";
+    } else if (blob.includes("sentiment")) {
+      text = JSON.stringify({
+        label: "neutral",
+        score: 0.12,
+        note: "Fixture sentiment — mostly neutral tone",
+      });
     } else if (blob.includes("why") || blob.includes("overview")) {
       text =
         "Fixture why: Recent snapshot numbers point to soft engagement — tighten the opening line and post when your audience is already active.";

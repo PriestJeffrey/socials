@@ -21,7 +21,7 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 6;
+  phase: 7;
   subsystems: HealthSubsystem[];
 };
 
@@ -135,7 +135,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
   );
 
   return {
-    phase: 6,
+    phase: 7,
     subsystems: [
       {
         id: "auth",

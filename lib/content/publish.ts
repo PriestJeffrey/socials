@@ -5,7 +5,7 @@ import { getMetaConfig } from "@/lib/platforms/instagram/config";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 
 const PUBLISHABLE = new Set(["instagram", "facebook", "linkedin"]);
-const CLAIMABLE = ["draft", "scheduled", "failed"] as const;
+const CLAIMABLE = ["draft", "approved", "scheduled", "failed"] as const;
 
 export async function runPublishDraft(input: {
   userId: string;

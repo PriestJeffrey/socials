@@ -53,6 +53,12 @@ export async function createDraftAction(formData: FormData) {
   }
 
   if (mode === "publish") {
+    const { transitionDraft } = await import("@/lib/content/transitions");
+    await transitionDraft({
+      userId: user.id,
+      draftId: draft.id,
+      transition: "auto_approve",
+    });
     await jobQueue.enqueue({
       userId: user.id,
       type: "publish",
@@ -142,6 +148,15 @@ export async function publishExistingDraftAction(formData: FormData) {
   });
   if (!draft) redirect("/calendar?error=Draft%20not%20found");
   if (draft.platform === "x") redirect(`/x?fromDraft=${draft.id}`);
+
+  const { transitionDraft } = await import("@/lib/content/transitions");
+  if (draft.status === "draft" || draft.status === "rejected" || draft.status === "failed") {
+    await transitionDraft({
+      userId: user.id,
+      draftId: draft.id,
+      transition: "auto_approve",
+    });
+  }
 
   await jobQueue.enqueue({
     userId: user.id,

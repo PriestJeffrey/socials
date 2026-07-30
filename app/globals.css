@@ -104,6 +104,47 @@ body {
   animation-delay: 0.24s;
 }
 
+@keyframes pb-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotateX(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+.pb-overview-stage {
+  perspective: 1200px;
+}
+
+.pb-depth-card {
+  transform-style: preserve-3d;
+  animation: pb-card-in 0.55s ease both;
+  box-shadow:
+    0 1px 0 rgba(11, 31, 42, 0.04),
+    0 12px 28px -18px rgba(11, 31, 42, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pb-depth-card:hover {
+  transform: translateY(-3px) rotateX(1.5deg);
+  box-shadow:
+    0 1px 0 rgba(11, 31, 42, 0.04),
+    0 18px 36px -16px rgba(11, 31, 42, 0.4);
+}
+
+.pb-depth-card:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.pb-depth-card:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.pb-depth-card:nth-child(4) {
+  animation-delay: 0.18s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pb-hero-stack {
     animation: none;
@@ -111,5 +152,13 @@ body {
 
   .pb-enter > * {
     animation: none;
+  }
+
+  .pb-depth-card {
+    animation: none;
+  }
+
+  .pb-depth-card:hover {
+    transform: none;
   }
 }

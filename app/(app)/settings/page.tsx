@@ -16,6 +16,7 @@ import {
   syncLinkedInAction,
 } from "@/app/actions/linkedin";
 import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
+import { deleteAccountAction } from "@/app/actions/account";
 
 function PlatformSection({
   title,
@@ -242,6 +243,38 @@ export default async function SettingsPage({
           </Link>
         </li>
       </ul>
+
+      <section
+        className="mt-12 max-w-xl rounded-xl border border-[var(--pb-warn)]/40 bg-white/80 p-6"
+        data-testid="danger-zone"
+      >
+        <h2 className="font-display text-xl font-semibold text-[var(--pb-warn)]">
+          Delete account
+        </h2>
+        <p className="mt-2 text-sm text-[var(--pb-slate)]">
+          Permanently deletes your user, sessions, connections, posts, snapshots,
+          drafts, jobs, and hook library. This cannot be undone.
+        </p>
+        <form action={deleteAccountAction} className="mt-4 space-y-3">
+          <label className="block text-sm text-[var(--pb-ink)]" htmlFor="confirm">
+            Type <span className="font-semibold">DELETE MY ACCOUNT</span> to confirm
+          </label>
+          <input
+            id="confirm"
+            name="confirm"
+            data-testid="delete-confirm"
+            className="w-full rounded-md border border-[var(--pb-line)] px-3 py-2 text-sm"
+            autoComplete="off"
+          />
+          <button
+            type="submit"
+            data-testid="delete-account"
+            className="rounded-md bg-[var(--pb-warn)] px-4 py-2 text-sm font-semibold text-white"
+          >
+            Delete my account
+          </button>
+        </form>
+      </section>
     </main>
   );
 }

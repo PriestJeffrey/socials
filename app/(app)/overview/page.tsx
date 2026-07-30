@@ -67,11 +67,14 @@ export default async function OverviewPage() {
           </div>
         </div>
       ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2" data-testid="overview-board">
+        <div
+          className="mt-8 grid gap-4 sm:grid-cols-2 pb-overview-stage"
+          data-testid="overview-board"
+        >
           {[...board.issues, ...board.wins].map((card, i) => (
             <article
               key={`${card.platform ?? "x"}-${card.title}-${card.metricKey ?? i}`}
-              className="rounded-xl border border-[var(--pb-line)] bg-white/80 p-5"
+              className="pb-depth-card rounded-xl border border-[var(--pb-line)] bg-white/80 p-5"
             >
               <p
                 className="text-xs font-semibold uppercase tracking-wide"
