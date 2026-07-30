@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/db/prisma";
 import { getMetaConfig } from "@/lib/platforms/instagram/config";
+import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 
 export type HealthStatus = "ok" | "degraded" | "unknown" | "down";
 
 export type HealthSubsystem = {
-  id: "auth" | "database" | "instagram" | "facebook";
+  id: "auth" | "database" | "instagram" | "facebook" | "linkedin";
   label: string;
   status: HealthStatus;
   detail?: string;
@@ -12,22 +13,36 @@ export type HealthSubsystem = {
 };
 
 export type HealthReport = {
-  phase: 2;
+  phase: 3;
   subsystems: HealthSubsystem[];
 };
 
 async function platformHealth(
   userId: string | undefined,
-  platform: "instagram" | "facebook",
+  platform: "instagram" | "facebook" | "linkedin",
   checkedAt: string,
+  unconfiguredDetail: string,
+  fixtureDetail: string,
+  configuredDetail: string,
 ): Promise<Omit<HealthSubsystem, "id" | "label">> {
-  const cfg = getMetaConfig();
   let status: HealthStatus = "unknown";
-  let detail = cfg.useFixtures
-    ? "Fixture mode enabled"
-    : cfg.configured
-      ? "Meta app configured — no connection yet"
-      : "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)";
+  let detail = unconfiguredDetail;
+
+  if (platform === "linkedin") {
+    const cfg = getLinkedInConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  } else {
+    const cfg = getMetaConfig();
+    detail = cfg.useFixtures
+      ? fixtureDetail
+      : cfg.configured
+        ? configuredDetail
+        : unconfiguredDetail;
+  }
 
   if (userId) {
     const conn = await prisma.socialConnection.findFirst({
@@ -63,11 +78,33 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     dbDetail = "Database connection failed";
   }
 
-  const ig = await platformHealth(userId, "instagram", checkedAt);
-  const fb = await platformHealth(userId, "facebook", checkedAt);
+  const ig = await platformHealth(
+    userId,
+    "instagram",
+    checkedAt,
+    "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Meta app configured — no connection yet",
+  );
+  const fb = await platformHealth(
+    userId,
+    "facebook",
+    checkedAt,
+    "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)",
+    "Fixture mode enabled",
+    "Meta app configured — no connection yet",
+  );
+  const li = await platformHealth(
+    userId,
+    "linkedin",
+    checkedAt,
+    "LINKEDIN_CLIENT_ID/SECRET missing (or fixtures)",
+    "Fixture mode enabled",
+    "LinkedIn app configured — no connection yet",
+  );
 
   return {
-    phase: 2,
+    phase: 3,
     subsystems: [
       {
         id: "auth",
@@ -83,20 +120,9 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
         detail: dbDetail,
         checkedAt,
       },
-      {
-        id: "instagram",
-        label: "Instagram",
-        status: ig.status,
-        detail: ig.detail,
-        checkedAt,
-      },
-      {
-        id: "facebook",
-        label: "Facebook",
-        status: fb.status,
-        detail: fb.detail,
-        checkedAt,
-      },
+      { id: "instagram", label: "Instagram", ...ig },
+      { id: "facebook", label: "Facebook", ...fb },
+      { id: "linkedin", label: "LinkedIn", ...li },
     ],
   };
 }

@@ -11,6 +11,11 @@ import {
   disconnectFacebookAction,
   syncFacebookAction,
 } from "@/app/actions/facebook";
+import {
+  disconnectLinkedInAction,
+  syncLinkedInAction,
+} from "@/app/actions/linkedin";
+import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 
 function PlatformSection({
   title,
@@ -19,6 +24,7 @@ function PlatformSection({
   connectHref,
   connection,
   configured,
+  configHint,
   syncAction,
   disconnectAction,
 }: {
@@ -34,6 +40,7 @@ function PlatformSection({
     lastSyncError: string | null;
   } | null;
   configured: boolean;
+  configHint: string;
   syncAction: (formData: FormData) => Promise<void>;
   disconnectAction: (formData: FormData) => Promise<void>;
 }) {
@@ -45,10 +52,7 @@ function PlatformSection({
       <p className="mt-2 text-sm text-[var(--pb-slate)]">{description}</p>
 
       {!configured ? (
-        <p className="mt-4 text-sm text-[var(--pb-warn)]">
-          Configure <code>META_APP_ID</code> + <code>META_APP_SECRET</code>, or
-          set <code>META_USE_FIXTURES=true</code> for local/demo sync.
-        </p>
+        <p className="mt-4 text-sm text-[var(--pb-warn)]">{configHint}</p>
       ) : null}
 
       {connection && connection.status !== "disconnected" ? (
@@ -123,7 +127,8 @@ export default async function SettingsPage({
     typeof params.disconnected === "string" ? params.disconnected : null;
 
   const cfg = getMetaConfig();
-  const [ig, fb] = await Promise.all([
+  const liCfg = getLinkedInConfig();
+  const [ig, fb, li] = await Promise.all([
     prisma.socialConnection.findFirst({
       where: { userId: user.id, platform: "instagram" },
       orderBy: { updatedAt: "desc" },
@@ -132,7 +137,14 @@ export default async function SettingsPage({
       where: { userId: user.id, platform: "facebook" },
       orderBy: { updatedAt: "desc" },
     }),
+    prisma.socialConnection.findFirst({
+      where: { userId: user.id, platform: "linkedin" },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
+
+  const label = (p: string | null) =>
+    p === "facebook" ? "Facebook" : p === "linkedin" ? "LinkedIn" : "Instagram";
 
   return (
     <main>
@@ -150,12 +162,12 @@ export default async function SettingsPage({
       ) : null}
       {connected ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]">
-          {connected === "facebook" ? "Facebook" : "Instagram"} connected.
+          {label(connected)} connected.
         </p>
       ) : null}
       {disconnected ? (
         <p className="mt-4 text-sm text-[var(--pb-slate)]">
-          {disconnected === "facebook" ? "Facebook" : "Instagram"} disconnected.
+          {label(disconnected)} disconnected.
         </p>
       ) : null}
 
@@ -166,6 +178,7 @@ export default async function SettingsPage({
         connectHref="/api/oauth/instagram/start"
         connection={ig}
         configured={cfg.configured}
+        configHint="Configure META_APP_ID + META_APP_SECRET, or set META_USE_FIXTURES=true."
         syncAction={syncInstagramAction}
         disconnectAction={disconnectInstagramAction}
       />
@@ -177,8 +190,21 @@ export default async function SettingsPage({
         connectHref="/api/oauth/facebook/start"
         connection={fb}
         configured={cfg.configured}
+        configHint="Configure META_APP_ID + META_APP_SECRET, or set META_USE_FIXTURES=true."
         syncAction={syncFacebookAction}
         disconnectAction={disconnectFacebookAction}
+      />
+
+      <PlatformSection
+        title="LinkedIn"
+        description="Connect LinkedIn for dwell/comment quality and first-hour velocity signals. Fatigue and shadowban heuristics run on snapshots only."
+        testIdPrefix="li"
+        connectHref="/api/oauth/linkedin/start"
+        connection={li}
+        configured={liCfg.configured}
+        configHint="Configure LINKEDIN_CLIENT_ID + SECRET, or set LINKEDIN_USE_FIXTURES=true (META_USE_FIXTURES also enables LI fixtures)."
+        syncAction={syncLinkedInAction}
+        disconnectAction={disconnectLinkedInAction}
       />
 
       <ul className="mt-8 space-y-2 text-sm">

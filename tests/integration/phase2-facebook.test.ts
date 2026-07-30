@@ -83,9 +83,9 @@ describe.runIf(hasDb)("phase 2 facebook fixtures + tenancy", () => {
     ).toBe(0);
   });
 
-  it("Health reports phase 2 and Facebook connected", async () => {
+  it("Health reports Facebook connected", async () => {
     const report = await getHealthReport(userAId);
-    expect(report.phase).toBe(2);
+    expect(report.phase).toBeGreaterThanOrEqual(2);
     const fb = report.subsystems.find((s) => s.id === "facebook");
     expect(fb?.status).toBe("ok");
   });
