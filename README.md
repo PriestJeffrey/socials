@@ -8,6 +8,7 @@ Know what's broken, what's working, and what to post next.
 
 | Doc | Purpose |
 |---|---|
+| [Live accounts setup](docs/live-accounts-setup.md) | Real Meta / LinkedIn OAuth + publish |
 | [V1 ready for UAT](docs/v1-core-ready-for-uat.md) | Demo login + sign order |
 | [V1 ship pack](docs/v1-core-ship.md) | S2–S6 checklists |
 | [Complete SDLC](docs/Pulseboard-Complete-SDLC.md) | Full build / security / phase spec |

@@ -5,7 +5,7 @@ import { writeAudit } from "@/lib/audit/log";
 import { jobQueue } from "@/lib/jobs";
 import { clock } from "@/lib/clock";
 import type { PlatformAdapter } from "@/lib/platforms/types";
-import { getLinkedInConfig } from "./config";
+import { getLinkedInConfig, LINKEDIN_OAUTH_SCOPES } from "./config";
 import {
   buildLinkedInOAuthAuthorizeUrl,
   exchangeLinkedInCode,
@@ -28,7 +28,7 @@ export const linkedinAdapter: PlatformAdapter = {
     oauth: true,
     readMetrics: true,
     readPosts: true,
-    publish: false,
+    publish: true,
     schedule: false,
     comments: false,
     manualCopy: false,
@@ -93,13 +93,14 @@ export const linkedinAdapter: PlatformAdapter = {
         displayName,
         accessTokenEnc: encryptAesGcm(accessToken),
         tokenExpiresAt,
-        scopes: "linkedin",
+        scopes: LINKEDIN_OAUTH_SCOPES,
         status: "connected",
       },
       update: {
         displayName,
         accessTokenEnc: encryptAesGcm(accessToken),
         tokenExpiresAt,
+        scopes: LINKEDIN_OAUTH_SCOPES,
         status: "connected",
         lastSyncError: null,
       },

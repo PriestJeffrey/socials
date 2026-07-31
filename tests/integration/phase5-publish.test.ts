@@ -113,7 +113,7 @@ describe.runIf(hasDb)("phase 5 drafts + publish", () => {
     expect(futureJob?.status).toBe("pending");
   });
 
-  it("refuses live publish when fixtures are off", async () => {
+  it("refuses live Instagram publish without media URL when fixtures are off", async () => {
     const prev = process.env.META_USE_FIXTURES;
     process.env.META_USE_FIXTURES = "false";
     const draft = await prisma.draft.create({
@@ -126,7 +126,7 @@ describe.runIf(hasDb)("phase 5 drafts + publish", () => {
     });
     await expect(
       runPublishDraft({ userId: userA, draftId: draft.id }),
-    ).rejects.toThrow(/not implemented/i);
+    ).rejects.toThrow(/media URL/i);
     const still = await prisma.draft.findUniqueOrThrow({ where: { id: draft.id } });
     expect(still.status).toBe("draft");
     process.env.META_USE_FIXTURES = prev ?? "true";

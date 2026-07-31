@@ -135,12 +135,16 @@ model Draft {
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   platform        String
   body            String
+  /** Public https image/video URL - required for live Instagram publish. */
+  mediaUrl        String?
   goalTag         String?
   conversionNote  String?
   status          String    @default("draft")
   scheduledAt     DateTime?
   connectionId    String?
   publishedPostId String?
+  /** Platform post id after live API succeeds - prevents duplicate retries. */
+  externalPublishId String?
   sourceDraftId   String?
   sentimentLabel  String?
   sentimentScore  Float?

@@ -70,9 +70,10 @@ export default async function CreatePage({
         className="pb-panel mt-4 max-w-xl rounded-xl px-4 py-3 text-xs text-[var(--pb-slate)]"
         data-testid="create-fixture-banner"
       >
-        Local / fixture publish only. Nothing is sent to Meta or LinkedIn
-        until live posting is wired. X never auto-publishes - use Compose
-        X to copy.
+        Publish follows your env: fixture mode writes a local post; live mode
+        posts to real Instagram / Facebook / LinkedIn when fixtures are off and
+        accounts are connected. Live Instagram needs a public https image or
+        video URL. X never auto-publishes - use Compose X to copy.
       </p>
 
       {error ? (
@@ -147,6 +148,24 @@ export default async function CreatePage({
           />
           <p className="mt-1 text-xs text-[var(--pb-slate)]">
             Preview trim example: {samplePreview.slice(0, 80)}…
+          </p>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-[var(--pb-ink)]" htmlFor="mediaUrl">
+            Media URL (Instagram live)
+          </label>
+          <input
+            id="mediaUrl"
+            name="mediaUrl"
+            type="url"
+            data-testid="create-media-url"
+            className="pb-input"
+            placeholder="https://… image or video (required for live IG publish)"
+          />
+          <p className="mt-1 text-xs text-[var(--pb-slate)]">
+            Meta cannot publish caption-only IG feed posts. Optional for FB/LI
+            and fixture mode.
           </p>
         </div>
 

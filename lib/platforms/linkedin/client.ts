@@ -1,4 +1,5 @@
 import { getLinkedInConfig, LINKEDIN_OAUTH_SCOPES } from "./config";
+import { redactErrorMessage } from "@/lib/security/redact-error";
 
 export type LiPostItem = {
   id: string;
@@ -121,7 +122,9 @@ export async function exchangeLinkedInCode(code: string): Promise<{
     error_description?: string;
   };
   if (!json.access_token) {
-    throw new Error(json.error_description ?? "LinkedIn token exchange failed");
+    throw new Error(
+      redactErrorMessage(json.error_description ?? "LinkedIn token exchange failed"),
+    );
   }
   return { accessToken: json.access_token, expiresIn: json.expires_in };
 }
@@ -143,7 +146,9 @@ export async function fetchLinkedInProfile(accessToken: string): Promise<{
     error_description?: string;
   };
   if (!json.sub) {
-    throw new Error(json.error_description ?? "LinkedIn profile fetch failed");
+    throw new Error(
+      redactErrorMessage(json.error_description ?? "LinkedIn profile fetch failed"),
+    );
   }
   return { externalAccountId: json.sub, displayName: json.name ?? json.sub };
 }
@@ -178,4 +183,82 @@ export function buildLinkedInOAuthAuthorizeUrl(state: string): string {
   url.searchParams.set("state", state);
   url.searchParams.set("scope", LINKEDIN_OAUTH_SCOPES);
   return url.toString();
+}
+
+export function toLinkedInPersonUrn(externalAccountId: string): string {
+  const id = externalAccountId.trim();
+  if (!id) {
+    throw new Error("LinkedIn author id is missing");
+  }
+  if (id.startsWith("urn:li:person:")) {
+    const rest = id.slice("urn:li:person:".length).trim();
+    if (!rest) throw new Error("LinkedIn person URN is empty");
+    if (rest.includes("/") || /\s/.test(rest)) {
+      throw new Error("Invalid LinkedIn person URN");
+    }
+    return `urn:li:person:${rest}`;
+  }
+  if (id.startsWith("urn:li:")) {
+    throw new Error(
+      "LinkedIn author must be a member person URN (urn:li:person:…), not an organization",
+    );
+  }
+  // OpenID `sub` or raw person id — reject path-like / whitespace junk
+  if (id.includes("/") || /\s/.test(id) || id.includes(":")) {
+    throw new Error("Invalid LinkedIn person id");
+  }
+  return `urn:li:person:${id}`;
+}
+
+/** Live LinkedIn member UGC text post (requires w_member_social). */
+export async function publishLinkedInUgcPost(input: {
+  accessToken: string;
+  authorId: string;
+  commentary: string;
+}): Promise<{ platformPostId: string }> {
+  const author = toLinkedInPersonUrn(input.authorId);
+  const res = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${input.accessToken}`,
+      "Content-Type": "application/json",
+      "X-Restli-Protocol-Version": "2.0.0",
+    },
+    body: JSON.stringify({
+      author,
+      lifecycleState: "PUBLISHED",
+      specificContent: {
+        "com.linkedin.ugc.ShareContent": {
+          shareCommentary: {
+            text: input.commentary.slice(0, 3000),
+          },
+          shareMediaCategory: "NONE",
+        },
+      },
+      visibility: {
+        "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+      },
+    }),
+  });
+  const json = (await res.json().catch(() => ({}))) as {
+    id?: string;
+    message?: string;
+    errorDetail?: string;
+    serviceErrorCode?: number;
+  };
+  const restliId =
+    res.headers.get("x-restli-id")?.trim() ||
+    res.headers.get("x-linkedin-id")?.trim() ||
+    "";
+  const platformPostId = (json.id ?? restliId).trim();
+  if (!res.ok || !platformPostId) {
+    throw new Error(
+      redactErrorMessage(
+        json.message ??
+          json.errorDetail ??
+          `LinkedIn UGC publish failed (${res.status})`,
+      ),
+    );
+  }
+  return { platformPostId };
 }

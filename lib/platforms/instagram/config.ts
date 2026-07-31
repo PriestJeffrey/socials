@@ -28,7 +28,9 @@ export function getMetaConfig(): MetaConfig {
 export const IG_OAUTH_SCOPES = [
   "instagram_basic",
   "instagram_manage_insights",
+  "instagram_content_publish",
   "pages_show_list",
   "pages_read_engagement",
+  "pages_manage_posts",
   "business_management",
 ].join(",");

@@ -2,6 +2,7 @@ import { createHash, randomBytes } from "crypto";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
 import { clock } from "@/lib/clock";
+import { cookieSecure } from "@/lib/security/cookie-secure";
 
 const COOKIE_NAME = process.env.COOKIE_NAME ?? "pulseboard_session";
 
@@ -33,7 +34,7 @@ export async function setSessionCookie(token: string): Promise<void> {
   const jar = await cookies();
   jar.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true" || process.env.NODE_ENV === "production",
+    secure: cookieSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: sessionTtlDays() * 24 * 60 * 60,
@@ -44,7 +45,7 @@ export async function clearSessionCookie(): Promise<void> {
   const jar = await cookies();
   jar.set(COOKIE_NAME, "", {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true" || process.env.NODE_ENV === "production",
+    secure: cookieSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,

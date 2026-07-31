@@ -22,6 +22,7 @@ export async function createDraftAction(formData: FormData) {
 
   const platform = formStr(formData, "platform");
   const body = formStr(formData, "body");
+  const mediaUrl = formStr(formData, "mediaUrl") || null;
   const goalTag = formStr(formData, "goalTag") || null;
   const conversionNote = formStr(formData, "conversionNote") || null;
   const mode = formStr(formData, "mode"); // save | publish | schedule
@@ -31,11 +32,40 @@ export async function createDraftAction(formData: FormData) {
     redirect("/create?error=Invalid%20draft");
   }
 
+  if (
+    platform === "instagram" &&
+    (mode === "publish" || mode === "schedule")
+  ) {
+    const { getMetaConfig } = await import("@/lib/platforms/instagram/config");
+    if (!getMetaConfig().useFixtures) {
+      if (!mediaUrl) {
+        redirect(
+          "/create?error=" +
+            encodeURIComponent(
+              "Live Instagram publish needs a public https image or video URL",
+            ),
+        );
+      }
+      try {
+        const { assertPublicHttpsMediaUrl } = await import(
+          "@/lib/security/public-media-url"
+        );
+        assertPublicHttpsMediaUrl(mediaUrl);
+      } catch (err) {
+        const { toSafeErrorMessage } = await import("@/lib/security/redact-error");
+        redirect(
+          `/create?error=${encodeURIComponent(toSafeErrorMessage(err))}`,
+        );
+      }
+    }
+  }
+
   const draft = await prisma.draft.create({
     data: {
       userId: user.id,
       platform,
       body,
+      mediaUrl,
       goalTag,
       conversionNote,
       status: "draft",
@@ -83,9 +113,14 @@ export async function createDraftAction(formData: FormData) {
       orderBy: { updatedAt: "desc" },
       select: { lastError: true },
     });
-    const detail =
-      failedJob?.lastError?.trim() ||
-      "Publish did not complete - check Calendar and platform connection";
+    const { toSafeErrorMessage } = await import("@/lib/security/redact-error");
+    const detail = toSafeErrorMessage(
+      failedJob?.lastError?.trim()
+        ? new Error(failedJob.lastError.trim())
+        : new Error(
+            "Publish did not complete - check Calendar and platform connection",
+          ),
+    );
     redirect(`/create?error=${encodeURIComponent(detail)}`);
   }
 
@@ -201,9 +236,12 @@ export async function publishExistingDraftAction(formData: FormData) {
     orderBy: { updatedAt: "desc" },
     select: { lastError: true },
   });
-  const detail =
-    failedJob?.lastError?.trim() ||
-    "Publish did not complete - check connection and fixtures";
+  const { toSafeErrorMessage } = await import("@/lib/security/redact-error");
+  const detail = toSafeErrorMessage(
+    failedJob?.lastError?.trim()
+      ? new Error(failedJob.lastError.trim())
+      : new Error("Publish did not complete - check connection and fixtures"),
+  );
   redirect(`/calendar?error=${encodeURIComponent(detail)}`);
 }
 

@@ -133,7 +133,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     checkedAt,
     "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)",
     "Fixture mode enabled",
-    "Meta app configured - no connection yet",
+    "Meta app configured (live) - connect in Settings",
   );
   const fb = await platformHealth(
     userId,
@@ -141,7 +141,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     checkedAt,
     "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)",
     "Fixture mode enabled",
-    "Meta app configured - no connection yet",
+    "Meta app configured (live) - connect in Settings",
   );
   const li = await platformHealth(
     userId,
@@ -149,7 +149,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     checkedAt,
     "LINKEDIN_CLIENT_ID/SECRET missing (or fixtures)",
     "Fixture mode enabled",
-    "LinkedIn app configured - no connection yet",
+    "LinkedIn app configured (live) - publish ok; sync may be sparse without product access",
   );
 
   return {

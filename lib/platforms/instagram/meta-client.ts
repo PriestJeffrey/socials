@@ -1,4 +1,5 @@
 import { getMetaConfig, IG_OAUTH_SCOPES } from "./config";
+import { redactErrorMessage } from "@/lib/security/redact-error";
 
 export type IgMediaItem = {
   id: string;
@@ -81,7 +82,9 @@ async function graphGet<T>(
   const res = await fetch(url);
   const body = (await res.json()) as T & { error?: { message?: string } };
   if (!res.ok || body.error) {
-    throw new Error(body.error?.message ?? `Graph error ${res.status}`);
+    throw new Error(
+      redactErrorMessage(body.error?.message ?? `Graph error ${res.status}`),
+    );
   }
   return body;
 }
@@ -109,7 +112,9 @@ export async function exchangeCodeForToken(code: string): Promise<{
     error?: { message?: string };
   };
   if (!body.access_token) {
-    throw new Error(body.error?.message ?? "Token exchange failed");
+    throw new Error(
+      redactErrorMessage(body.error?.message ?? "Token exchange failed"),
+    );
   }
   return { accessToken: body.access_token, expiresIn: body.expires_in };
 }
@@ -134,7 +139,9 @@ export async function exchangeLongLivedToken(shortToken: string): Promise<{
     error?: { message?: string };
   };
   if (!body.access_token) {
-    throw new Error(body.error?.message ?? "Long-lived token exchange failed");
+    throw new Error(
+      redactErrorMessage(body.error?.message ?? "Long-lived token exchange failed"),
+    );
   }
   return { accessToken: body.access_token, expiresIn: body.expires_in };
 }
@@ -241,4 +248,142 @@ export function buildOAuthAuthorizeUrl(state: string): string {
   url.searchParams.set("scope", IG_OAUTH_SCOPES);
   url.searchParams.set("response_type", "code");
   return url.toString();
+}
+
+async function graphPost<T>(
+  path: string,
+  accessToken: string,
+  body: Record<string, string>,
+): Promise<T> {
+  const { graphVersion } = getMetaConfig();
+  const url = new URL(`https://graph.facebook.com/${graphVersion}${path}`);
+  const form = new URLSearchParams(body);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: form,
+  });
+  const json = (await res.json()) as T & { error?: { message?: string } };
+  if (!res.ok || json.error) {
+    throw new Error(
+      redactErrorMessage(json.error?.message ?? `Graph POST error ${res.status}`),
+    );
+  }
+  return json;
+}
+
+function inferIgMediaKind(mediaUrl: string): "IMAGE" | "VIDEO" {
+  const lower = mediaUrl.toLowerCase().split("?")[0] ?? mediaUrl;
+  if (/\.(mp4|mov|m4v|webm)$/i.test(lower)) return "VIDEO";
+  return "IMAGE";
+}
+
+function containerLooksFailed(code: string, statusText: string): boolean {
+  if (code === "ERROR" || code === "EXPIRED") return true;
+  // Empty status_code must not count as ready when status describes a failure
+  if (!code && statusText && /\b(error|failed|expired)\b/i.test(statusText)) {
+    return true;
+  }
+  return false;
+}
+
+async function waitForIgContainer(
+  containerId: string,
+  accessToken: string,
+  kind: "IMAGE" | "VIDEO",
+): Promise<void> {
+  const maxAttempts = kind === "VIDEO" ? 45 : 3;
+  let lastCode = "";
+  let lastStatus = "";
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const status = await graphGet<{
+      status_code?: string;
+      status?: string;
+    }>(`/${containerId}`, accessToken, {
+      fields: "status_code,status",
+    });
+    const code = (status.status_code ?? "").toUpperCase().trim();
+    const statusText = (status.status ?? "").trim();
+    lastCode = code;
+    lastStatus = statusText;
+
+    if (containerLooksFailed(code, statusText)) {
+      throw new Error(
+        redactErrorMessage(statusText || "Instagram media container failed"),
+      );
+    }
+    if (code === "FINISHED" || code === "PUBLISHED") return;
+
+    // IMAGE: empty status_code is often ready — but only after ERROR check above.
+    if (kind === "IMAGE" && !code) return;
+
+    // VIDEO (or IMAGE still IN_PROGRESS): keep polling
+    if (i < maxAttempts - 1) {
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+
+  if (kind === "VIDEO") {
+    throw new Error(
+      redactErrorMessage(
+        `Instagram video container timed out waiting for FINISHED (last status_code: ${lastCode || "empty"}${lastStatus ? `; ${lastStatus}` : ""})`,
+      ),
+    );
+  }
+  if (lastCode === "IN_PROGRESS") {
+    throw new Error("Instagram media container still processing");
+  }
+}
+
+/** Live IG Content Publishing: create container then publish. Requires public media URL. */
+export async function publishIgMedia(input: {
+  igUserId: string;
+  accessToken: string;
+  caption: string;
+  mediaUrl: string;
+}): Promise<{ platformPostId: string; permalink?: string }> {
+  const kind = inferIgMediaKind(input.mediaUrl);
+  const containerBody: Record<string, string> = {
+    caption: input.caption.slice(0, 2200),
+  };
+  if (kind === "VIDEO") {
+    containerBody.media_type = "REELS";
+    containerBody.video_url = input.mediaUrl;
+  } else {
+    containerBody.image_url = input.mediaUrl;
+  }
+
+  const container = await graphPost<{ id?: string }>(
+    `/${input.igUserId}/media`,
+    input.accessToken,
+    containerBody,
+  );
+  if (!container.id) throw new Error("Instagram media container missing id");
+
+  await waitForIgContainer(container.id, input.accessToken, kind);
+
+  const published = await graphPost<{ id?: string }>(
+    `/${input.igUserId}/media_publish`,
+    input.accessToken,
+    { creation_id: container.id },
+  );
+  if (!published.id) throw new Error("Instagram media_publish missing id");
+
+  let permalink: string | undefined;
+  try {
+    const detail = await graphGet<{ permalink?: string }>(
+      `/${published.id}`,
+      input.accessToken,
+      { fields: "permalink" },
+    );
+    permalink = detail.permalink;
+  } catch {
+    /* optional */
+  }
+
+  return { platformPostId: published.id, permalink };
 }

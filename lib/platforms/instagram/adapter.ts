@@ -5,7 +5,7 @@ import { writeAudit } from "@/lib/audit/log";
 import { jobQueue } from "@/lib/jobs";
 import { clock } from "@/lib/clock";
 import type { PlatformAdapter } from "@/lib/platforms/types";
-import { getMetaConfig } from "./config";
+import { getMetaConfig, IG_OAUTH_SCOPES } from "./config";
 import {
   buildOAuthAuthorizeUrl,
   discoverIgAccount,
@@ -31,7 +31,7 @@ export const instagramAdapter: PlatformAdapter = {
     oauth: true,
     readMetrics: true,
     readPosts: true,
-    publish: false,
+    publish: true,
     schedule: false,
     comments: false,
     manualCopy: false,
@@ -98,13 +98,14 @@ export const instagramAdapter: PlatformAdapter = {
         displayName,
         accessTokenEnc: encryptAesGcm(accessToken),
         tokenExpiresAt,
-        scopes: "instagram",
+        scopes: IG_OAUTH_SCOPES,
         status: "connected",
       },
       update: {
         displayName,
         accessTokenEnc: encryptAesGcm(accessToken),
         tokenExpiresAt,
+        scopes: IG_OAUTH_SCOPES,
         status: "connected",
         lastSyncError: null,
       },

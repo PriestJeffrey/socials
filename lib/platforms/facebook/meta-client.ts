@@ -1,4 +1,5 @@
 import { getMetaConfig, FB_OAUTH_SCOPES } from "./config";
+import { redactErrorMessage } from "@/lib/security/redact-error";
 
 export type FbPostItem = {
   id: string;
@@ -83,7 +84,9 @@ async function graphGet<T>(
   const res = await fetch(url);
   const body = (await res.json()) as T & { error?: { message?: string } };
   if (!res.ok || body.error) {
-    throw new Error(body.error?.message ?? `Graph error ${res.status}`);
+    throw new Error(
+      redactErrorMessage(body.error?.message ?? `Graph error ${res.status}`),
+    );
   }
   return body;
 }
@@ -114,7 +117,9 @@ export async function exchangeCodeForToken(code: string): Promise<{
     error?: { message?: string };
   };
   if (!body.access_token) {
-    throw new Error(body.error?.message ?? "Token exchange failed");
+    throw new Error(
+      redactErrorMessage(body.error?.message ?? "Token exchange failed"),
+    );
   }
   return { accessToken: body.access_token, expiresIn: body.expires_in };
 }
@@ -139,7 +144,9 @@ export async function exchangeLongLivedToken(shortToken: string): Promise<{
     error?: { message?: string };
   };
   if (!body.access_token) {
-    throw new Error(body.error?.message ?? "Long-lived token exchange failed");
+    throw new Error(
+      redactErrorMessage(body.error?.message ?? "Long-lived token exchange failed"),
+    );
   }
   return { accessToken: body.access_token, expiresIn: body.expires_in };
 }
@@ -234,4 +241,55 @@ export function buildFbOAuthAuthorizeUrl(state: string): string {
   url.searchParams.set("scope", FB_OAUTH_SCOPES);
   url.searchParams.set("response_type", "code");
   return url.toString();
+}
+
+async function graphPost<T>(
+  path: string,
+  accessToken: string,
+  body: Record<string, string>,
+): Promise<T> {
+  const { graphVersion } = getMetaConfig();
+  const url = new URL(`https://graph.facebook.com/${graphVersion}${path}`);
+  const form = new URLSearchParams(body);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: form,
+  });
+  const json = (await res.json()) as T & { error?: { message?: string } };
+  if (!res.ok || json.error) {
+    throw new Error(
+      redactErrorMessage(json.error?.message ?? `Graph POST error ${res.status}`),
+    );
+  }
+  return json;
+}
+
+/** Live Facebook Page text post. */
+export async function publishFbPagePost(input: {
+  pageId: string;
+  accessToken: string;
+  message: string;
+}): Promise<{ platformPostId: string; permalink?: string }> {
+  const created = await graphPost<{ id?: string }>(
+    `/${input.pageId}/feed`,
+    input.accessToken,
+    { message: input.message.slice(0, 63206) },
+  );
+  if (!created.id) throw new Error("Facebook feed post missing id");
+  let permalink: string | undefined;
+  try {
+    const detail = await graphGet<{ permalink_url?: string }>(
+      `/${created.id}`,
+      input.accessToken,
+      { fields: "permalink_url" },
+    );
+    permalink = detail.permalink_url;
+  } catch {
+    /* optional */
+  }
+  return { platformPostId: created.id, permalink };
 }

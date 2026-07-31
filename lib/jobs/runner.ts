@@ -5,6 +5,7 @@ import { runLinkedInSync } from "@/lib/platforms/linkedin/sync";
 import { runPublishDraft } from "@/lib/content/publish";
 import { prisma } from "@/lib/db/prisma";
 import { log, createRequestId } from "@/lib/logging/logger";
+import { toSafeErrorMessage } from "@/lib/security/redact-error";
 
 /** Claim pending jobs and run handlers. Pass userId to scope to one tenant. */
 export async function processPendingJobs(
@@ -39,7 +40,7 @@ export async function processPendingJobs(
       await jobRunner.markDone(job.id);
       done += 1;
     } catch (err) {
-      const message = err instanceof Error ? err.message : "job failed";
+      const message = toSafeErrorMessage(err, "job failed");
       await jobRunner.markFailed(job.id, message);
       if (job.type === "publish" && job.payload.draftId) {
         await prisma.draft.updateMany({

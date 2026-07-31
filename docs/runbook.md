@@ -18,6 +18,10 @@
 
 **Do not** commit or reuse compose placeholders like `dev-cron-secret-change-me` or `replace-with-long-random-string-min-32-chars` - the app rejects them.
 
+## Live Meta / LinkedIn (optional)
+
+See **[docs/live-accounts-setup.md](live-accounts-setup.md)**. Set `META_USE_FIXTURES=false` / `LINKEDIN_USE_FIXTURES=false` plus app credentials. Docker defaults fixtures on but passes through host `.env` overrides and Meta/LinkedIn secrets.
+
 ## Production deploy checklist
 1. Provision Postgres (pooled URL for runtime; direct URL for migrate)
 2. Set secrets: `SESSION_SECRET`, `TOKEN_ENCRYPTION_KEY`, `CRON_SECRET`, platform keys or fixtures flags

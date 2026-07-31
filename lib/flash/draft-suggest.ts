@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { encryptAesGcm, decryptAesGcm } from "@/lib/crypto/aes";
+import { cookieSecure } from "@/lib/security/cookie-secure";
 
 const COOKIE = "pb_draft_suggest";
 const MAX_AGE_SEC = 120;
@@ -23,9 +24,7 @@ export async function setDraftSuggestFlash(
   );
   jar.set(COOKIE, payload, {
     httpOnly: true,
-    secure:
-      process.env.COOKIE_SECURE === "true" ||
-      process.env.NODE_ENV === "production",
+    secure: cookieSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: MAX_AGE_SEC,
@@ -40,9 +39,7 @@ export async function takeDraftSuggestFlash(
   const raw = jar.get(COOKIE)?.value;
   jar.set(COOKIE, "", {
     httpOnly: true,
-    secure:
-      process.env.COOKIE_SECURE === "true" ||
-      process.env.NODE_ENV === "production",
+    secure: cookieSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,

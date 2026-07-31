@@ -32,7 +32,9 @@ export async function runLinkedInSync(input: {
       postsData = fix.posts;
       insights = fix.insights;
     } else {
-      // Live analytics depend on product scopes - soft-empty until Human confirms app access
+      // Live member post/analytics APIs need LinkedIn product access
+      // (Community Management / marketing). Without them, sync stays empty
+      // on purpose - OAuth + live UGC publish still work.
       postsData = [];
       insights = [];
     }

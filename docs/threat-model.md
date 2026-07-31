@@ -48,7 +48,8 @@
 |---|---|---|
 | CSP `unsafe-inline` / `unsafe-eval` | Med | Baseline CSP only; tighten post-V1 |
 | In-memory rate limit (`RATE_LIMIT_BACKEND=memory`) | Med | Redis later; multi-instance bypass |
-| Live Meta Graph publish | Med | Fixture gate; deferred until real apps/creds |
+| Live Meta/LinkedIn publish | Med | Live path ships; tokens AES-GCM at rest; no token logging on publish |
+| Live IG media URL → Meta SSRF | Med | Meta fetches user-supplied `mediaUrl`; **accepted** with https allowlist harden (`requireHttpsMediaUrl` in `lib/content/publish.ts`). Pulseboard does not server-side fetch the URL. |
 | Sentry stub (`lib/monitoring/sentry.ts`) | Low | No full `@sentry/nextjs` until DSN + SDK |
 
 **Do not weaken:** compose still requires strong `SESSION_SECRET` / `TOKEN_ENCRYPTION_KEY` / `CRON_SECRET` (no weak defaults).

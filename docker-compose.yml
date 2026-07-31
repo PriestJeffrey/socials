@@ -29,13 +29,24 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-pulseboard}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
-      APP_URL: http://localhost:3000
+      APP_URL: ${APP_URL:-http://localhost:3000}
       SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env - no weak default}
       TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?Set TOKEN_ENCRYPTION_KEY in .env}
-      COOKIE_SECURE: "false"
-      META_USE_FIXTURES: "true"
-      LINKEDIN_USE_FIXTURES: "true"
-      GEMINI_USE_FIXTURES: "true"
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      # Fixtures default on for demo; set false in host .env for live OAuth/publish.
+      META_USE_FIXTURES: ${META_USE_FIXTURES:-true}
+      LINKEDIN_USE_FIXTURES: ${LINKEDIN_USE_FIXTURES:-true}
+      GEMINI_USE_FIXTURES: ${GEMINI_USE_FIXTURES:-true}
+      META_APP_ID: ${META_APP_ID:-}
+      META_APP_SECRET: ${META_APP_SECRET:-}
+      META_REDIRECT_URI: ${META_REDIRECT_URI:-http://localhost:3000/api/oauth/instagram/callback}
+      META_FB_REDIRECT_URI: ${META_FB_REDIRECT_URI:-http://localhost:3000/api/oauth/facebook/callback}
+      META_GRAPH_VERSION: ${META_GRAPH_VERSION:-v21.0}
+      LINKEDIN_CLIENT_ID: ${LINKEDIN_CLIENT_ID:-}
+      LINKEDIN_CLIENT_SECRET: ${LINKEDIN_CLIENT_SECRET:-}
+      LINKEDIN_REDIRECT_URI: ${LINKEDIN_REDIRECT_URI:-http://localhost:3000/api/oauth/linkedin/callback}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.0-flash}
       CRON_SECRET: ${CRON_SECRET:?Set CRON_SECRET in .env - no weak default}
       NODE_ENV: production
     depends_on:
