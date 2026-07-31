@@ -33,13 +33,25 @@
 | TA0007 Discovery | Opaque ids; `/me` returns self only |
 
 ## Residual risk (Human accept)
+
+### Phase 0 seed
 | Risk | Severity | Notes |
 |---|---|---|
 | No MFA | Med | V2 backlog |
 | Local HTTP / no edge TLS | Low–Med | Until Phase 8 host |
 | In-memory rate limits | Med | Multi-instance weak until Redis |
 | Light SCA/SAST | Med | Deepen Phase 6–8 |
-| AES helper unused for OAuth yet | N/A | Phase 1 |
+| AES helper unused for OAuth yet | N/A | Closed in later phases (OAuth tokens) |
+
+### V1 core close-out (accepted for Human UAT / ship)
+| Risk | Severity | Notes |
+|---|---|---|
+| CSP `unsafe-inline` / `unsafe-eval` | Med | Baseline CSP only; tighten post-V1 |
+| In-memory rate limit (`RATE_LIMIT_BACKEND=memory`) | Med | Redis later; multi-instance bypass |
+| Live Meta Graph publish | Med | Fixture gate; deferred until real apps/creds |
+| Sentry stub (`lib/monitoring/sentry.ts`) | Low | No full `@sentry/nextjs` until DSN + SDK |
+
+**Do not weaken:** compose still requires strong `SESSION_SECRET` / `TOKEN_ENCRYPTION_KEY` / `CRON_SECRET` (no weak defaults).
 
 ## Phase exit
 Tactics touched → controls above → residual table → Human sign-off S0.

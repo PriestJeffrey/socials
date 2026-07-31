@@ -18,8 +18,9 @@ services:
 
   app:
     build: .
+    # Loopback only - localhost UAT still works (gstack /cso).
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       # Pass DB parts only - entrypoint builds percent-encoded DATABASE_URL.
       # Do not pass host DATABASE_URL (often @localhost) into the container.

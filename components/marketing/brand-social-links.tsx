@@ -7,6 +7,13 @@ function tileStyle(color: string | "mono"): CSSProperties | undefined {
   return { color };
 }
 
+/** Brand marketing profiles only - not in-app connection status. */
+function brandTitle(label: string, handle: string, live: boolean) {
+  return live
+    ? `Pulseboard on ${label} (${handle})`
+    : `Pulseboard on ${label} — brand profile not live yet`;
+}
+
 export function BrandSocialLinks({
   className = "",
 }: {
@@ -14,14 +21,12 @@ export function BrandSocialLinks({
 }) {
   return (
     <nav
-      aria-label="Pulseboard on social"
+      aria-label="Pulseboard brand profiles (not product connections)"
       data-testid="brand-social-links"
       className={`pb-social-dock ${className}`}
     >
       {brandSocialLinks.map((link) => {
-        const title = link.live
-          ? `${link.label} ${link.handle}`
-          : `${link.label} (coming soon)`;
+        const title = brandTitle(link.label, link.handle, link.live);
         const style = tileStyle(link.color);
 
         if (link.live) {
@@ -33,7 +38,7 @@ export function BrandSocialLinks({
               rel="noopener noreferrer"
               data-testid={`brand-social-${link.id}`}
               title={title}
-              aria-label={link.label}
+              aria-label={title}
               className="pb-social-tile"
               style={style}
             >
@@ -46,7 +51,7 @@ export function BrandSocialLinks({
           <span
             key={link.id}
             aria-disabled="true"
-            aria-label={`${link.label} (coming soon)`}
+            aria-label={title}
             data-testid={`brand-social-${link.id}`}
             title={title}
             className="pb-social-tile"

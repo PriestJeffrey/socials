@@ -96,7 +96,7 @@ export default async function CreatePage({
           Repurposed into {repurposed} draft(s).
         </p>
       ) : null}
-      {suggested ? (
+      {suggestBody ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]" data-testid="create-suggested">
           AI draft filled below - review before save/publish.
         </p>

@@ -85,40 +85,71 @@ export class DbJobQueue implements JobQueue {
   }
 }
 
-export class DbJobRunner implements JobRunner {
-  async claim(limit: number, userId?: string): Promise<JobRecord[]> {
-    const now = clock.now();
-    const pending = await prisma.job.findMany({
-      where: {
-        status: "pending",
-        runAfter: { lte: now },
-        ...(userId ? { userId } : {}),
-      },
-      orderBy: { runAfter: "asc" },
-      take: limit,
-    });
+type ClaimedJobRow = {
+  id: string;
+  userId: string;
+  type: string;
+  payload: unknown;
+  attempts: number;
+};
 
-    const claimed: JobRecord[] = [];
-    for (const job of pending) {
-      const updated = await prisma.job.updateMany({
-        where: { id: job.id, status: "pending" },
-        data: {
-          status: "running",
-          lockedAt: now,
-          attempts: { increment: 1 },
-        },
-      });
-      if (updated.count === 1) {
-        claimed.push({
-          id: job.id,
-          userId: job.userId,
-          type: job.type,
-          payload: job.payload as JobPayload,
-          attempts: job.attempts + 1,
-        });
-      }
-    }
-    return claimed;
+export class DbJobRunner implements JobRunner {
+  /**
+   * Atomically claim due jobs (Postgres `FOR UPDATE SKIP LOCKED`).
+   * Avoids findMany→updateMany under-claim / double-select under concurrent cron.
+   * Redis/external queue still deferred for multi-instance rate-limit/backpressure.
+   */
+  async claim(limit: number, userId?: string): Promise<JobRecord[]> {
+    if (limit <= 0) return [];
+    const now = clock.now();
+    const rows = userId
+      ? await prisma.$queryRaw<ClaimedJobRow[]>`
+          UPDATE "Job" AS j
+          SET
+            status = 'running',
+            "lockedAt" = ${now},
+            attempts = j.attempts + 1,
+            "updatedAt" = ${now}
+          FROM (
+            SELECT id
+            FROM "Job"
+            WHERE status = 'pending'
+              AND "runAfter" <= ${now}
+              AND "userId" = ${userId}
+            ORDER BY "runAfter" ASC
+            LIMIT ${limit}
+            FOR UPDATE SKIP LOCKED
+          ) AS picked
+          WHERE j.id = picked.id
+          RETURNING j.id, j."userId", j.type, j.payload, j.attempts
+        `
+      : await prisma.$queryRaw<ClaimedJobRow[]>`
+          UPDATE "Job" AS j
+          SET
+            status = 'running',
+            "lockedAt" = ${now},
+            attempts = j.attempts + 1,
+            "updatedAt" = ${now}
+          FROM (
+            SELECT id
+            FROM "Job"
+            WHERE status = 'pending'
+              AND "runAfter" <= ${now}
+            ORDER BY "runAfter" ASC
+            LIMIT ${limit}
+            FOR UPDATE SKIP LOCKED
+          ) AS picked
+          WHERE j.id = picked.id
+          RETURNING j.id, j."userId", j.type, j.payload, j.attempts
+        `;
+
+    return rows.map((job) => ({
+      id: job.id,
+      userId: job.userId,
+      type: job.type,
+      payload: job.payload as JobPayload,
+      attempts: job.attempts,
+    }));
   }
 
   async markDone(id: string): Promise<void> {

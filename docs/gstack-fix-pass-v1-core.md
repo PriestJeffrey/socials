@@ -32,8 +32,9 @@ Close the open UI + security mediums backlog on `v1-core` while keeping Wave B p
 ## Residual (accepted / Human)
 
 - S2–S6 still need Human UAT + `signed` replies (`docs/v1-core-ship.md`).
-- Live Meta publish, Redis rate-limit, CSP tighten remain post-V1.
+- Explicit post-V1 residuals: CSP `unsafe-inline` / `unsafe-eval`; in-memory rate-limit (Redis later); live Meta Graph deferred; Sentry stub (no full SDK).
 - For non-local Docker: set a strong `POSTGRES_PASSWORD` in `.env` (defaults remain for local fixtures only).
+- Do not weaken compose secrets requirements (`SESSION_SECRET` / `TOKEN_ENCRYPTION_KEY` / `CRON_SECRET`).
 
 ## Human next
 

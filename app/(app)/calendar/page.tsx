@@ -16,14 +16,14 @@ export default async function CalendarPage({
   await processPendingJobs(10, user.id);
 
   const params = (await searchParams) ?? {};
-  const flash =
+  const errorFlash =
+    typeof params.error === "string" ? params.error : null;
+  const okFlash =
     typeof params.scheduled === "string"
       ? "Scheduled."
       : typeof params.published === "string"
         ? "Published."
-        : typeof params.error === "string"
-          ? params.error
-          : null;
+        : null;
 
   const items = await prisma.draft.findMany({
     where: {
@@ -46,9 +46,17 @@ export default async function CalendarPage({
         Scheduled and recent drafts. Your due jobs run when you open this page;
         production uses /api/cron.
       </p>
-      {flash ? (
+      {errorFlash ? (
+        <p
+          className="mt-4 text-sm text-[var(--pb-warn)]"
+          data-testid="calendar-flash-error"
+        >
+          {errorFlash}
+        </p>
+      ) : null}
+      {okFlash ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]" data-testid="calendar-flash">
-          {flash}
+          {okFlash}
         </p>
       ) : null}
 

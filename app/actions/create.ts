@@ -67,7 +67,26 @@ export async function createDraftAction(formData: FormData) {
     });
     await processPendingJobs(5, user.id);
     revalidatePath("/calendar");
-    redirect(`/create?published=${draft.id}`);
+    const after = await prisma.draft.findFirst({
+      where: { id: draft.id, userId: user.id },
+      select: { status: true },
+    });
+    if (after?.status === "published") {
+      redirect(`/create?published=${draft.id}`);
+    }
+    const failedJob = await prisma.job.findFirst({
+      where: {
+        userId: user.id,
+        status: "failed",
+        type: "publish",
+      },
+      orderBy: { updatedAt: "desc" },
+      select: { lastError: true },
+    });
+    const detail =
+      failedJob?.lastError?.trim() ||
+      "Publish did not complete - check Calendar and platform connection";
+    redirect(`/create?error=${encodeURIComponent(detail)}`);
   }
 
   if (mode === "schedule") {
@@ -166,7 +185,26 @@ export async function publishExistingDraftAction(formData: FormData) {
   });
   await processPendingJobs(5, user.id);
   revalidatePath("/calendar");
-  redirect(`/calendar?published=${draft.id}`);
+  const after = await prisma.draft.findFirst({
+    where: { id: draft.id, userId: user.id },
+    select: { status: true },
+  });
+  if (after?.status === "published") {
+    redirect(`/calendar?published=${draft.id}`);
+  }
+  const failedJob = await prisma.job.findFirst({
+    where: {
+      userId: user.id,
+      status: "failed",
+      type: "publish",
+    },
+    orderBy: { updatedAt: "desc" },
+    select: { lastError: true },
+  });
+  const detail =
+    failedJob?.lastError?.trim() ||
+    "Publish did not complete - check connection and fixtures";
+  redirect(`/calendar?error=${encodeURIComponent(detail)}`);
 }
 
 export async function draftAssistAction(formData: FormData) {

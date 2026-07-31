@@ -1,12 +1,12 @@
-# Pulseboard Runbook - Phase 8
+# Pulseboard Runbook - V1 core
 
 ## Local bootstrap
-1. `docker compose up -d postgres`
-2. Copy `.env.example` → `.env`; set `TOKEN_ENCRYPTION_KEY` + `SESSION_SECRET`
+1. `docker compose up -d postgres` (Postgres published on `127.0.0.1:5432` only)
+2. Copy `.env.example` → `.env`; set `TOKEN_ENCRYPTION_KEY` + `SESSION_SECRET` (+ `CRON_SECRET` if you hit cron)
 3. `npm install`
 4. `npx prisma migrate deploy`
 5. `npm run db:seed` (demo: `demo@pulseboard.local` / `pulseboard-demo`)
-6. `npm run dev`
+6. `npm run dev` → http://localhost:3000
 
 ## Docker (full stack)
 1. Copy `.env.example` → `.env` and set **strong** secrets (no placeholders):
@@ -14,7 +14,7 @@
    - `TOKEN_ENCRYPTION_KEY` (32-byte base64)
    - `CRON_SECRET` (≥16 chars, random - required for compose; no default)
 2. `docker compose up --build` (compose **fails** if secrets are unset)
-3. App: http://localhost:3000 - migrate runs on container start
+3. App: http://localhost:3000 (bound to `127.0.0.1:3000` - loopback only; migrate runs on container start via entrypoint-built `DATABASE_URL`)
 
 **Do not** commit or reuse compose placeholders like `dev-cron-secret-change-me` or `replace-with-long-random-string-min-32-chars` - the app rejects them.
 

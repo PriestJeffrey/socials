@@ -1,13 +1,13 @@
 /**
  * Pulseboard brand social profiles (marketing links - not user connections).
+ * Dock lists V1 product networks only (IG / FB / LinkedIn / X).
  * Set `live: true` and real handles when profiles exist - avoids UAT 404s.
  */
 export type BrandSocialPlatform =
   | "instagram"
   | "facebook"
-  | "x"
-  | "threads"
-  | "tiktok";
+  | "linkedin"
+  | "x";
 
 export type BrandSocialLink = {
   id: BrandSocialPlatform;
@@ -17,7 +17,7 @@ export type BrandSocialLink = {
   /** When false, render non-navigating icon (no dead links). */
   live: boolean;
   /**
-   * Brand glyph color. Use `mono` for X/Threads so light/dark themes
+   * Brand glyph color. Use `mono` for X so light/dark themes
    * pick `--pb-social-mono` instead of a fixed black that vanishes on dark.
    */
   color: string | "mono";
@@ -43,27 +43,19 @@ export const brandSocialLinks: BrandSocialLink[] = [
     color: "#1877F2",
   },
   {
+    id: "linkedin",
+    label: "LinkedIn",
+    handle: HANDLE,
+    href: `https://www.linkedin.com/company/${HANDLE}`,
+    live: false,
+    color: "#0A66C2",
+  },
+  {
     id: "x",
     label: "X",
     handle: `@${HANDLE}`,
     href: `https://x.com/${HANDLE}`,
     live: false,
     color: "mono",
-  },
-  {
-    id: "threads",
-    label: "Threads",
-    handle: `@${HANDLE}`,
-    href: `https://www.threads.net/@${HANDLE}`,
-    live: false,
-    color: "mono",
-  },
-  {
-    id: "tiktok",
-    label: "TikTok",
-    handle: `@${HANDLE}`,
-    href: `https://www.tiktok.com/@${HANDLE}`,
-    live: false,
-    color: "#FE2C55",
   },
 ];
