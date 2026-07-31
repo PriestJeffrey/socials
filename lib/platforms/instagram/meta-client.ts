@@ -215,7 +215,7 @@ export async function fetchIgInsights(
     }
     return points;
   } catch {
-    // Insights often need more permissions / history — soft-fail to empty
+    // Insights often need more permissions / history - soft-fail to empty
     return [];
   }
 }
@@ -223,7 +223,7 @@ export async function fetchIgInsights(
 export function buildOAuthAuthorizeUrl(state: string): string {
   const cfg = getMetaConfig();
   if (cfg.useFixtures) {
-    // Fixture connect always uses local callback — never open Meta dialog
+    // Fixture connect always uses local callback - never open Meta dialog
     const u = new URL(
       `${process.env.APP_URL ?? "http://localhost:3000"}/api/oauth/instagram/callback`,
     );

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Phase 8 smoke — hits public pages. Requires `npm run dev` or `npm start`.
+ * Phase 8 smoke - hits public pages. Requires `npm run dev` or `npm start`.
  * Usage: node scripts/smoke.mjs [baseUrl]
  */
 const base = (process.argv[2] || process.env.APP_URL || "http://localhost:3000").replace(

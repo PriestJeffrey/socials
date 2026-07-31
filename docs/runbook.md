@@ -1,4 +1,4 @@
-# Pulseboard Runbook — Phase 8
+# Pulseboard Runbook - Phase 8
 
 ## Local bootstrap
 1. `docker compose up -d postgres`
@@ -12,11 +12,11 @@
 1. Copy `.env.example` → `.env` and set **strong** secrets (no placeholders):
    - `SESSION_SECRET` (≥16 chars, random)
    - `TOKEN_ENCRYPTION_KEY` (32-byte base64)
-   - `CRON_SECRET` (≥16 chars, random — required for compose; no default)
+   - `CRON_SECRET` (≥16 chars, random - required for compose; no default)
 2. `docker compose up --build` (compose **fails** if secrets are unset)
-3. App: http://localhost:3000 — migrate runs on container start
+3. App: http://localhost:3000 - migrate runs on container start
 
-**Do not** commit or reuse compose placeholders like `dev-cron-secret-change-me` or `replace-with-long-random-string-min-32-chars` — the app rejects them.
+**Do not** commit or reuse compose placeholders like `dev-cron-secret-change-me` or `replace-with-long-random-string-min-32-chars` - the app rejects them.
 
 ## Production deploy checklist
 1. Provision Postgres (pooled URL for runtime; direct URL for migrate)
@@ -29,15 +29,15 @@
 8. Smoke: `npm run smoke -- https://your-host`
 
 ## How to read Health / logs
-- In-app: `/settings/health` — platform + AI + DB status
+- In-app: `/settings/health` - platform + AI + DB status
 - Structured logs: JSON-ish via `lib/logging/logger` (never tokens/passwords)
-- Optional: set `SENTRY_DSN` — stub logs until `@sentry/nextjs` is wired
+- Optional: set `SENTRY_DSN` - stub logs until `@sentry/nextjs` is wired
 
 ## Incidents
 | Symptom | Action |
 |---|---|
 | Auth failures spike | Rotate `SESSION_SECRET`; users re-login |
-| Token decrypt errors | Do **not** rotate `TOKEN_ENCRYPTION_KEY` blindly — reconnect platforms after planned rotation |
+| Token decrypt errors | Do **not** rotate `TOKEN_ENCRYPTION_KEY` blindly - reconnect platforms after planned rotation |
 | Sync stuck | Check Health last sync error; re-run Sync; drain `/api/cron` |
 | Gemini quota | Set `GEMINI_USE_FIXTURES=true` or upgrade key |
 | Bad deploy | Rollback image/commit; re-run migrate only forward |

@@ -1,7 +1,7 @@
-# Pulseboard — Phase 3 Restatement (Locked)
+# Pulseboard - Phase 3 Restatement (Locked)
 
 **Status:** Phase 3 **in progress** (toward **S2**). Phase 2 pushed; formal S2 after IG+FB+LI UAT.  
-**Success bar:** S2 — IG + FB + LinkedIn platform-specific analytics + fatigue/shadowban formulas.  
+**Success bar:** S2 - IG + FB + LinkedIn platform-specific analytics + fatigue/shadowban formulas.  
 **Depends on Human:** LinkedIn app (or fixtures). Confirm OAuth scopes at live connect time.
 
 ## Build

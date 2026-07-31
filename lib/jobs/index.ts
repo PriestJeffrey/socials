@@ -18,7 +18,7 @@ export interface JobRunner {
   markFailed(id: string, error: string): Promise<void>;
 }
 
-/** Local/tests stub — no persistence. */
+/** Local/tests stub - no persistence. */
 export class NoopJobQueue implements JobQueue {
   async enqueue(_input: {
     userId: string;

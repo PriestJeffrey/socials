@@ -1,4 +1,4 @@
-# gstack — Phase add-on (locked)
+# gstack - Phase add-on (locked)
 
 **Decision:** Apply gstack at **every** Pulseboard phase as an **add-on**.  
 **Does not replace:** SDLC phase gates, Human UAT, S0–S7 bars, or security exit sign-off.

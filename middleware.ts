@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   );
 
-  // Cookie presence only — real session validation happens in app/(app)/layout.
+  // Cookie presence only - real session validation happens in app/(app)/layout.
   // Do NOT redirect /login|/signup based on cookie alone (expired/forged → loop).
   if (isProtected && !hasSessionCookie) {
     const url = request.nextUrl.clone();

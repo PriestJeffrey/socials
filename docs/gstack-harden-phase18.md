@@ -1,4 +1,4 @@
-# Pulseboard — gstack harden pass (phase-18 tip)
+# Pulseboard - gstack harden pass (phase-18 tip)
 
 **Date:** 2026-07-30  
 **Branch:** `harden/gstack-sec-phase18`  

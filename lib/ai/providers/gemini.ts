@@ -9,14 +9,18 @@ export const geminiAiProvider: AiProvider = {
     if (!cfg.apiKey) throw new Error("GEMINI_API_KEY missing");
 
     const timeoutMs = input.timeoutMs ?? 20_000;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cfg.model)}:generateContent?key=${encodeURIComponent(cfg.apiKey)}`;
+    // Key goes in header only - never in the URL (avoids access-log leakage).
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cfg.model)}:generateContent`;
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": cfg.apiKey,
+        },
         signal: controller.signal,
         body: JSON.stringify({
           contents: [
@@ -38,7 +42,7 @@ export const geminiAiProvider: AiProvider = {
       if (!res.ok) {
         const body = await res.text().catch(() => "");
         throw new Error(
-          `Gemini HTTP ${res.status}: ${body.slice(0, 200).replace(/key=[^&\s]+/gi, "key=[REDACTED]")}`,
+          `Gemini HTTP ${res.status}: ${body.slice(0, 200).replace(/key=[^&\s]+/gi, "key=[REDACTED]").replace(/AIza[0-9A-Za-z_-]{20,}/g, "[REDACTED]")}`,
         );
       }
       const data = (await res.json()) as {

@@ -1,6 +1,6 @@
-# Pulseboard — Phase 4 Restatement (Locked)
+# Pulseboard - Phase 4 Restatement (Locked)
 
-**Status:** Phase 4 **in progress** — four surfaces honest.  
+**Status:** Phase 4 **in progress** - four surfaces honest.  
 **Success bar:** IG / FB / LinkedIn live-or-fixture analytics; **X** is compose + copy only with clear “not auto-publish” labeling.  
 **Depends on Human:** Messaging UAT (no X API keys).
 

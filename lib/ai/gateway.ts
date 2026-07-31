@@ -24,7 +24,7 @@ export async function runAiFeature(input: {
   const cfg = getAiConfig();
   if (!cfg.configured) {
     throw new Error(
-      "AI not configured — set GEMINI_USE_FIXTURES=true or GEMINI_API_KEY",
+      "AI not configured - set GEMINI_USE_FIXTURES=true or GEMINI_API_KEY",
     );
   }
 
@@ -35,7 +35,7 @@ export async function runAiFeature(input: {
   );
   if (!rl.ok) {
     throw new Error(
-      `AI rate limit — try again in ${Math.ceil(rl.retryAfterMs / 1000)}s`,
+      `AI rate limit - try again in ${Math.ceil(rl.retryAfterMs / 1000)}s`,
     );
   }
 

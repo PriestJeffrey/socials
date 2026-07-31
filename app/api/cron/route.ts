@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "CRON_SECRET is not configured or is a known placeholder — set a strong secret",
+          "CRON_SECRET is not configured or is a known placeholder - set a strong secret",
       },
       { status: 503 },
     );

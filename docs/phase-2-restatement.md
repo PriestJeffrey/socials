@@ -1,7 +1,7 @@
-# Pulseboard — Phase 2 Restatement (Locked)
+# Pulseboard - Phase 2 Restatement (Locked)
 
 **Status:** Phase 2 **in progress** (S1 signed 2026-07-30).  
-**Success bar:** Toward S2 — Instagram + Facebook connections, platform-specific Overview signal, Health shows both.  
+**Success bar:** Toward S2 - Instagram + Facebook connections, platform-specific Overview signal, Health shows both.  
 **Depends on Human:** Meta developer unlock (or fixtures). FB Page already linked for live later.
 
 ## Build

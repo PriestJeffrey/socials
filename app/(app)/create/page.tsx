@@ -48,27 +48,30 @@ export default async function CreatePage({
 
   const connected = new Set(connections.map((c) => c.platform));
   const samplePreview = previewForPlatform(
-    "Your hook goes here — platform preview trims length.",
+    "Your hook goes here - platform preview trims length.",
     "instagram",
   );
 
   return (
-    <main data-testid="create-page">
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main data-testid="create-page" className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Studio
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Create
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
         Draft once, preview, then publish or schedule to Instagram / Facebook /
-        LinkedIn. X is copy-only. Live Graph posting is deferred — “Publish” writes a
+        LinkedIn. X is copy-only. Live Graph posting is deferred - “Publish” writes a
         local fixture post when fixtures are on.
       </p>
 
       <p
-        className="mt-4 max-w-xl rounded-md border border-[var(--pb-line)] bg-white/70 px-3 py-2 text-xs text-[var(--pb-slate)]"
+        className="pb-panel mt-4 max-w-xl rounded-xl px-4 py-3 text-xs text-[var(--pb-slate)]"
         data-testid="create-fixture-banner"
       >
         Local / fixture publish only. Nothing is sent to Meta or LinkedIn
-        until live posting is wired. X never auto-publishes — use Compose
+        until live posting is wired. X never auto-publishes - use Compose
         X to copy.
       </p>
 
@@ -95,11 +98,15 @@ export default async function CreatePage({
       ) : null}
       {suggested ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]" data-testid="create-suggested">
-          AI draft filled below — review before save/publish.
+          AI draft filled below - review before save/publish.
         </p>
       ) : null}
 
-      <form action={createDraftAction} className="mt-8 max-w-xl space-y-4" data-testid="create-form">
+      <form
+        action={createDraftAction}
+        className="pb-panel pb-panel-3d mt-8 max-w-xl space-y-4 rounded-2xl p-6"
+        data-testid="create-form"
+      >
         <div>
           <label className="text-sm font-medium text-[var(--pb-ink)]" htmlFor="platform">
             Platform
@@ -108,7 +115,7 @@ export default async function CreatePage({
             id="platform"
             name="platform"
             data-testid="create-platform"
-            className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            className="pb-input"
             defaultValue={suggestPlatform}
           >
             <option value="instagram">
@@ -134,7 +141,7 @@ export default async function CreatePage({
             required
             rows={6}
             data-testid="create-body"
-            className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            className="pb-input resize-y"
             placeholder="Write the post…"
             defaultValue={suggestBody}
           />
@@ -152,7 +159,7 @@ export default async function CreatePage({
               id="goalTag"
               name="goalTag"
               data-testid="create-goal"
-              className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+              className="pb-input"
               placeholder="awareness / leads / trust"
             />
           </div>
@@ -167,7 +174,7 @@ export default async function CreatePage({
               id="conversionNote"
               name="conversionNote"
               data-testid="create-conversion"
-              className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+              className="pb-input"
               placeholder="e.g. 2 DMs from carousel"
             />
           </div>
@@ -185,17 +192,17 @@ export default async function CreatePage({
             name="scheduledAt"
             type="datetime-local"
             data-testid="create-schedule"
-            className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            className="pb-input"
           />
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 pt-1">
           <button
             type="submit"
             name="mode"
             value="save"
             data-testid="create-save"
-            className="rounded-md border border-[var(--pb-line)] px-4 py-2 text-sm font-semibold text-[var(--pb-ink)]"
+            className="pb-btn pb-btn-ghost"
           >
             Save draft
           </button>
@@ -204,7 +211,7 @@ export default async function CreatePage({
             name="mode"
             value="publish"
             data-testid="create-publish"
-            className="rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
+            className="pb-btn pb-btn-primary"
           >
             Publish locally
           </button>
@@ -213,7 +220,7 @@ export default async function CreatePage({
             name="mode"
             value="schedule"
             data-testid="create-schedule-submit"
-            className="rounded-md border border-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-[var(--pb-pulse-deep)]"
+            className="pb-btn pb-btn-ghost border-[var(--pb-pulse)] text-[var(--pb-pulse-deep)]"
           >
             Schedule
           </button>
@@ -222,17 +229,17 @@ export default async function CreatePage({
 
       <form
         action={draftAssistAction}
-        className="mt-4 max-w-xl space-y-2 rounded-lg border border-[var(--pb-line)] bg-white/60 p-4"
+        className="pb-panel mt-4 max-w-xl space-y-3 rounded-2xl p-5"
         data-testid="draft-assist-form"
       >
-        <p className="text-sm font-medium text-[var(--pb-ink)]">AI draft assist</p>
+        <p className="text-sm font-semibold text-[var(--pb-ink)]">AI draft assist</p>
         <p className="text-xs text-[var(--pb-slate)]">
           Suggests a body from platform + goal. Review before publish.
         </p>
         <div className="grid gap-2 sm:grid-cols-2">
           <select
             name="platform"
-            className="rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            className="pb-input !mt-0"
             defaultValue="instagram"
           >
             <option value="instagram">Instagram</option>
@@ -243,18 +250,18 @@ export default async function CreatePage({
           <input
             name="goalTag"
             placeholder="Goal"
-            className="rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            className="pb-input !mt-0"
           />
         </div>
         <input
           name="seed"
           placeholder="Optional seed notes"
-          className="w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+          className="pb-input !mt-0"
         />
         <button
           type="submit"
           data-testid="create-ai-suggest"
-          className="rounded-md border border-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-[var(--pb-pulse-deep)]"
+          className="pb-btn pb-btn-ghost border-[var(--pb-pulse)] text-[var(--pb-pulse-deep)]"
         >
           Suggest draft
         </button>
@@ -269,7 +276,7 @@ export default async function CreatePage({
             {recent.map((d) => (
               <li
                 key={d.id}
-                className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3 text-sm"
+                className="pb-panel rounded-xl px-4 py-3 text-sm"
                 data-testid={`draft-${d.id}`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -301,7 +308,7 @@ export default async function CreatePage({
                   <button
                     type="submit"
                     data-testid={`repurpose-${d.id}`}
-                    className="rounded-md border border-[var(--pb-line)] px-2 py-1 text-xs font-semibold"
+                    className="pb-btn pb-btn-ghost !px-2.5 !py-1 text-xs"
                   >
                     Repurpose
                   </button>

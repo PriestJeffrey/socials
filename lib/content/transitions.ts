@@ -30,7 +30,7 @@ export async function transitionDraft(input: {
     data: { status },
   });
   if (updated.count !== 1) {
-    throw new Error("Draft status changed concurrently — retry");
+    throw new Error("Draft status changed concurrently - retry");
   }
   await writeAudit({
     userId: input.userId,

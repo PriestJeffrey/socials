@@ -1,5 +1,5 @@
 /**
- * Differentiator formulas — pure functions only (no LLM, no network).
+ * Differentiator formulas - pure functions only (no LLM, no network).
  * Overview may call these after loading snapshots from DB.
  */
 
@@ -59,7 +59,7 @@ export type ShadowbanResult = {
 
 /**
  * Shadowban-style heuristic: reach far below impressions suggests distribution mismatch.
- * Not a true shadowban detector — labeled as heuristic in UI.
+ * Not a true shadowban detector - labeled as heuristic in UI.
  */
 export function shadowbanHeuristic(input: ShadowbanInput): ShadowbanResult {
   const floor = input.expectedReachRatio ?? 0.35;
@@ -74,7 +74,7 @@ export function shadowbanHeuristic(input: ShadowbanInput): ShadowbanResult {
     score,
     flag,
     reason: flag
-      ? "Reach is unusually low vs impressions — possible distribution mismatch"
+      ? "Reach is unusually low vs impressions - possible distribution mismatch"
       : "Reach/impressions ratio looks within a normal band",
   };
 }

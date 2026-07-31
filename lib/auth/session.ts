@@ -78,7 +78,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 
     return { id: session.user.id, email: session.user.email };
   } catch {
-    // DB unreachable (e.g. Postgres down) — treat as logged out
+    // DB unreachable (e.g. Postgres down) - treat as logged out
     return null;
   }
 }

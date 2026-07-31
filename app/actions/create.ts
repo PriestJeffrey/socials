@@ -183,15 +183,15 @@ export async function draftAssistAction(formData: FormData) {
 
   try {
     const { draftAssist } = await import("@/lib/ai/features/draft-assist");
+    const { setDraftSuggestFlash } = await import("@/lib/flash/draft-suggest");
     const body = await draftAssist({
       userId: user.id,
       platform,
       goalTag,
       seed,
     });
-    redirect(
-      `/create?suggested=1&body=${encodeURIComponent(body)}&platform=${encodeURIComponent(platform)}`,
-    );
+    await setDraftSuggestFlash({ userId: user.id, body, platform });
+    redirect(`/create?suggested=1&platform=${encodeURIComponent(platform)}`);
   } catch (err) {
     const message = err instanceof Error ? err.message : "AI draft failed";
     redirect(`/create?error=${encodeURIComponent(message)}`);

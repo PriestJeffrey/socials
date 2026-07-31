@@ -1,4 +1,4 @@
-# Pulseboard — Phase 8 Restatement (Locked)
+# Pulseboard - Phase 8 Restatement (Locked)
 
 **Status:** Phase 8 **in progress** → toward **S6** (V1 core complete).  
 **Success bar:** Production-ready packaging, full L7 CI (lint/tests/SAST/SCA/secrets), L10 headers, runbook, smoke path.  

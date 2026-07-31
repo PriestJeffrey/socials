@@ -1,21 +1,21 @@
-# Pulseboard — Complete SDLC & Build Spec
+# Pulseboard - Complete SDLC & Build Spec
 
 **Single source of truth.** All planning, architecture, security, and phase execution live in this file.
 
 | Field | Locked value |
 |---|---|
 | **Product** | Pulseboard |
-| **Status** | Planning approved — do **not** build until Human says **run Phase 0** |
+| **Status** | Planning approved - do **not** build until Human says **run Phase 0** |
 | **SDLC model** | Agile + Incremental |
 | **Team** | Human = decisions / UAT · AI = architecture proposals + build + tests |
 | **Auth** | Email + **password** (Argon2id/bcrypt). Magic link deferred |
 | **Landing one-liner** | Know what’s broken, what’s working, and what to post next. |
-| **UI direction** | Premium flat dashboard bones + **selective 3D** (depth, 3D cards, subtle perspective) — mixture, not all-3D |
-| **Crypto (secrets at rest)** | **AES-256-GCM** only — never SHA for encryption |
+| **UI direction** | Premium flat dashboard bones + **selective 3D** (depth, 3D cards, subtle perspective) - mixture, not all-3D |
+| **Crypto (secrets at rest)** | **AES-256-GCM** only - never SHA for encryption |
 | **Security frameworks** | [MITRE ATT&CK](https://attack.mitre.org/) + NIST SSDF + OWASP ASVS L2 mindset + OWASP SAMM + SLSA-inspired |
 | **Constraint** | Zero-cost V1 first; platforms step-by-step; security every phase |
 | **Git** | After each **Human-approved** phase: commit + **push to GitHub** (remote source of truth) |
-| **Meta developer app** | Deferred — Human sets up at **Phase 1** (not required for Phase 0) |
+| **Meta developer app** | Deferred - Human sets up at **Phase 1** (not required for Phase 0) |
 
 **Supersedes:** `pulseboard-master-plan.md` and `social-dashboard-prompt.md` (those files now redirect here).
 
@@ -54,7 +54,7 @@
 4. After coding: run that phase’s tests; present checklist + ATT&CK residual risk.
 5. **Stop** at phase boundary. Wait for Human approval.
 6. Never mark a phase done without green acceptance criteria.
-7. New networks = new **PlatformAdapter** modules — do not rewrite core.
+7. New networks = new **PlatformAdapter** modules - do not rewrite core.
 
 ### Cadence
 
@@ -111,7 +111,7 @@ Human: "Run Phase N"
 | Deployment | Hosting, go-live | CI/CD, migrate, smoke | Live URL |
 | Maintenance | Triage, new platforms | Patches, adapters | Runbooks |
 
-Security and tests run **inside** each increment — not only at the end.
+Security and tests run **inside** each increment - not only at the end.
 
 ---
 
@@ -119,10 +119,10 @@ Security and tests run **inside** each increment — not only at the end.
 
 Pulseboard does two jobs:
 
-1. Diagnoses connected social accounts — what’s working, what’s dead weight, what to fix (plain language).
+1. Diagnoses connected social accounts - what’s working, what’s dead weight, what to fix (plain language).
 2. Creates and publishes content from the same place, informed by niche patterns.
 
-One tool — not five tabs across Buffer, Hootsuite, and native apps.
+One tool - not five tabs across Buffer, Hootsuite, and native apps.
 
 **Brand:** Pulseboard  
 **Entry:** Landing (public) → Signup/Login → Overview  
@@ -130,7 +130,7 @@ One tool — not five tabs across Buffer, Hootsuite, and native apps.
 **Logged-in `/`:** → Overview · **Logged-out `/`:** → Landing  
 **One-liner:** Know what’s broken, what’s working, and what to post next.
 
-**North star (after core phases):** Within **30 seconds** on Overview — know what’s broken, what’s working, what to post next — and act without leaving Pulseboard.
+**North star (after core phases):** Within **30 seconds** on Overview - know what’s broken, what’s working, what to post next - and act without leaving Pulseboard.
 
 | Bar | Meaning |
 |---|---|
@@ -151,7 +151,7 @@ One tool — not five tabs across Buffer, Hootsuite, and native apps.
 
 **Principle:** One platform capability slice per increment.
 
-### Wave A — V1 core (zero-cost bias)
+### Wave A - V1 core (zero-cost bias)
 
 | Order | Platform | Why | V1 mode |
 |---|---|---|---|
@@ -160,13 +160,13 @@ One tool — not five tabs across Buffer, Hootsuite, and native apps.
 | 3 | LinkedIn | Different OAuth; self-serve posting | Live where scopes allow |
 | 4 | X | No free API | Compose + copy-to-clipboard; analytics manual/light |
 
-### Wave B — Expansion
+### Wave B - Expansion
 
 | Order | Platform | Notes |
 |---|---|---|
 | 5 | Threads | Meta-adjacent; confirm API at build time |
 | 6 | TikTok | Separate API; video-centric metrics |
-| 7+ | Future | YouTube, Pinterest, Bluesky, etc. — same adapter contract |
+| 7+ | Future | YouTube, Pinterest, Bluesky, etc. - same adapter contract |
 
 **Nav rule:** Don’t fake live API for unpaid/blocked networks.  
 **Architecture rule:** Core talks only to `PlatformAdapter`.
@@ -223,34 +223,34 @@ Shared: unified Overview (one issue + one win per platform when data exists).
 
 True A/B via ads · auto competitor crawl · paid X API · ad-pixel attribution · Meta App Review for other users · LinkedIn Marketing partnership · Pricing/FAQ pages · full export
 
-### UI feel (locked — mixture including 3D)
+### UI feel (locked - mixture including 3D)
 
-**Direction:** A **mixture** — solid product UI (readable dashboards, tables, forms) **plus selective 3D** for presence and hierarchy. Not a flat spreadsheet; not a pure WebGL toy either.
+**Direction:** A **mixture** - solid product UI (readable dashboards, tables, forms) **plus selective 3D** for presence and hierarchy. Not a flat spreadsheet; not a pure WebGL toy either.
 
 | Layer | Role |
 |---|---|
-| **Bones** | shadcn/ui — nav, forms, tables, settings, data-dense views (mostly 2D, crisp) |
-| **Micro-motion** | Magic UI — shimmers, chart reveals, loading, light depth cues |
-| **3D / standout** | Aceternity (and similar) — **3D cards**, perspective heroes, spotlight/depth on key surfaces |
-| **Optional later** | Lightweight Three.js / React Three Fiber only if a specific moment needs true 3D (e.g. landing hero object) — not required Phase 0 |
+| **Bones** | shadcn/ui - nav, forms, tables, settings, data-dense views (mostly 2D, crisp) |
+| **Micro-motion** | Magic UI - shimmers, chart reveals, loading, light depth cues |
+| **3D / standout** | Aceternity (and similar) - **3D cards**, perspective heroes, spotlight/depth on key surfaces |
+| **Optional later** | Lightweight Three.js / React Three Fiber only if a specific moment needs true 3D (e.g. landing hero object) - not required Phase 0 |
 
 **Where 3D belongs**
 
-* Landing hero (Pulseboard brand + one-liner) — primary 3D moment  
-* Login / signup — secondary 3D or depth treatment  
-* Overview “what’s wrong / what’s right” reveal — light 3D/depth card moment  
+* Landing hero (Pulseboard brand + one-liner) - primary 3D moment  
+* Login / signup - secondary 3D or depth treatment  
+* Overview “what’s wrong / what’s right” reveal - light 3D/depth card moment  
 * Optional: 1–2 feature callouts on landing  
 
 **Where 3D does *not* belong**
 
-* Dense analytics tables, long forms, calendar grids, settings — keep 2D and fast  
+* Dense analytics tables, long forms, calendar grids, settings - keep 2D and fast  
 * Don’t 3D-animate every card on every page (reads as gimmicky and hurts performance)
 
 **Rules for AI implementers**
 
 1. Ship **mixture**: ~80% clear 2D product UI + ~20% intentional 3D/depth moments.  
 2. Prefer CSS 3D / Aceternity-style components before heavy WebGL.  
-3. Respect `prefers-reduced-motion` — 3D falls back to static/flat.  
+3. Respect `prefers-reduced-motion` - 3D falls back to static/flat.  
 4. Performance: no continuous heavy 3D on dashboard data views.  
 5. Human taste-approves landing + auth 3D in Phase 0 UAT.
 
@@ -275,7 +275,7 @@ True A/B via ads · auto competitor crawl · paid X API · ad-pixel attribution 
 ### Logical architecture
 
 ```
-[Browser] —HTTPS→ [Next.js]
+[Browser] -HTTPS→ [Next.js]
   / landing | /login /signup | /overview … /settings
   Auth · Analytics · Composer · AI gateway · PlatformAdapter registry
        → PostgreSQL (AES-GCM tokens)
@@ -475,13 +475,13 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 0 — Foundation, landing, auth, security baseline → **S0**
+### Phase 0 - Foundation, landing, auth, security baseline → **S0**
 
 **Build**
 
 - Next.js + Postgres + env + lockfile + `.gitignore`
-- Landing `/`: Pulseboard brand + locked one-liner + Get started / Log in — **include selective 3D/depth** on hero (mixture, not all-3D)
-- Email + password auth (Argon2id/bcrypt); sessions; tenancy shell — auth screens may use secondary 3D/depth
+- Landing `/`: Pulseboard brand + locked one-liner + Get started / Log in - **include selective 3D/depth** on hero (mixture, not all-3D)
+- Email + password auth (Argon2id/bcrypt); sessions; tenancy shell - auth screens may use secondary 3D/depth
 - Empty Overview + nav stubs; logged-in `/` → Overview
 - PlatformAdapter interface stub
 - CI skeleton (install, lint, test)
@@ -510,7 +510,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 1 — Instagram adapter → **S1**
+### Phase 1 - Instagram adapter → **S1**
 
 **Build:** Meta Graph connect · posts/metrics · snapshots · cache · Overview + IG analytics · Settings connect/consent · **Health shows Instagram sync status**
 
@@ -524,7 +524,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 2 — Facebook adapter → toward **S2**
+### Phase 2 - Facebook adapter → toward **S2**
 
 **Build:** FB connect · FB metric hierarchy · Overview IG+FB · hardened Meta client  
 
@@ -536,7 +536,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 3 — LinkedIn + formulas → **S2**
+### Phase 3 - LinkedIn + formulas → **S2**
 
 **Build:** LinkedIn OAuth (confirm scopes) · LinkedIn-specific UI language · fatigue + shadowban formulas  
 
@@ -548,7 +548,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 4 — X manual → four surfaces honest
+### Phase 4 - X manual → four surfaces honest
 
 **Build:** X nav with compose/copy capabilities only · clear “not auto-publish” labeling · stub adapter  
 
@@ -560,7 +560,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 5 — Create, calendar, publish → **S3**
+### Phase 5 - Create, calendar, publish → **S3**
 
 **Build:** Composer + previews · schedule/publish IG/FB/LinkedIn · X copy · calendar · goal tags · manual conversions · rule-based repurpose  
 
@@ -572,7 +572,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 6 — AI + competitors → **S4**
+### Phase 6 - AI + competitors → **S4**
 
 **Build:** Gemini provider · paste → hook library · drafting · plain-language why  
 
@@ -584,7 +584,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 7 — Approvals, sentiment, polish, deletion → **S5**
+### Phase 7 - Approvals, sentiment, polish, deletion → **S5**
 
 **Build:** draft→review→approved→published · sentiment where available · UI polish (restrained motion + overview 3D/depth moment) · account deletion
 
@@ -596,7 +596,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ---
 
-### Phase 8 — Deploy + hardening → **S6**
+### Phase 8 - Deploy + hardening → **S6**
 
 **Build:** production host · migrations · TLS · CI SAST/SCA/secret scan · monitoring · runbook  
 
@@ -604,11 +604,11 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 **Test:** prod smoke (landing→signup→login→overview→connect→create) · security regression · Human signs 30-second north star  
 
-**Exit:** S6 — **V1 core complete.**
+**Exit:** S6 - **V1 core complete.**
 
 ---
 
-### Phase 9 — Threads · Phase 10 — TikTok · Phase 11+ — future apps → **S7**
+### Phase 9 - Threads · Phase 10 - TikTok · Phase 11+ - future apps → **S7**
 
 **Pattern:** Human names platform → AI researches cost/API → Human go/no-go → adapter + UI + tests + L8/L11 security pack → UAT → enable in nav.
 
@@ -644,7 +644,7 @@ Legend: **AI builds** · **Human decides/UAT** · hard stop each exit.
 
 ### Should we push every time code is approved?
 
-**Yes — after each Human-approved phase exit, commit and push to GitHub.**
+**Yes - after each Human-approved phase exit, commit and push to GitHub.**
 
 That keeps a remote backup, a clear history of what passed UAT, and a place for CI to run. Do **not** wait until the whole product is finished.
 
@@ -653,28 +653,28 @@ That keeps a remote backup, a clear history of what passed UAT, and a place for 
 | During a phase (WIP) | Local commits OK; push optional if you want backup mid-phase |
 | **Human says phase passed** | AI (or Human): commit with message `phase-N: …` → **push to `main`** (or merge PR → main → push) |
 | Phase failed / revert | Fix on a branch; do not leave broken approved state on main |
-| Secrets | Never commit `.env` / keys — only `.env.example` |
+| Secrets | Never commit `.env` / keys - only `.env.example` |
 
 **Solo default (you + AI):**
 
 1. Phase 0 creates the repo and connects `origin` on GitHub (Human creates empty repo; AI pushes).  
-2. Work on `main` or `phase-N` branches — Human’s choice at Phase 0 start (default: `phase-N` → PR/merge to `main` after approval).  
+2. Work on `main` or `phase-N` branches - Human’s choice at Phase 0 start (default: `phase-N` → PR/merge to `main` after approval).  
 3. **Approved = on GitHub.** Local-only approved code is not “done.”
 
-**Not required:** Pushing every tiny save while still building a phase — only the **approved** checkpoint must be pushed.
+**Not required:** Pushing every tiny save while still building a phase - only the **approved** checkpoint must be pushed.
 
 ---
 
 ## 16. Logs, health & diagnostics
 
-Yes — the plan now **requires** this. You need to see **what’s working vs what broke** without guessing.
+Yes - the plan now **requires** this. You need to see **what’s working vs what broke** without guessing.
 
 ### Three layers
 
 | Layer | What you see | When |
 |---|---|---|
 | **A. In-app Health / Status** | Per platform: connected? last sync OK/fail? token expired? last publish OK/fail? AI provider reachable? | From Phase 1+ (shell in Phase 0) |
-| **B. Structured app logs** | Server logs with `phase`, `component`, `level`, `message`, `requestId` — never tokens/passwords | Phase 0 foundation; used every phase |
+| **B. Structured app logs** | Server logs with `phase`, `component`, `level`, `message`, `requestId` - never tokens/passwords | Phase 0 foundation; used every phase |
 | **C. Error monitoring (prod)** | Aggregated crashes/exceptions (e.g. Sentry free tier) + alerts | Phase 8 (can wire earlier if Human wants) |
 
 ### A. In-app Health panel (Settings → Health, or Overview strip)
@@ -766,11 +766,11 @@ Never fork core analytics for a one-off network.
 4. Exact hosting vendor + domain  
 5. Legal: Terms, Privacy, cookies (before public multi-user)  
 6. MFA / passkeys (post-S6)  
-7. Full error-monitoring product (Sentry) — **Phase 8** (Health UI + structured logs start earlier)  
+7. Full error-monitoring product (Sentry) - **Phase 8** (Health UI + structured logs start earlier)  
 8. DR RPO/RTO + restore proof  
 9. WCAG bar · i18n · signup bot protection detail · AI content policy  
 10. SOC2 (not required solo V1) · native mobile (out)  
-11. **Meta developer app** — Human at **Phase 1** (confirmed deferred)
+11. **Meta developer app** - Human at **Phase 1** (confirmed deferred)
 
 ### Go / no-go gates
 
@@ -806,4 +806,4 @@ Never fork core analytics for a one-off network.
 ---
 
 **End of complete spec.**  
-Next Human action: say **run Phase 0** to start building — or request edits to this document first.
+Next Human action: say **run Phase 0** to start building - or request edits to this document first.

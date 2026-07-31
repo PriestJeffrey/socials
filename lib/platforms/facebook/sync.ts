@@ -39,7 +39,7 @@ export async function runFacebookSync(input: {
       insights = fix.insights;
     } else {
       if (!conn.accessTokenEnc) {
-        throw new Error("Missing access token — reconnect Facebook");
+        throw new Error("Missing access token - reconnect Facebook");
       }
       const token = decryptAesGcm(conn.accessTokenEnc);
       postsData = await fetchFbPosts(conn.externalAccountId, token);

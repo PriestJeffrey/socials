@@ -1,4 +1,4 @@
-# Pulseboard — Agent Roster & Phase Multi-Agent Map (Locked)
+# Pulseboard - Agent Roster & Phase Multi-Agent Map (Locked)
 
 ## Roles (§2 SDLC)
 
@@ -25,7 +25,7 @@
 | 1 → S1 | Backend(Adapters) · Frontend · QA · AppSec | IG OAuth + Overview + security |
 | 2 | Backend · Frontend · QA | FB slice; AppSec light |
 | 3 → S2 | Backend · Frontend · QA · AppSec | LinkedIn + formulas |
-| 4 | Frontend · QA | X honesty — no fake OAuth |
+| 4 | Frontend · QA | X honesty - no fake OAuth |
 | 5 → S3 | Backend · Frontend · QA · AppSec | Publish authz + audit |
 | 6 → S4 | Backend(AI) · Frontend · QA · AppSec | Gemini + L9 redaction |
 | 7 → S5 | Backend · Frontend · QA · AppSec | Approvals + hard delete |
@@ -45,7 +45,7 @@ Human: "Run Phase N"
   → Approved: commit phase-N: … + push GitHub
 ```
 
-**gstack** is a locked **add-on at every phase** — it does not replace SDLC gates or Human sign-off.
+**gstack** is a locked **add-on at every phase** - it does not replace SDLC gates or Human sign-off.
 
 ## Locked product decisions
 

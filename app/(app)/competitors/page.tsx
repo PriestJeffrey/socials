@@ -23,8 +23,11 @@ export default async function CompetitorsPage({
   });
 
   return (
-    <main data-testid="competitors-page">
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main data-testid="competitors-page" className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Intelligence
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Competitors
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
@@ -48,7 +51,7 @@ export default async function CompetitorsPage({
 
       <form
         action={analyzeCompetitorAction}
-        className="mt-8 max-w-xl space-y-4"
+        className="pb-panel pb-panel-3d mt-8 max-w-xl space-y-4 rounded-2xl p-6"
         data-testid="competitors-form"
       >
         <div>
@@ -59,7 +62,7 @@ export default async function CompetitorsPage({
             id="platform"
             name="platform"
             data-testid="competitors-platform"
-            className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
+            className="pb-input"
             defaultValue="instagram"
           >
             <option value="instagram">Instagram</option>
@@ -83,16 +86,16 @@ export default async function CompetitorsPage({
             rows={6}
             minLength={20}
             data-testid="competitors-paste"
-            className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 text-sm"
-            placeholder="Paste a competitor postÔÇª"
+            className="pb-input resize-y"
+            placeholder="Paste a competitor post…"
           />
         </div>
         <button
           type="submit"
           data-testid="competitors-analyze"
-          className="rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
+          className="pb-btn pb-btn-primary"
         >
-          Analyze ÔåÆ library
+          Analyze → library
         </button>
       </form>
 
@@ -108,7 +111,7 @@ export default async function CompetitorsPage({
               <li
                 key={item.id}
                 data-testid={`hook-${item.id}`}
-                className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3"
+                className="pb-panel rounded-xl px-4 py-3"
               >
                 <p className="text-xs font-semibold uppercase tracking-wide text-[var(--pb-slate)]">
                   {item.platform}

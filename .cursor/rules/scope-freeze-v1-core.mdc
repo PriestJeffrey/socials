@@ -1,9 +1,9 @@
 ---
-description: Wave B expansion is frozen — V1 core only until Human resumes
+description: Wave B expansion is frozen - V1 core only until Human resumes
 alwaysApply: true
 ---
 
-# Scope freeze — V1 core
+# Scope freeze - V1 core
 
 Human locked (2026-07-30): **keep V1 core; pause Wave B expansion.** Full text: `docs/scope-freeze-v1-core.md`.
 
@@ -20,4 +20,4 @@ Human locked (2026-07-30): **keep V1 core; pause Wave B expansion.** Full text: 
 
 ## Resume expansion only when
 
-Human **names** a platform (or explicit non-platform track) and says **go** — then research → go/no-go → gstack → build.
+Human **names** a platform (or explicit non-platform track) and says **go** - then research → go/no-go → gstack → build.

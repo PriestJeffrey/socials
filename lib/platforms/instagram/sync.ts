@@ -12,7 +12,7 @@ import {
 
 /**
  * Persist IG posts + metric snapshots for a connection.
- * Never call from Overview request path — JobRunner / sync action only.
+ * Never call from Overview request path - JobRunner / sync action only.
  */
 export async function runInstagramSync(input: {
   userId: string;
@@ -39,7 +39,7 @@ export async function runInstagramSync(input: {
       insights = fix.insights;
     } else {
       if (!conn.accessTokenEnc) {
-        throw new Error("Missing access token — reconnect Instagram");
+        throw new Error("Missing access token - reconnect Instagram");
       }
       const token = decryptAesGcm(conn.accessTokenEnc);
       media = await fetchIgMedia(conn.externalAccountId, token);

@@ -1,8 +1,8 @@
-﻿# Pulseboard â€” UI / Visual Direction (Phase 0 Locked)
+﻿# Pulseboard - UI / Visual Direction (Phase 0 Locked)
 
 ## Mood
 
-Calm operations room for social content â€” â€œsignal board.â€ Not SaaS purple, not cream-terracotta editorial, not broadsheet. Premium flat dashboard bones + one theatrical 3D moment on marketing/auth.
+Calm operations room for social content - â€œsignal board.â€ Not SaaS purple, not cream-terracotta editorial, not broadsheet. Premium flat dashboard bones + one theatrical 3D moment on marketing/auth.
 
 ## Palette (CSS variables)
 
@@ -31,12 +31,12 @@ Atmosphere: chalkâ†’fog diagonal wash + low-contrast dot grid. Light-first 
 
 Brand (hero-level, loudest) â†’ locked one-liner â†’ one support sentence â†’ CTA pair (**Create your board** / Log in) â†’ dominant 3D signal-stack visual. No badges, stats, or overlays on hero. No Phase-1 / Instagram disclaimer in hero.
 
-### Landing 3D (B+C remix â€” locked 2026-07-29)
+### Landing 3D (B+C remix - locked 2026-07-29)
 
 - **Hierarchy:** Brand wins; stage plane is low-contrast atmosphere only; punch lives in the stack.
 - **Stack:** Steeper CSS perspective, specular / thick slabs, Broken / Working / Next post (Aceternity-style CSS 3D, no WebGL).
 - **Stage:** Quiet angled glass plane + soft ground under stack (from variant B); never louder than brand.
-- **Logo dock (footer):** Pill dock with monochrome SVG glyphs â€” Instagram, Facebook, X, Threads, TikTok. Hover/focus â†’ `--pb-pulse`; visible focus ring; â‰¥44px targets; `aria-label` + `title`; no permanent text labels under icons. Links stay `live: false` (non-navigating) until real handles are set — no 404s at UAT.
+- **Logo dock (footer):** Pill dock with monochrome SVG glyphs - Instagram, Facebook, X, Threads, TikTok. Hover/focus â†’ `--pb-pulse`; visible focus ring; â‰¥44px targets; `aria-label` + `title`; no permanent text labels under icons. Links stay `live: false` (non-navigating) until real handles are set - no 404s at UAT.
 
 ### Mobile landing (`<lg`)
 Stack below CTAs (not hidden); compact height (~220–280px); slightly calmer stage (lower opacity/scale) for a shorter first screen. Logo dock wraps in the pill.
@@ -47,14 +47,14 @@ Secondary depth only; forms stay flat. Mobile may drop 3D behind form.
 
 ## Overview
 
-Flat shadcn shell only in Phase 0 â€” no 3D. Nav: Overview | Analytics â–¾ | Create | Calendar | Competitors | Approvals | Settings.
+Flat shadcn shell only in Phase 0 - no 3D. Nav: Overview | Analytics â–¾ | Create | Calendar | Competitors | Approvals | Settings.
 
-Post-auth empty Overview must feel warm and honest (not a dead â€œNo itemsâ€) and point toward connecting a platform when Phase 1 lands â€” separate from landing composition.
+Post-auth empty Overview must feel warm and honest (not a dead â€œNo itemsâ€) and point toward connecting a platform when Phase 1 lands - separate from landing composition.
 
 ## Motion
 
 1. Landing 3D idle float/tilt (default / motion-OK)
-2. CTA hover / hero copy enter — staggered fade-up ~400ms (brand → tagline → support → CTAs); punchier stack float; no scroll parallax
+2. CTA hover / hero copy enter - staggered fade-up ~400ms (brand → tagline → support → CTAs); punchier stack float; no scroll parallax
 3. Auth soft settle
 
 `prefers-reduced-motion`: keep 3D pose + stage + specular; **no** idle float/tilt (`animation: none`). Not fully flat unless we later revisit.

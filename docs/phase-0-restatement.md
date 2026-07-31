@@ -1,7 +1,7 @@
-# Pulseboard — Phase 0 Restatement (Locked)
+# Pulseboard - Phase 0 Restatement (Locked)
 
 **Status:** Phase 0 **foundation complete for S0 sign-off** (Human UAT + security exit pending).  
-**Success bar:** S0 — Landing + password auth + tenancy shell.  
+**Success bar:** S0 - Landing + password auth + tenancy shell.  
 **Product one-liner:** Know what's broken, what's working, and what to post next.
 **Password KDF:** Argon2id (locked).
 **Branch default:** A) `phase-0` → PR → `main`.

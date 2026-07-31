@@ -1,5 +1,5 @@
 /**
- * Local/dev demo user — never use in production.
+ * Local/dev demo user - never use in production.
  * npm run db:seed
  */
 import { PrismaClient } from "@prisma/client";

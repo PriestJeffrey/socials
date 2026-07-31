@@ -32,7 +32,7 @@ export async function runLinkedInSync(input: {
       postsData = fix.posts;
       insights = fix.insights;
     } else {
-      // Live analytics depend on product scopes — soft-empty until Human confirms app access
+      // Live analytics depend on product scopes - soft-empty until Human confirms app access
       postsData = [];
       insights = [];
     }

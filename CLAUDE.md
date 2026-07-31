@@ -1,4 +1,4 @@
-# Pulseboard — agent notes
+# Pulseboard - agent notes
 
 ## Skill routing
 

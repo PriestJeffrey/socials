@@ -66,7 +66,7 @@ function pushIgCards(byKey: Map<string, Snap>, wins: OverviewCard[], issues: Ove
     issues.push({
       kind: "issue",
       title: "Broken",
-      body: "Instagram: engagement rate is soft — tighten the hook",
+      body: "Instagram: engagement rate is soft - tighten the hook",
       platform: "instagram",
       metricKey: eng.metricKey,
       value: eng.value,
@@ -110,7 +110,7 @@ function pushFbCards(byKey: Map<string, Snap>, wins: OverviewCard[], issues: Ove
     issues.push({
       kind: "issue",
       title: "Broken",
-      body: "Facebook: too paid-heavy — organic share is soft",
+      body: "Facebook: too paid-heavy - organic share is soft",
       platform: "facebook",
       metricKey: organic.metricKey,
       value: organic.value,
@@ -141,7 +141,7 @@ function pushLiCards(byKey: Map<string, Snap>, wins: OverviewCard[], issues: Ove
     wins.push({
       kind: "win",
       title: "Working",
-      body: "LinkedIn: dwell proxy looks strong — docs/carousels holding attention",
+      body: "LinkedIn: dwell proxy looks strong - docs/carousels holding attention",
       platform: "linkedin",
       metricKey: dwell.metricKey,
       value: dwell.value,
@@ -165,7 +165,7 @@ function pushLiCards(byKey: Map<string, Snap>, wins: OverviewCard[], issues: Ove
     issues.push({
       kind: "issue",
       title: "Broken",
-      body: "LinkedIn: first-hour velocity is soft — sharpen the opening line",
+      body: "LinkedIn: first-hour velocity is soft - sharpen the opening line",
       platform: "linkedin",
       metricKey: velocity.metricKey,
       value: velocity.value,

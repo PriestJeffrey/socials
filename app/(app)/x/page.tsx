@@ -27,12 +27,15 @@ export default async function XPage({
   const x = getAdapter("x");
 
   return (
-    <main data-testid="x-page">
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main data-testid="x-page" className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Manual copy
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         X
       </h1>
       <p
-        className="mt-3 max-w-xl rounded-lg border border-[var(--pb-line)] bg-white/70 px-4 py-3 text-sm text-[var(--pb-slate)]"
+        className="pb-panel mt-4 max-w-xl rounded-xl px-4 py-3 text-sm text-[var(--pb-slate)]"
         data-testid="x-honest-banner"
       >
         <span className="font-semibold text-[var(--pb-ink)]">Not auto-publish.</span>{" "}

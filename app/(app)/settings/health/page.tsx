@@ -8,12 +8,15 @@ export default async function HealthPage() {
   const report = await getHealthReport(user.id);
 
   return (
-    <main data-testid="settings-health">
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main data-testid="settings-health" className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Runtime
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Health
       </h1>
       <p data-testid="health-summary" className="mt-2 text-sm text-[var(--pb-slate)]">
-        Phase {report.phase} — auth, database, platforms (IG/FB/LI/X),
+        Phase {report.phase} - auth, database, platforms (IG/FB/LI/X),
         AI, analytics snapshots, and runtime.
       </p>
       <ul className="mt-8 space-y-3">
@@ -21,7 +24,7 @@ export default async function HealthPage() {
           <li
             key={s.id}
             data-testid={`health-${s.id}`}
-            className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3"
+            className="pb-panel rounded-xl px-4 py-3"
           >
             <div className="flex items-center justify-between gap-4">
               <span className="font-medium text-[var(--pb-ink)]">{s.label}</span>

@@ -7,7 +7,7 @@ export interface PlatformCapabilities {
   publish: boolean;
   schedule: boolean;
   comments: boolean;
-  /** Phase 4: compose locally and copy ÔÇö no network publish */
+  /** Phase 4: compose locally and copy ? no network publish */
   manualCopy: boolean;
 }
 

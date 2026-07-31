@@ -1,6 +1,6 @@
 /**
- * Rule-based repurpose ÔÇö no LLM.
- * One source body ÔåÆ platform-flavored sibling drafts.
+ * Rule-based repurpose - no LLM.
+ * One source body → platform-flavored sibling drafts.
  */
 export type RepurposePlatform = "instagram" | "facebook" | "linkedin" | "x";
 
@@ -12,18 +12,18 @@ export function repurposeBody(
   switch (target) {
     case "instagram":
       return trimmed.length > 2200
-        ? `${trimmed.slice(0, 2190)}ÔÇª\n\n#pulseboard`
+        ? `${trimmed.slice(0, 2190)}…\n\n#pulseboard`
         : `${trimmed}\n\n#pulseboard`;
     case "facebook":
       return trimmed.length > 500
-        ? `${trimmed.slice(0, 480)}ÔÇª\n\n(What do you think?)`
+        ? `${trimmed.slice(0, 480)}…\n\n(What do you think?)`
         : `${trimmed}\n\n(What do you think?)`;
     case "linkedin":
       return trimmed.length > 3000
-        ? trimmed.slice(0, 2990) + "ÔÇª"
-        : `${trimmed}\n\nÔÇö Curious how this lands for you.`;
+        ? trimmed.slice(0, 2990) + "…"
+        : `${trimmed}\n\n- Curious how this lands for you.`;
     case "x":
-      return trimmed.length > 280 ? trimmed.slice(0, 277) + "ÔÇª" : trimmed;
+      return trimmed.length > 280 ? trimmed.slice(0, 277) + "…" : trimmed;
     default:
       return trimmed;
   }

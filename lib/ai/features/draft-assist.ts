@@ -13,7 +13,7 @@ export async function draftAssist(input: {
     system: [
       "You write short social posts for Pulseboard.",
       "Match the platform tone. No hashtag spam. No credentials.",
-      "Return plain post body only — no markdown fences.",
+      "Return plain post body only - no markdown fences.",
     ].join(" "),
     user: [
       `Compose a draft for platform=${input.platform}.`,

@@ -37,7 +37,7 @@ export function fixtureFbSyncPayload(userId: string): FbSyncPayload {
       },
       {
         id: "fb_post_paid_1",
-        message: "Boosted post — paid lift",
+        message: "Boosted post - paid lift",
         permalink_url: "https://facebook.com/fixture/posts/2",
         created_time: new Date().toISOString(),
       },

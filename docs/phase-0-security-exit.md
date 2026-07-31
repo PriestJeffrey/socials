@@ -1,4 +1,4 @@
-# Phase 0 Security Exit — signed
+# Phase 0 Security Exit - signed
 
 ## Tactics touched
 TA0043 · TA0001 · TA0004 · TA0006 · TA0007 · (partial) TA0002
@@ -27,7 +27,7 @@ TA0043 · TA0001 · TA0004 · TA0006 · TA0007 · (partial) TA0002
 
 ## Human decision
 - [x] Accept residual risk and sign **S0**
-- [ ] Block — fixes: _______________
+- [ ] Block - fixes: _______________
 
 Signed: **PriestJeffrey** Date: **2026-07-29**  
-Authority: Human message “S0 signed — run Phase 1”
+Authority: Human message “S0 signed - run Phase 1”

@@ -1,8 +1,8 @@
-# Pulseboard — Phase 5 exit (draft toward S3)
+# Pulseboard - Phase 5 exit (draft toward S3)
 
-**Status:** Implementation complete on `v1-core` — awaiting Human UAT / **S3** sign. See [docs/v1-core-ship.md](v1-core-ship.md).  
+**Status:** Implementation complete on `v1-core` - awaiting Human UAT / **S3** sign. See [docs/v1-core-ship.md](v1-core-ship.md).  
 **Date:** 2026-07-30  
-**Remediation (2026-07-30):** gstack retro fixes — live publish refused (no fake Graph), atomic draft claim, calendar job scope + `/api/cron`, adapter `userId`, middleware `/x`, LI fixtures independent of Meta.
+**Remediation (2026-07-30):** gstack retro fixes - live publish refused (no fake Graph), atomic draft claim, calendar job scope + `/api/cron`, adapter `userId`, middleware `/x`, LI fixtures independent of Meta.
 
 ## Delivered
 

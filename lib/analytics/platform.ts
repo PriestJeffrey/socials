@@ -1,5 +1,5 @@
 /**
- * Platform analytics — snapshot/Post DB only.
+ * Platform analytics - snapshot/Post DB only.
  * Never call PlatformAdapter.fetch* on the analytics request path.
  */
 import { prisma } from "@/lib/db/prisma";
@@ -63,7 +63,7 @@ type Presentation = {
 const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
   instagram: {
     label: "Instagram",
-    focus: "Saves, engagement, and reach trend — reels vs static when kind is present.",
+    focus: "Saves, engagement, and reach trend - reels vs static when kind is present.",
     keys: [
       { key: "saves_rate", label: "Saves rate", highlight: true, format: "pct" },
       { key: "engagement_rate", label: "Engagement rate", highlight: true, format: "pct" },
@@ -73,7 +73,7 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
   },
   facebook: {
     label: "Facebook",
-    focus: "Shares and organic page signal — fans and engaged users.",
+    focus: "Shares and organic page signal - fans and engaged users.",
     keys: [
       { key: "organic_share_ratio", label: "Organic share ratio", highlight: true, format: "pct" },
       { key: "page_fans_delta_7d", label: "Fans Δ 7d", highlight: true, format: "delta" },
@@ -83,7 +83,7 @@ const PRESENTATION: Record<Exclude<AnalyticsPlatform, "x">, Presentation> = {
   },
   linkedin: {
     label: "LinkedIn",
-    focus: "Dwell / comment quality and first-hour velocity — not vanity likes alone.",
+    focus: "Dwell / comment quality and first-hour velocity - not vanity likes alone.",
     keys: [
       { key: "dwell_proxy", label: "Dwell proxy", highlight: true, format: "number" },
       { key: "comment_quality", label: "Comment quality", highlight: true, format: "number" },
@@ -217,7 +217,7 @@ export async function readPlatformAnalytics(
       lastSyncAt: null,
       empty: true,
       focus:
-        "X has no free analytics API in V1. Compose and copy from /x — no auto-publish, no fake metrics.",
+        "X has no free analytics API in V1. Compose and copy from /x - no auto-publish, no fake metrics.",
       metrics: [],
       posts: [],
       heuristics: [],

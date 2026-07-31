@@ -1,16 +1,17 @@
 services:
   postgres:
     image: postgres:16-alpine
+    # Bind loopback only - not 0.0.0.0 (gstack /cso medium).
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
-      POSTGRES_USER: pulseboard
-      POSTGRES_PASSWORD: pulseboard
-      POSTGRES_DB: pulseboard
+      POSTGRES_USER: ${POSTGRES_USER:-pulseboard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pulseboard}
+      POSTGRES_DB: ${POSTGRES_DB:-pulseboard}
     volumes:
       - pulseboard_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pulseboard -d pulseboard"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,15 +21,21 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://pulseboard:pulseboard@postgres:5432/pulseboard
+      # Pass DB parts only - entrypoint builds percent-encoded DATABASE_URL.
+      # Do not pass host DATABASE_URL (often @localhost) into the container.
+      POSTGRES_USER: ${POSTGRES_USER:-pulseboard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pulseboard}
+      POSTGRES_DB: ${POSTGRES_DB:-pulseboard}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
       APP_URL: http://localhost:3000
-      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env — no weak default}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env - no weak default}
       TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?Set TOKEN_ENCRYPTION_KEY in .env}
       COOKIE_SECURE: "false"
       META_USE_FIXTURES: "true"
       LINKEDIN_USE_FIXTURES: "true"
       GEMINI_USE_FIXTURES: "true"
-      CRON_SECRET: ${CRON_SECRET:?Set CRON_SECRET in .env — no weak default}
+      CRON_SECRET: ${CRON_SECRET:?Set CRON_SECRET in .env - no weak default}
       NODE_ENV: production
     depends_on:
       postgres:

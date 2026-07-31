@@ -1,4 +1,4 @@
-# Pulseboard — Scalability Addendum (Locked)
+# Pulseboard - Scalability Addendum (Locked)
 
 **Principle:** $0 V1 stays simple; nothing ships that paints into a single-instance corner. Scale via **seams + invariants**, not Redis/K8s on day one.
 
@@ -23,11 +23,11 @@ Env (commented in `.env.example`): `RATE_LIMIT_BACKEND`, `CACHE_BACKEND`, `JOB_B
 
 ## Invariants (non-negotiable)
 
-1. Stateless app — DB sessions; no process-local truth for sessions/quotas/jobs
+1. Stateless app - DB sessions; no process-local truth for sessions/quotas/jobs
 2. Every query scoped by `session.userId` (never trust body `userId`)
-3. Overview / Analytics read **MetricSnapshot + Post only** — never live platform APIs on page load
-4. Sync/publish via jobs — HTTP enqueues; workers call `PlatformAdapter`
-5. New platforms = new adapter modules + registry entry — core never rewritten
+3. Overview / Analytics read **MetricSnapshot + Post only** - never live platform APIs on page load
+4. Sync/publish via jobs - HTTP enqueues; workers call `PlatformAdapter`
+5. New platforms = new adapter modules + registry entry - core never rewritten
 6. Cursor pagination for lists (no large OFFSET); hard cap page size
 7. AI gateway: per-user limits; no unbounded fan-out (Phase 6)
 8. Cache keys always include `userId`

@@ -20,7 +20,7 @@ export default async function PlatformAnalyticsPage({
   const board = await readPlatformAnalytics(user.id, raw);
 
   return (
-    <main data-testid={`analytics-${board.platform}`}>
+    <main data-testid={`analytics-${board.platform}`} className="pb-enter">
       <p className="text-xs text-[var(--pb-slate)]">
         <Link href="/analytics" className="underline">
           Analytics
@@ -28,35 +28,32 @@ export default async function PlatformAnalyticsPage({
         {" / "}
         {board.label}
       </p>
-      <h1 className="mt-2 font-display text-3xl font-semibold text-[var(--pb-ink)]">
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         {board.label}
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">{board.focus}</p>
       {board.syncedAt ? (
-        <p className="mt-2 text-xs text-[var(--pb-slate)]">
+        <p className="mt-2 text-xs text-[var(--pb-muted)]">
           Snapshot as of {board.syncedAt}
         </p>
       ) : null}
 
       {board.mode === "manual" ? (
         <div
-          className="mt-8 max-w-xl rounded-lg border border-[var(--pb-line)] bg-white/80 p-6"
+          className="pb-panel pb-panel-3d mt-8 max-w-xl rounded-2xl p-6"
           data-testid="analytics-x-manual"
         >
           <p className="font-medium text-[var(--pb-ink)]">No API metrics</p>
           <p className="mt-2 text-sm text-[var(--pb-slate)]">
             X stays compose + copy in V1. We do not invent engagement charts.
           </p>
-          <Link
-            href="/x"
-            className="mt-4 inline-block rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white"
-          >
+          <Link href="/x" className="pb-btn pb-btn-primary mt-4">
             Open Compose X
           </Link>
         </div>
       ) : board.empty ? (
         <div
-          className="mt-8 max-w-xl rounded-lg border border-[var(--pb-line)] bg-white/80 p-6"
+          className="pb-panel pb-panel-3d mt-8 max-w-xl rounded-2xl p-6"
           data-testid="analytics-empty"
         >
           <p className="font-medium text-[var(--pb-ink)]">
@@ -67,10 +64,7 @@ export default async function PlatformAnalyticsPage({
               ? "Sync from Settings to fill this platform board."
               : `Connect ${board.label} in Settings, then sync.`}
           </p>
-          <Link
-            href="/settings"
-            className="mt-4 inline-block rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white"
-          >
+          <Link href="/settings" className="pb-btn pb-btn-primary mt-4">
             Open Settings
           </Link>
         </div>
@@ -80,12 +74,12 @@ export default async function PlatformAnalyticsPage({
             <h2 className="font-display text-xl font-semibold text-[var(--pb-ink)]">
               Metrics
             </h2>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 pb-overview-stage">
               {board.metrics.map((m) => (
                 <li
                   key={m.key}
                   data-testid={`metric-${m.key}`}
-                  className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3"
+                  className="pb-depth-card rounded-2xl px-4 py-3"
                 >
                   <p className="text-xs uppercase tracking-wide text-[var(--pb-slate)]">
                     {m.label}
@@ -109,7 +103,7 @@ export default async function PlatformAnalyticsPage({
                   <li
                     key={h.id}
                     data-testid={`heuristic-${h.id}`}
-                    className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3 text-sm"
+                    className="pb-panel rounded-xl px-4 py-3 text-sm"
                   >
                     <span
                       className="font-semibold uppercase tracking-wide"
@@ -140,7 +134,7 @@ export default async function PlatformAnalyticsPage({
                   <li
                     key={p.id}
                     data-testid={`analytics-post-${p.id}`}
-                    className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3 text-sm"
+                    className="pb-panel rounded-xl px-4 py-3 text-sm"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--pb-slate)]">
                       <span>{p.kind ?? "post"}</span>

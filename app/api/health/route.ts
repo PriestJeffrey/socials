@@ -4,7 +4,7 @@ import { getSessionUser } from "@/lib/auth/session";
 
 /**
  * Authenticated: full HealthReport (fixture/config posture + connection state).
- * Anonymous: liveness only — no fixture flags or secret-config hints.
+ * Anonymous: liveness only - no fixture flags or secret-config hints.
  */
 export async function GET() {
   const user = await getSessionUser().catch(() => null);

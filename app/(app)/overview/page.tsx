@@ -19,21 +19,24 @@ export default async function OverviewPage() {
   });
 
   return (
-    <main>
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Signal board
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Overview
       </h1>
       {board.syncedAt ? (
-        <p className="mt-2 text-xs text-[var(--pb-slate)]">
+        <p className="mt-2 text-xs text-[var(--pb-muted)]">
           Snapshot as of {board.syncedAt}
         </p>
       ) : null}
       {board.why ? (
         <p
-          className="mt-3 max-w-2xl text-sm text-[var(--pb-ink)]"
+          className="pb-panel mt-5 max-w-2xl rounded-xl px-4 py-3 text-sm text-[var(--pb-ink)]"
           data-testid="overview-why"
         >
-          <span className="font-semibold">Why: </span>
+          <span className="font-semibold text-[var(--pb-pulse-deep)]">Why: </span>
           {board.why}
         </p>
       ) : null}
@@ -41,9 +44,9 @@ export default async function OverviewPage() {
       {board.empty ? (
         <div
           data-testid="overview-empty"
-          className="mt-8 max-w-xl rounded-xl border border-[var(--pb-line)] bg-white/80 p-8"
+          className="pb-panel pb-panel-3d mt-8 max-w-xl rounded-2xl p-8"
         >
-          <p className="font-display text-xl font-semibold text-[var(--pb-ink)]">
+          <p className="font-display text-2xl font-semibold text-[var(--pb-ink)]">
             {anyConnected ? "Waiting on snapshots" : "Your board is ready"}
           </p>
           <p className="mt-3 text-[var(--pb-slate)]">
@@ -51,17 +54,11 @@ export default async function OverviewPage() {
               ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
               : "Connect Instagram, Facebook, or LinkedIn and sync to see what's broken, what's working, and what to post next."}
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/settings"
-              className="rounded-md bg-[var(--pb-pulse)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--pb-pulse-deep)]"
-            >
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href="/settings" className="pb-btn pb-btn-primary">
               {anyConnected ? "Open Settings to sync" : "Connect a platform"}
             </Link>
-            <Link
-              href="/settings/health"
-              className="rounded-md border border-[var(--pb-line)] bg-white/70 px-4 py-2.5 text-sm font-semibold text-[var(--pb-ink)] transition-colors hover:bg-white"
-            >
+            <Link href="/settings/health" className="pb-btn pb-btn-ghost">
               System health
             </Link>
           </div>
@@ -74,19 +71,21 @@ export default async function OverviewPage() {
           {[...board.issues, ...board.wins].map((card, i) => (
             <article
               key={`${card.platform ?? "x"}-${card.title}-${card.metricKey ?? i}`}
-              className="pb-depth-card rounded-xl border border-[var(--pb-line)] bg-white/80 p-5"
+              className="pb-depth-card rounded-2xl p-5"
             >
               <p
-                className="text-xs font-semibold uppercase tracking-wide"
+                className="text-[0.7rem] font-semibold uppercase tracking-[0.14em]"
                 style={{
                   color:
                     card.kind === "issue" ? "var(--pb-warn)" : "var(--pb-ok)",
                 }}
               >
                 {card.title}
-                {card.platform ? ` ┬À ${card.platform}` : ""}
+                {card.platform ? ` · ${card.platform}` : ""}
               </p>
-              <p className="mt-2 text-sm text-[var(--pb-slate)]">{card.body}</p>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--pb-ink-soft)]">
+                {card.body}
+              </p>
             </article>
           ))}
         </div>

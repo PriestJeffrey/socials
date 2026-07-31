@@ -16,7 +16,7 @@ export async function runPublishDraft(input: {
   });
   if (!draft) throw new Error("Draft not found");
   if (draft.platform === "x") {
-    throw new Error("X is copy-only — open /x instead of publishing");
+    throw new Error("X is copy-only - open /x instead of publishing");
   }
   if (!PUBLISHABLE.has(draft.platform)) {
     throw new Error(`Unsupported publish platform: ${draft.platform}`);
@@ -44,11 +44,11 @@ export async function runPublishDraft(input: {
 
   if (!useFixtures) {
     throw new Error(
-      "Live Graph/LinkedIn publish is not implemented — enable platform fixtures for local publish, or wait for live API wiring",
+      "Live Graph/LinkedIn publish is not implemented - enable platform fixtures for local publish, or wait for live API wiring",
     );
   }
   if (!connection.accessTokenEnc) {
-    throw new Error("Missing token — reconnect platform");
+    throw new Error("Missing token - reconnect platform");
   }
 
   const claimed = await prisma.draft.updateMany({

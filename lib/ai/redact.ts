@@ -1,5 +1,5 @@
 /**
- * L9 — strip secrets before any LLM call. Never pass OAuth tokens / session material.
+ * L9 - strip secrets before any LLM call. Never pass OAuth tokens / session material.
  */
 const SECRET_PATTERNS: RegExp[] = [
   /\bEAA[A-Za-z0-9]+/g,

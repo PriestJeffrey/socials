@@ -1,4 +1,4 @@
-# Pulseboard — Phase 7 Restatement (Locked)
+# Pulseboard - Phase 7 Restatement (Locked)
 
 **Status:** Phase 7 **in progress** → toward **S5**.  
 **Success bar:** Approvals workflow, sentiment where available, restrained Overview polish, real account deletion.  

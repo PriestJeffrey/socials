@@ -15,7 +15,7 @@ export const fixtureAiProvider: AiProvider = {
     if (blob.includes("competitor") || blob.includes("hook")) {
       const hint = hashHint(input.user);
       text = JSON.stringify({
-        hook: `Fixture hook (${hint}): Stop scrolling — here's the one move that compounds.`,
+        hook: `Fixture hook (${hint}): Stop scrolling - here's the one move that compounds.`,
         structure: "Hook → proof → CTA",
         cta: "Save this for your next post",
         tags: ["fixture", "awareness"],
@@ -27,11 +27,11 @@ export const fixtureAiProvider: AiProvider = {
       text = JSON.stringify({
         label: "neutral",
         score: 0.12,
-        note: "Fixture sentiment — mostly neutral tone",
+        note: "Fixture sentiment - mostly neutral tone",
       });
     } else if (blob.includes("why") || blob.includes("overview")) {
       text =
-        "Fixture why: Recent snapshot numbers point to soft engagement — tighten the opening line and post when your audience is already active.";
+        "Fixture why: Recent snapshot numbers point to soft engagement - tighten the opening line and post when your audience is already active.";
     } else {
       text = "Fixture AI response.";
     }

@@ -1,4 +1,4 @@
-# Pulseboard — Locked Prompts & Operating Rules
+# Pulseboard - Locked Prompts & Operating Rules
 
 Single place for AI/agent operating prompts derived from the Complete SDLC and recent Human locks (scalability, multi-agent roles).
 
@@ -12,7 +12,7 @@ Single place for AI/agent operating prompts derived from the Complete SDLC and r
 4. After coding: run that phase’s tests; present checklist + ATT&CK residual risk.
 5. **Stop** at phase boundary. Wait for Human approval.
 6. Never mark a phase done without green acceptance criteria.
-7. New networks = new **PlatformAdapter** modules — do not rewrite core.
+7. New networks = new **PlatformAdapter** modules - do not rewrite core.
 8. Scalability: use seams (`RateLimiter`, `CacheStore`, `JobQueue`, `Clock`); Overview never live-fetches platforms; always `userId`-scope queries.
 9. Crypto: AES-256-GCM for secrets at rest; Argon2id/bcrypt for passwords; never SHA-as-encryption.
 10. Do not build until Human says **run Phase N**.
@@ -72,9 +72,9 @@ Local Node/Postgres bootstrap; `.env.example`; GHA lint/unit/secret-scan; branch
 
 ## Companion locked docs
 
-- `docs/Pulseboard-Complete-SDLC.md` — single source of truth (full spec)
-- `docs/phase-0-restatement.md` — Build/Security/Tests/Human inputs
-- `docs/scalability-addendum.md` — seams, invariants, upgrade ladder
-- `docs/agent-roster.md` — roles + multi-agent phase map
-- `docs/ui-direction-phase-0.md` — visual tokens and composition
-- `docs/full-project-needs-trace.md` — master needs checklist across all phases
+- `docs/Pulseboard-Complete-SDLC.md` - single source of truth (full spec)
+- `docs/phase-0-restatement.md` - Build/Security/Tests/Human inputs
+- `docs/scalability-addendum.md` - seams, invariants, upgrade ladder
+- `docs/agent-roster.md` - roles + multi-agent phase map
+- `docs/ui-direction-phase-0.md` - visual tokens and composition
+- `docs/full-project-needs-trace.md` - master needs checklist across all phases

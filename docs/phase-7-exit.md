@@ -1,6 +1,6 @@
-# Pulseboard — Phase 7 exit (draft toward S5)
+# Pulseboard - Phase 7 exit (draft toward S5)
 
-**Status:** Implementation complete on `v1-core` — awaiting Human UAT / **S5** sign. See [docs/v1-core-ship.md](v1-core-ship.md).  
+**Status:** Implementation complete on `v1-core` - awaiting Human UAT / **S5** sign. See [docs/v1-core-ship.md](v1-core-ship.md).  
 **Date:** 2026-07-30  
 **gstack:** Restatement locked; `/review` notes below.
 

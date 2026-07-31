@@ -1,5 +1,5 @@
 /**
- * Optional Sentry wiring — no-op unless SENTRY_DSN is set.
+ * Optional Sentry wiring - no-op unless SENTRY_DSN is set.
  * Keeps Phase 8 monitoring seam without forcing a paid SDK in V1.
  */
 export function captureException(err: unknown, context?: Record<string, unknown>): void {

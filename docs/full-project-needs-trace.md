@@ -1,4 +1,4 @@
-# Pulseboard — Full Project Needs Trace (Locked)
+# Pulseboard - Full Project Needs Trace (Locked)
 
 Derived from graphify traversal of locked docs + Complete SDLC.  
 **Use this as the master “what we need” checklist across V1 (S0→S6) and Wave B (S7).**
@@ -7,8 +7,8 @@ Derived from graphify traversal of locked docs + Complete SDLC.
 
 ## 1. North star
 
-**Product:** Pulseboard — *Know what's broken, what's working, and what to post next.*  
-**Within 30 seconds on Overview** (after core phases): see broken / working / what to post next — act without leaving the app.
+**Product:** Pulseboard - *Know what's broken, what's working, and what to post next.*  
+**Within 30 seconds on Overview** (after core phases): see broken / working / what to post next - act without leaving the app.
 
 | Bar | Meaning | Phase |
 |---|---|---|
@@ -27,7 +27,7 @@ Derived from graphify traversal of locked docs + Complete SDLC.
 
 ## 2. Who does what (always needed)
 
-### Human (you) — never automated away
+### Human (you) - never automated away
 
 | Need | When |
 |---|---|
@@ -59,7 +59,7 @@ Derived from graphify traversal of locked docs + Complete SDLC.
 
 ---
 
-## 3. Stack (build with this — locked)
+## 3. Stack (build with this - locked)
 
 | Layer | Need |
 |---|---|
@@ -77,10 +77,10 @@ Derived from graphify traversal of locked docs + Complete SDLC.
 | CI | GitHub Actions: lint, test, secret scan; SAST/SCA deepen Phase 8 |
 | Monitor | Structured logs Phase 0+; Health UI Phase 1+; Sentry Phase 8 |
 
-### Scalability seams (Phase 0 — interfaces now)
+### Scalability seams (Phase 0 - interfaces now)
 
 `RateLimiter` · `CacheStore` · `JobQueue`/`JobRunner` · `Clock` · Prisma singleton · Platform registry  
-**Invariant:** Overview reads `MetricSnapshot` only — never live platform APIs on page load.
+**Invariant:** Overview reads `MetricSnapshot` only - never live platform APIs on page load.
 
 ```
 WRITE: JobQueue → PlatformAdapter → Post + MetricSnapshot → cache invalidate
@@ -107,7 +107,7 @@ READ:  Overview → snapshots (+ CacheStore) + formulas
 | `REDIS_URL` + `*_BACKEND=redis` | Post-S6 trigger | Shared rate limit/cache |
 | X paid API | **V2 / Human only** | Not V1 |
 
-**Never commit** `.env` — only `.env.example`.
+**Never commit** `.env` - only `.env.example`.
 
 ---
 
@@ -148,48 +148,48 @@ READ:  Overview → snapshots (+ CacheStore) + formulas
 
 ## 7. Phase-by-phase needs (build spine)
 
-### Phase 0 → S0 — Foundation
+### Phase 0 → S0 - Foundation
 **Need:** Node LTS, Postgres, GitHub repo, branch choice, Argon2id confirm.  
 **Build:** Landing+3D, auth, tenancy, AES helper, adapter stub, seams, CI, Health stub, logger.  
 **Agents:** full swarm. **Human UAT:** brand / 3D / auth / reduced-motion.
 
-### Phase 1 → S1 — Instagram
+### Phase 1 → S1 - Instagram
 **Need:** Meta developer app, IG Business/Creator account, OAuth redirect URLs.  
 **Build:** IG adapter, posts/metrics, snapshots, cache, Overview win+issue, Health sync status.  
 **Security:** AES tokens, OAuth state CSRF, scoped OAuth.
 
-### Phase 2 — Facebook (toward S2)
+### Phase 2 - Facebook (toward S2)
 **Need:** FB Page connection under same Meta stack.  
 **Build:** FB adapter, metric hierarchy, Overview IG+FB, hardened Meta client.
 
-### Phase 3 → S2 — LinkedIn + formulas
+### Phase 3 → S2 - LinkedIn + formulas
 **Need:** LinkedIn app; **confirm scopes** at build time.  
 **Build:** LI adapter + UI language; fatigue + shadowban formulas.
 
-### Phase 4 — X honest
+### Phase 4 - X honest
 **Need:** None (no paid API).  
 **Build:** Compose + copy-to-clipboard; capability flags; no fake OAuth.
 
-### Phase 5 → S3 — Create / calendar / publish
+### Phase 5 → S3 - Create / calendar / publish
 **Need:** Live IG/FB/LI for UAT posts.  
 **Build:** Composer, schedule/publish, calendar, goals, conversions, repurpose.  
 **Security:** publish authz, audit, idempotent publish.
 
-### Phase 6 → S4 — AI + competitors
+### Phase 6 → S4 - AI + competitors
 **Need:** `GEMINI_API_KEY` (free tier first).  
 **Build:** AI gateway, paste→hook library, drafting, plain-language why.  
 **Security:** L9 redaction; no tokens to LLM; rate limits.
 
-### Phase 7 → S5 — Approvals / sentiment / deletion
+### Phase 7 → S5 - Approvals / sentiment / deletion
 **Need:** Human UX + delete dry-run.  
 **Build:** draft→review→approved→published; sentiment; Overview depth moment; hard-delete cascade.
 
-### Phase 8 → S6 — Deploy
+### Phase 8 → S6 - Deploy
 **Need:** Vercel + managed Postgres + DNS; enable CI gates.  
 **Build:** prod migrate, TLS, SAST/SCA/secret scan, Sentry, runbook, smoke.  
 **Human:** signs 30-second north star + go-live.
 
-### Phase 9+ → S7 — Threads / TikTok / …
+### Phase 9+ → S7 - Threads / TikTok / …
 **Need:** Human names platform → AI research cost/API → Human go/no-go → adapter pack.
 
 ---
@@ -217,7 +217,7 @@ READ:  Overview → snapshots (+ CacheStore) + formulas
 
 ---
 
-## 10. Scale upgrade triggers (post-S6 — not Phase 0 spend)
+## 10. Scale upgrade triggers (post-S6 - not Phase 0 spend)
 
 Indexes → vertical DB → connection pool → concurrency caps → workers → **Redis** → external queue → read replicas  
 

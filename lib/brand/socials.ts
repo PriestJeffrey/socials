@@ -1,6 +1,6 @@
 /**
- * Pulseboard brand social profiles (marketing links — not user connections).
- * Set `live: true` and real handles when profiles exist — avoids UAT 404s.
+ * Pulseboard brand social profiles (marketing links - not user connections).
+ * Set `live: true` and real handles when profiles exist - avoids UAT 404s.
  */
 export type BrandSocialPlatform =
   | "instagram"
@@ -16,8 +16,11 @@ export type BrandSocialLink = {
   href: string;
   /** When false, render non-navigating icon (no dead links). */
   live: boolean;
-  /** Brand glyph color (CSS color). */
-  color: string;
+  /**
+   * Brand glyph color. Use `mono` for X/Threads so light/dark themes
+   * pick `--pb-social-mono` instead of a fixed black that vanishes on dark.
+   */
+  color: string | "mono";
 };
 
 const HANDLE = "pulseboard";
@@ -45,7 +48,7 @@ export const brandSocialLinks: BrandSocialLink[] = [
     handle: `@${HANDLE}`,
     href: `https://x.com/${HANDLE}`,
     live: false,
-    color: "#0B1F2A",
+    color: "mono",
   },
   {
     id: "threads",
@@ -53,7 +56,7 @@ export const brandSocialLinks: BrandSocialLink[] = [
     handle: `@${HANDLE}`,
     href: `https://www.threads.net/@${HANDLE}`,
     live: false,
-    color: "#000000",
+    color: "mono",
   },
   {
     id: "tiktok",

@@ -1,4 +1,4 @@
-# Pulseboard — Phase 1 exit — signed
+# Pulseboard - Phase 1 exit - signed
 
 **Status:** **S1 signed** (fixtures path; real Meta deferred until developer access unlocks).  
 **Date:** 2026-07-30
@@ -39,7 +39,7 @@
 ## Human decision
 
 - [x] Accept residual risk and sign **S1** (fixtures)
-- [ ] Block — fixes: _______________
+- [ ] Block - fixes: _______________
 
 Signed: **PriestJeffrey** Date: **2026-07-30**  
 Authority: Human message “done!” after Phase 1 harden UAT

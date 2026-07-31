@@ -13,7 +13,6 @@ export default async function CalendarPage({
   const user = await getSessionUser();
   if (!user) redirect("/login");
 
-  // Drain this user's due jobs only — global drain is /api/cron
   await processPendingJobs(10, user.id);
 
   const params = (await searchParams) ?? {};
@@ -36,8 +35,11 @@ export default async function CalendarPage({
   });
 
   return (
-    <main data-testid="calendar-page">
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main data-testid="calendar-page" className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Schedule
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Calendar
       </h1>
       <p className="mt-2 text-sm text-[var(--pb-slate)]">
@@ -63,7 +65,7 @@ export default async function CalendarPage({
             <li
               key={d.id}
               data-testid={`cal-${d.id}`}
-              className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3"
+              className="pb-panel rounded-xl px-4 py-3"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="font-medium text-[var(--pb-ink)]">

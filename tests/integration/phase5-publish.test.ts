@@ -99,7 +99,7 @@ describe.runIf(hasDb)("phase 5 drafts + publish", () => {
       idempotencyKey: `publish:${draft.id}:${when.toISOString()}`,
       runAfter: when,
     });
-    // Drain any due jobs (e.g. leftover syncs) — future publish must remain pending
+    // Drain any due jobs (e.g. leftover syncs) - future publish must remain pending
     await processPendingJobs(10, userA);
     const still = await prisma.draft.findUniqueOrThrow({ where: { id: draft.id } });
     expect(still.status).toBe("scheduled");

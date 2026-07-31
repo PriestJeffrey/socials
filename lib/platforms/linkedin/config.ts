@@ -22,7 +22,7 @@ export function getLinkedInConfig(): LinkedInConfig {
   };
 }
 
-/** Confirm at live connect — OpenID + member social read/write baseline. */
+/** Confirm at live connect - OpenID + member social read/write baseline. */
 export const LINKEDIN_OAUTH_SCOPES = [
   "openid",
   "profile",

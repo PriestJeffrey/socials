@@ -21,12 +21,12 @@ export function XComposePanel({ initialText = "" }: { initialText?: string }) {
       await navigator.clipboard.writeText(text);
       setCopied(true);
     } catch {
-      setError("Clipboard blocked — select the text and copy manually.");
+      setError("Clipboard blocked - select the text and copy manually.");
     }
   }
 
   return (
-    <div className="mt-6 max-w-xl" data-testid="x-compose">
+    <div className="pb-panel pb-panel-3d mt-6 max-w-xl rounded-2xl p-6" data-testid="x-compose">
       <label htmlFor="x-draft" className="text-sm font-medium text-[var(--pb-ink)]">
         Draft for X
       </label>
@@ -39,10 +39,10 @@ export function XComposePanel({ initialText = "" }: { initialText?: string }) {
           setCopied(false);
         }}
         rows={6}
-        className="mt-2 w-full rounded-lg border border-[var(--pb-line)] bg-white/90 px-3 py-2 text-sm text-[var(--pb-ink)] outline-none focus:border-[var(--pb-pulse)]"
+        className="pb-input resize-y"
         placeholder="Write the post you’ll paste into X…"
       />
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <p
           className="text-xs text-[var(--pb-slate)]"
           data-testid="x-char-count"
@@ -53,14 +53,14 @@ export function XComposePanel({ initialText = "" }: { initialText?: string }) {
           type="button"
           data-testid="x-copy"
           onClick={copyToClipboard}
-          className="rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
+          className="pb-btn pb-btn-primary"
         >
           Copy to clipboard
         </button>
       </div>
       {copied ? (
         <p className="mt-3 text-sm text-[var(--pb-ok)]" data-testid="x-copied">
-          Copied — paste into X. Pulseboard does not auto-publish.
+          Copied - paste into X. Pulseboard does not auto-publish.
         </p>
       ) : null}
       {error ? (

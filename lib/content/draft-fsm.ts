@@ -1,8 +1,8 @@
 /**
- * Phase 7 — draft approval state machine (server-side only).
+ * Phase 7 - draft approval state machine (server-side only).
  * draft → in_review → approved → published
  * in_review → draft (reject)
- * approved → in_review (optional reopen — not exposed in V1 UI)
+ * approved → in_review (optional reopen - not exposed in V1 UI)
  * Solo "Publish now" may auto-approve then publish.
  */
 

@@ -1,4 +1,4 @@
-# Pulseboard — V1 Core Close & Ship Pack
+# Pulseboard - V1 Core Close & Ship Pack
 
 **Branch:** `v1-core`  
 **Date:** 2026-07-31  
@@ -22,27 +22,27 @@ Health must show **phase 8** and platforms **IG / FB / LI / X only** (no Threads
 
 | # | Bar | Reply when green |
 |---|---|---|
-| 1 | **S2** — IG + FB + LinkedIn analytics | `S2 signed` |
-| 2 | **S3** — Create / calendar / publish + X copy | `S3 signed` |
-| 3 | **S4** — AI why + competitors + draft assist | `S4 signed` |
-| 4 | **S5** — Approvals + sentiment + account delete | `S5 signed` |
-| 5 | **S6** — Prod smoke + runbook comfort | `S6 signed` |
+| 1 | **S2** - IG + FB + LinkedIn analytics | `S2 signed` |
+| 2 | **S3** - Create / calendar / publish + X copy | `S3 signed` |
+| 3 | **S4** - AI why + competitors + draft assist | `S4 signed` |
+| 4 | **S5** - Approvals + sentiment + account delete | `S5 signed` |
+| 5 | **S6** - Prod smoke + runbook comfort | `S6 signed` |
 
 S0 + S1 already signed historically (fixtures).
 
 ---
 
-## S2 — Platform analytics (Phases 2–3)
+## S2 - Platform analytics (Phases 2–3)
 
 1. Settings → Connect **Instagram** (fixtures) → Overview shows IG cards  
 2. Connect **Facebook** → FB cards; disconnect FB → FB gone, IG remains  
 3. Connect **LinkedIn** → LI / fatigue / heuristic signal  
-4. `/settings/health` — IG/FB/LI ok or fixture mode; phase **8**  
+4. `/settings/health` - IG/FB/LI ok or fixture mode; phase **8**  
 5. Optional: `/analytics/instagram` (and fb/li) loads snapshot metrics  
 
 ---
 
-## S3 — Create / publish / X (Phases 4–5)
+## S3 - Create / publish / X (Phases 4–5)
 
 1. Open **X** → “not auto-publish”; type → Copy works; Settings has no X Connect  
 2. Connect IG → **Create** → Publish now (fixtures) → Calendar / Overview has post  
@@ -52,7 +52,7 @@ S0 + S1 already signed historically (fixtures).
 
 ---
 
-## S4 — AI (Phase 6)
+## S4 - AI (Phase 6)
 
 1. **Competitors** → paste caption → hook appears in library  
 2. **Create** → Suggest draft → body fills (no auto-publish)  
@@ -61,7 +61,7 @@ S0 + S1 already signed historically (fixtures).
 
 ---
 
-## S5 — Approvals / deletion (Phase 7)
+## S5 - Approvals / deletion (Phase 7)
 
 1. Create draft → **Approvals** → Submit → Approve → Publish approved  
 2. Run **sentiment** on a draft  
@@ -69,7 +69,7 @@ S0 + S1 already signed historically (fixtures).
 
 ---
 
-## S6 — Production bar (Phase 8)
+## S6 - Production bar (Phase 8)
 
 1. `docker compose up --build` (or host) → login works  
 2. `npm run smoke -- http://localhost:3000` (or your host)  
@@ -98,7 +98,7 @@ V1 core is **closed**. Next only if you ask:
 | Branch | `v1-core` pushed |
 | Platforms in registry | IG, FB, LI, X |
 | `npm test` | 77/77 |
-| Docker rebuild on `v1-core` | Done — OAuth routes IG/FB/LI only |
+| Docker rebuild on `v1-core` | Done - OAuth routes IG/FB/LI only |
 | `/api/health` | `phase: 8`, `ok` |
 | `npm run smoke` | Passed against http://localhost:3000 |
 | Wave B in active app | Removed |

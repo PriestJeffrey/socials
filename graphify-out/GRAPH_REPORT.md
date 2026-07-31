@@ -48,9 +48,9 @@
   README.md → docs/locked-prompts.md
 
 ## Hyperedges (group relationships)
-- **Phase 0 Scalability Seams** — docs_scalability_addendum_ratelimiter, docs_scalability_addendum_cachestore, docs_scalability_addendum_jobqueue, docs_scalability_addendum_clock [EXTRACTED 1.00]
-- **Phase 0 Multi-Agent Foundation Roles** — docs_agent_roster_architect, docs_agent_roster_ui_ux, docs_agent_roster_frontend, docs_agent_roster_backend, docs_agent_roster_qa, docs_agent_roster_appsec, docs_agent_roster_devops [EXTRACTED 1.00]
-- **Adapter Fetch to Overview Read Path** — docs_pulseboard_complete_sdlc_platformadapter, docs_pulseboard_complete_sdlc_metricsnapshot, docs_pulseboard_complete_sdlc_overview, docs_scalability_addendum_jobqueue, docs_scalability_addendum_read_vs_write_path [EXTRACTED 1.00]
+- **Phase 0 Scalability Seams** - docs_scalability_addendum_ratelimiter, docs_scalability_addendum_cachestore, docs_scalability_addendum_jobqueue, docs_scalability_addendum_clock [EXTRACTED 1.00]
+- **Phase 0 Multi-Agent Foundation Roles** - docs_agent_roster_architect, docs_agent_roster_ui_ux, docs_agent_roster_frontend, docs_agent_roster_backend, docs_agent_roster_qa, docs_agent_roster_appsec, docs_agent_roster_devops [EXTRACTED 1.00]
+- **Adapter Fetch to Overview Read Path** - docs_pulseboard_complete_sdlc_platformadapter, docs_pulseboard_complete_sdlc_metricsnapshot, docs_pulseboard_complete_sdlc_overview, docs_scalability_addendum_jobqueue, docs_scalability_addendum_read_vs_write_path [EXTRACTED 1.00]
 
 ## Communities (13 total, 7 thin omitted)
 
@@ -81,7 +81,7 @@ Nodes (3): Phase 2, Phase 3, S2 Success Bar
 ## Knowledge Gaps
 - **21 isolated node(s):** `S3 Success Bar`, `S4 Success Bar`, `S5 Success Bar`, `S7 Success Bar`, `Phase 2` (+16 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **7 thin communities (<3 nodes) omitted from report** - run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

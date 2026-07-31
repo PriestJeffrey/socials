@@ -53,7 +53,7 @@ export async function signup(
       data: { email, passwordHash },
     });
   } catch (err) {
-    // Unique email race (P2002) — concurrent signup
+    // Unique email race (P2002) - concurrent signup
     if (
       typeof err === "object" &&
       err !== null &&

@@ -32,7 +32,7 @@ export async function setDraftSuggestFlash(
   });
 }
 
-/** Read once and clear — never leave draft text in the cookie jar. */
+/** Read once and clear - never leave draft text in the cookie jar. */
 export async function takeDraftSuggestFlash(
   userId: string,
 ): Promise<Omit<DraftSuggestFlash, "userId"> | null> {

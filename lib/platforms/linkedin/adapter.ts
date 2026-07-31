@@ -122,7 +122,7 @@ export const linkedinAdapter: PlatformAdapter = {
   },
 
   async refreshToken(_userId: string, _connectionId: string): Promise<void> {
-    throw new Error("LinkedIn refresh not implemented in Phase 3 — reconnect");
+    throw new Error("LinkedIn refresh not implemented in Phase 3 - reconnect");
   },
 
   async disconnect(userId: string, connectionId: string): Promise<void> {
@@ -169,7 +169,7 @@ export const linkedinAdapter: PlatformAdapter = {
     decryptAesGcm(conn.accessTokenEnc);
     const cfg = getLinkedInConfig();
     if (cfg.useFixtures) return fixtureLiSyncPayload("x").posts;
-    // Live member posts API varies by product — Phase 3 live path returns empty until scopes confirmed
+    // Live member posts API varies by product - Phase 3 live path returns empty until scopes confirmed
     return [];
   },
 

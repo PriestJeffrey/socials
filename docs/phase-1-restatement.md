@@ -1,7 +1,7 @@
-# Pulseboard — Phase 1 Restatement (Locked)
+# Pulseboard - Phase 1 Restatement (Locked)
 
-**Status:** Phase 1 **complete** — **S1 signed** 2026-07-30 (fixtures; real Meta deferred).  
-**Success bar:** S1 — Instagram connected, snapshots feed Overview, Health shows IG sync.  
+**Status:** Phase 1 **complete** - **S1 signed** 2026-07-30 (fixtures; real Meta deferred).  
+**Success bar:** S1 - Instagram connected, snapshots feed Overview, Health shows IG sync.  
 **Depends on Human (deferred):** Meta developer app unlock + IG Business/Creator + redirect URI for live OAuth.
 
 ## Build

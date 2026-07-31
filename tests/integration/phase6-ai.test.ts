@@ -38,7 +38,7 @@ describe.runIf(hasDb)("phase 6 AI + hook library", () => {
       userId: userA,
       platform: "instagram",
       sourceText:
-        "Stop scrolling — three moves that doubled our saves last week. Comment READY if you want the checklist.",
+        "Stop scrolling - three moves that doubled our saves last week. Comment READY if you want the checklist.",
     });
     expect(analysis.hook.length).toBeGreaterThan(5);
     const row = await prisma.hookLibraryItem.findFirst({

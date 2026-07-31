@@ -29,7 +29,7 @@ export function SignupForm() {
           required
           autoComplete="email"
           data-testid="auth-email"
-          className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 outline-none ring-[var(--pb-pulse)] focus:ring-2"
+          className="pb-input"
         />
       </div>
       <div>
@@ -44,7 +44,7 @@ export function SignupForm() {
           minLength={8}
           autoComplete="new-password"
           data-testid="auth-password"
-          className="mt-1 w-full rounded-md border border-[var(--pb-line)] bg-white px-3 py-2 outline-none ring-[var(--pb-pulse)] focus:ring-2"
+          className="pb-input"
         />
       </div>
       {state?.message ? (
@@ -56,13 +56,13 @@ export function SignupForm() {
         type="submit"
         disabled={pending}
         data-testid="auth-submit"
-        className="w-full rounded-md bg-[var(--pb-pulse)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)] disabled:opacity-60"
+        className="pb-btn pb-btn-primary w-full disabled:opacity-60"
       >
         {pending ? "Creating…" : "Get started"}
       </button>
       <p className="text-sm text-[var(--pb-slate)]">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-[var(--pb-pulse-deep)]">
+        <Link href="/login" className="font-semibold text-[var(--pb-pulse-deep)]">
           Log in
         </Link>
       </p>

@@ -26,7 +26,7 @@ export default async function ApprovalsPage({
         : typeof params.approved === "string"
           ? "Approved."
           : typeof params.rejected === "string"
-            ? "Rejected — back to draft."
+            ? "Rejected - back to draft."
             : typeof params.sentiment === "string"
               ? "Sentiment updated."
               : null;
@@ -43,18 +43,21 @@ export default async function ApprovalsPage({
   });
 
   return (
-    <main data-testid="approvals-page">
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main data-testid="approvals-page" className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Workflow
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Approvals
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
         Workflow: draft → in review → approved → published. Publish from Create
         still auto-approves for solo use. Publishing is local/fixture-only until
-        live Graph/TikTok posting ships.
+        live Graph posting ships.
       </p>
 
       <p
-        className="mt-4 max-w-xl rounded-md border border-[var(--pb-line)] bg-white/70 px-3 py-2 text-xs text-[var(--pb-slate)]"
+        className="pb-panel mt-4 max-w-xl rounded-xl px-4 py-3 text-xs text-[var(--pb-slate)]"
         data-testid="approvals-fixture-banner"
       >
         “Publish approved” creates a local fixture post when fixtures are enabled.
@@ -80,7 +83,7 @@ export default async function ApprovalsPage({
             <li
               key={d.id}
               data-testid={`approval-${d.id}`}
-              className="rounded-lg border border-[var(--pb-line)] bg-white/80 px-4 py-3"
+              className="pb-panel rounded-xl px-4 py-3"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="font-medium text-[var(--pb-ink)]">
@@ -108,7 +111,7 @@ export default async function ApprovalsPage({
                     <button
                       type="submit"
                       data-testid={`submit-review-${d.id}`}
-                      className="rounded-md border border-[var(--pb-line)] px-3 py-1.5 text-xs font-semibold"
+                      className="pb-btn pb-btn-ghost !px-3 !py-1.5 text-xs"
                     >
                       Submit for review
                     </button>
@@ -121,7 +124,7 @@ export default async function ApprovalsPage({
                       <button
                         type="submit"
                         data-testid={`approve-${d.id}`}
-                        className="rounded-md bg-[var(--pb-pulse)] px-3 py-1.5 text-xs font-semibold text-white"
+                        className="pb-btn pb-btn-primary !px-3 !py-1.5 text-xs"
                       >
                         Approve
                       </button>
@@ -131,7 +134,7 @@ export default async function ApprovalsPage({
                       <button
                         type="submit"
                         data-testid={`reject-${d.id}`}
-                        className="rounded-md border border-[var(--pb-warn)] px-3 py-1.5 text-xs font-semibold text-[var(--pb-warn)]"
+                        className="pb-btn pb-btn-ghost !px-3 !py-1.5 text-xs border-[var(--pb-warn)] text-[var(--pb-warn)]"
                       >
                         Reject
                       </button>
@@ -144,7 +147,7 @@ export default async function ApprovalsPage({
                     <button
                       type="submit"
                       data-testid={`publish-approved-${d.id}`}
-                      className="rounded-md bg-[var(--pb-pulse)] px-3 py-1.5 text-xs font-semibold text-white"
+                      className="pb-btn pb-btn-primary !px-3 !py-1.5 text-xs"
                     >
                       Publish approved (local)
                     </button>
@@ -155,7 +158,7 @@ export default async function ApprovalsPage({
                   <button
                     type="submit"
                     data-testid={`sentiment-${d.id}`}
-                    className="rounded-md border border-[var(--pb-line)] px-3 py-1.5 text-xs font-semibold"
+                    className="pb-btn pb-btn-ghost !px-3 !py-1.5 text-xs"
                   >
                     Run sentiment
                   </button>

@@ -46,7 +46,7 @@ function PlatformSection({
   disconnectAction: (formData: FormData) => Promise<void>;
 }) {
   return (
-    <section className="mt-8 max-w-xl rounded-xl border border-[var(--pb-line)] bg-white/80 p-6">
+    <section className="pb-panel pb-panel-3d mt-8 max-w-xl rounded-2xl p-6">
       <h2 className="font-display text-xl font-semibold text-[var(--pb-ink)]">
         {title}
       </h2>
@@ -60,7 +60,7 @@ function PlatformSection({
         <div className="mt-5 space-y-3">
           <p className="text-sm text-[var(--pb-ink)]">
             <span className="font-medium">{connection.displayName ?? title}</span>
-            <span className="text-[var(--pb-slate)]"> ┬À {connection.status}</span>
+            <span className="text-[var(--pb-slate)]"> · {connection.status}</span>
           </p>
           {connection.lastSyncAt ? (
             <p className="text-xs text-[var(--pb-slate)]">
@@ -76,7 +76,7 @@ function PlatformSection({
               <button
                 type="submit"
                 data-testid={`${testIdPrefix}-sync`}
-                className="rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
+                className="pb-btn pb-btn-primary"
               >
                 Sync now
               </button>
@@ -86,7 +86,7 @@ function PlatformSection({
               <button
                 type="submit"
                 data-testid={`${testIdPrefix}-disconnect`}
-                className="rounded-md border border-[var(--pb-line)] px-4 py-2 text-sm font-semibold text-[var(--pb-ink)] hover:bg-white"
+                className="pb-btn pb-btn-ghost"
               >
                 Disconnect
               </button>
@@ -98,10 +98,8 @@ function PlatformSection({
           <a
             href={connectHref}
             data-testid={`${testIdPrefix}-connect`}
-            className={`inline-flex rounded-md px-4 py-2 text-sm font-semibold text-white ${
-              configured
-                ? "bg-[var(--pb-pulse)] hover:bg-[var(--pb-pulse-deep)]"
-                : "pointer-events-none bg-[var(--pb-slate)] opacity-60"
+            className={`pb-btn pb-btn-primary ${
+              configured ? "" : "pointer-events-none opacity-60 grayscale"
             }`}
           >
             Connect {title}
@@ -148,15 +146,18 @@ export default async function SettingsPage({
     p === "facebook" ? "Facebook" : p === "linkedin" ? "LinkedIn" : "Instagram";
 
   return (
-    <main>
-      <h1 className="font-display text-3xl font-semibold text-[var(--pb-ink)]">
+    <main className="pb-enter">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pb-pulse-deep)]">
+        Connections
+      </p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-[var(--pb-ink)]">
         Settings
       </h1>
 
       {error ? (
         <p
           data-testid="settings-error"
-          className="mt-4 rounded-md border border-[var(--pb-warn)]/40 bg-[var(--pb-warn)]/10 px-3 py-2 text-sm text-[var(--pb-warn)]"
+          className="mt-4 max-w-xl rounded-xl border border-[var(--pb-warn)]/40 bg-[var(--pb-warn)]/10 px-3 py-2 text-sm text-[var(--pb-warn)]"
         >
           {error}
         </p>
@@ -186,7 +187,7 @@ export default async function SettingsPage({
 
       <PlatformSection
         title="Facebook"
-        description="Connect a Facebook Page. Separate connection from Instagram ÔÇö same Meta stack, distinct scopes and snapshots."
+        description="Connect a Facebook Page. Separate connection from Instagram - same Meta stack, distinct scopes and snapshots."
         testIdPrefix="fb"
         connectHref="/api/oauth/facebook/start"
         connection={fb}
@@ -209,24 +210,24 @@ export default async function SettingsPage({
       />
 
       <section
-        className="mt-8 max-w-xl rounded-xl border border-[var(--pb-line)] bg-white/80 p-6"
+        className="pb-panel mt-8 max-w-xl rounded-2xl p-6"
         data-testid="x-settings"
       >
         <h2 className="font-display text-xl font-semibold text-[var(--pb-ink)]">
           X
         </h2>
         <p className="mt-2 text-sm text-[var(--pb-slate)]">
-          X is manual only ÔÇö no OAuth, no API tokens, no auto-publish. Compose
+          X is manual only - no OAuth, no API tokens, no auto-publish. Compose
           and copy from the X page, then paste into X yourself.
         </p>
         <p className="mt-3 text-xs font-medium uppercase tracking-wide text-[var(--pb-slate)]">
-          Capability: manualCopy ┬À not auto-publish
+          Capability: manualCopy · not auto-publish
         </p>
         <div className="mt-5">
           <Link
             href="/x"
             data-testid="x-open-compose"
-            className="inline-flex rounded-md bg-[var(--pb-pulse)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--pb-pulse-deep)]"
+            className="pb-btn pb-btn-primary"
           >
             Open X compose
           </Link>
@@ -245,7 +246,7 @@ export default async function SettingsPage({
       </ul>
 
       <section
-        className="mt-12 max-w-xl rounded-xl border border-[var(--pb-warn)]/40 bg-white/80 p-6"
+        className="mt-12 max-w-xl rounded-2xl border border-[var(--pb-warn)]/40 bg-[rgba(18,24,42,0.85)] p-6 backdrop-blur-md"
         data-testid="danger-zone"
       >
         <h2 className="font-display text-xl font-semibold text-[var(--pb-warn)]">
@@ -263,13 +264,13 @@ export default async function SettingsPage({
             id="confirm"
             name="confirm"
             data-testid="delete-confirm"
-            className="w-full rounded-md border border-[var(--pb-line)] px-3 py-2 text-sm"
+            className="pb-input"
             autoComplete="off"
           />
           <button
             type="submit"
             data-testid="delete-account"
-            className="rounded-md bg-[var(--pb-warn)] px-4 py-2 text-sm font-semibold text-white"
+            className="pb-btn rounded-xl bg-[var(--pb-warn)] text-white shadow-[0_10px_28px_-12px_rgba(217,119,69,0.7)]"
           >
             Delete my account
           </button>

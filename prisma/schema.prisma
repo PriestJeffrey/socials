@@ -47,7 +47,7 @@ model AuditLog {
   @@index([action, createdAt])
 }
 
-/// Phase 1 foresight — encrypted platform tokens live here
+/// Phase 1 foresight - encrypted platform tokens live here
 model SocialConnection {
   id                String    @id @default(cuid())
   userId            String
@@ -128,7 +128,7 @@ model Job {
   @@index([userId, createdAt])
 }
 
-/// Phase 5 — compose / schedule / publish drafts
+/// Phase 5 - compose / schedule / publish drafts
 model Draft {
   id              String    @id @default(cuid())
   userId          String
@@ -152,7 +152,7 @@ model Draft {
   @@index([userId, createdAt])
 }
 
-/// Phase 6 — competitor hook library (AI-analyzed paste)
+/// Phase 6 - competitor hook library (AI-analyzed paste)
 model HookLibraryItem {
   id         String   @id @default(cuid())
   userId     String

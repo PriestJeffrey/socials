@@ -1,4 +1,4 @@
-# GSTACK Review Report — Phases 0–5 (retro)
+# GSTACK Review Report - Phases 0–5 (retro)
 
 **Skill:** `/review` (retro across built phases)  
 **Date:** 2026-07-30  
@@ -10,14 +10,14 @@
 
 | Finding | Status |
 |---|---|
-| #1 Fake live publish | **Fixed** — refuses when fixtures off |
+| #1 Fake live publish | **Fixed** - refuses when fixtures off |
 | #2 Middleware `/x` | **Fixed** |
 | #3 Adapter `userId` | **Fixed** on disconnect/refresh/fetch |
-| Calendar global job drain | **Fixed** — scoped to user; `/api/cron` for global |
-| META fixtures → LI | **Fixed** — LI only via `LINKEDIN_USE_FIXTURES` |
-| Non-atomic draft publish | **Fixed** — claim `publishing` then finalize |
-| No cron | **Fixed** — `POST/GET /api/cron` + `CRON_SECRET` |
-| S2/S3 sign-off | **Human** — still awaiting UAT/sign (not auto-signed) |
+| Calendar global job drain | **Fixed** - scoped to user; `/api/cron` for global |
+| META fixtures → LI | **Fixed** - LI only via `LINKEDIN_USE_FIXTURES` |
+| Non-atomic draft publish | **Fixed** - claim `publishing` then finalize |
+| No cron | **Fixed** - `POST/GET /api/cron` + `CRON_SECRET` |
+| S2/S3 sign-off | **Human** - still awaiting UAT/sign (not auto-signed) |
 
 ---
 
@@ -36,16 +36,16 @@
 
 ## Per-phase
 
-### Phase 0 → S0 — **SIGNED** — Accurate
+### Phase 0 → S0 - **SIGNED** - Accurate
 Residual: push S0 signed exit onto `origin/phase-0` if still unsigned there.
 
-### Phase 1 → S1 — **SIGNED (fixtures)** — Accurate
+### Phase 1 → S1 - **SIGNED (fixtures)** - Accurate
 Real Meta live deferred.
 
-### Phase 2–4 — **UNSIGNED** — Accurate (fixtures / X honesty)
+### Phase 2–4 - **UNSIGNED** - Accurate (fixtures / X honesty)
 Needs Human UAT/sign for S2 (P2+P3).
 
-### Phase 5 → toward S3 — **UNSIGNED** — Fixture path accurate
+### Phase 5 → toward S3 - **UNSIGNED** - Fixture path accurate
 Live publish no longer mislabeled; Human UAT still required for S3.
 
 ---

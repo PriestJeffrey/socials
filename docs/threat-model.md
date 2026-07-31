@@ -1,4 +1,4 @@
-# Pulseboard Threat Model (seed) — Phase 0 → S0
+# Pulseboard Threat Model (seed) - Phase 0 → S0
 
 ## Meta
 - Version / Phase: 0 → S0
@@ -7,7 +7,7 @@
 - Out of scope Phase 0: Platform OAuth, AI provider
 
 ## Assets (Phase 0)
-1. User credentials (password hashes — Argon2id)
+1. User credentials (password hashes - Argon2id)
 2. Session identifiers / cookies
 3. Encryption keys (`TOKEN_ENCRYPTION_KEY`)
 4. User PII (email)

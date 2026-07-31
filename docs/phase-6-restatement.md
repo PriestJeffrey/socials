@@ -1,4 +1,4 @@
-# Pulseboard — Phase 6 Restatement (Locked)
+# Pulseboard - Phase 6 Restatement (Locked)
 
 **Status:** Phase 6 **in progress** → toward **S4**.  
 **Success bar:** AI “why” + competitor hook library + drafting (fixture and/or live Gemini).  

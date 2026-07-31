@@ -27,7 +27,7 @@ export type HealthReport = {
   subsystems: HealthSubsystem[];
 };
 
-/** Anonymous /api/health — no fixture or env-config posture. */
+/** Anonymous /api/health - no fixture or env-config posture. */
 export type PublicLiveness = {
   ok: boolean;
   phase: 8;
@@ -133,7 +133,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     checkedAt,
     "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)",
     "Fixture mode enabled",
-    "Meta app configured — no connection yet",
+    "Meta app configured - no connection yet",
   );
   const fb = await platformHealth(
     userId,
@@ -141,7 +141,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     checkedAt,
     "META_APP_ID/SECRET missing (or set META_USE_FIXTURES=true)",
     "Fixture mode enabled",
-    "Meta app configured — no connection yet",
+    "Meta app configured - no connection yet",
   );
   const li = await platformHealth(
     userId,
@@ -149,7 +149,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
     checkedAt,
     "LINKEDIN_CLIENT_ID/SECRET missing (or fixtures)",
     "Fixture mode enabled",
-    "LinkedIn app configured — no connection yet",
+    "LinkedIn app configured - no connection yet",
   );
 
   return {
@@ -176,7 +176,7 @@ export async function getHealthReport(userId?: string): Promise<HealthReport> {
         id: "x",
         label: "X",
         status: "ok",
-        detail: "Manual compose + copy only — no API / not auto-publish",
+        detail: "Manual compose + copy only - no API / not auto-publish",
         checkedAt,
       },
       { id: "ai", label: "AI (Gemini)", ...aiHealth(checkedAt) },

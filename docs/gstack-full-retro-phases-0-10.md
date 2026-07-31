@@ -1,4 +1,4 @@
-# GSTACK Full Retro — Phases 0–10
+# GSTACK Full Retro - Phases 0–10
 
 **Date:** 2026-07-30  
 **Tip:** `phase-10` @ `c6531dc`  
@@ -22,7 +22,7 @@ Prior P0–5 code remediations remain landed (`d1de141`).
 | 1 | S1 | IG OAuth/fixtures, encrypted connections, sync → Overview | **Signed (fixtures)** |
 | 2 | →S2 | Facebook adapter, Overview IG+FB | Draft |
 | 3 | S2 | LinkedIn + fatigue/shadowban formulas | Draft |
-| 4 | — | Honest X compose/copy (no fake OAuth) | Draft |
+| 4 | - | Honest X compose/copy (no fake OAuth) | Draft |
 | 5 | S3 | Drafts, `/create`, `/calendar`, schedule/publish jobs, repurpose | Draft |
 | 6 | S4 | AI gateway, competitors, draft assist, Overview “why” | Draft |
 | 7 | S5 | Approvals FSM, sentiment, account hard-delete | Draft |
@@ -90,7 +90,7 @@ Prior P0–5 code remediations remain landed (`d1de141`).
 
 ## Must-fix (code) vs Human residual
 
-### Code — landed 2026-07-30 (post Docker stack + gstack)
+### Code - landed 2026-07-30 (post Docker stack + gstack)
 
 1. ~~Fixture/local-only banner on Create + Approvals~~  
 2. ~~Extend L9 redact patterns for Threads/TikTok secrets~~  

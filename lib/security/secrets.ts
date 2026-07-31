@@ -51,7 +51,7 @@ export function requireStrongSecret(
 ): string {
   if (isWeakSecret(value)) {
     throw new Error(
-      `${name} is missing, too short (<16), or a known placeholder — set a strong random value`,
+      `${name} is missing, too short (<16), or a known placeholder - set a strong random value`,
     );
   }
   return value!.trim();
