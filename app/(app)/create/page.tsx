@@ -62,18 +62,17 @@ export default async function CreatePage({
       </h1>
       <p className="mt-2 max-w-xl text-sm text-[var(--pb-slate)]">
         Draft once, preview, then publish or schedule to Instagram / Facebook /
-        LinkedIn. X is copy-only. Live Graph posting is deferred - “Publish” writes a
-        local fixture post when fixtures are on.
+        LinkedIn. X is copy-only.
       </p>
 
       <p
         className="pb-panel mt-4 max-w-xl rounded-xl px-4 py-3 text-xs text-[var(--pb-slate)]"
         data-testid="create-fixture-banner"
       >
-        Publish follows your env: fixture mode writes a local post; live mode
-        posts to real Instagram / Facebook / LinkedIn when fixtures are off and
-        accounts are connected. Live Instagram needs a public https image or
-        video URL. X never auto-publishes - use Compose X to copy.
+        Right now Meta (IG/FB) is still fixture/local. LinkedIn is live when
+        connected — Publish posts to your real LinkedIn profile. Live Instagram
+        needs a public https image or video URL. X never auto-publishes — use
+        Compose X to copy.
       </p>
 
       {error ? (
@@ -86,7 +85,8 @@ export default async function CreatePage({
       ) : null}
       {published ? (
         <p className="mt-4 text-sm text-[var(--pb-ok)]">
-          Local/fixture publish queued or complete.{" "}
+          Publish queued or complete. Check LinkedIn (live) or Calendar for
+          status.{" "}
           <Link href="/calendar" className="underline">
             Calendar
           </Link>
@@ -232,7 +232,7 @@ export default async function CreatePage({
             data-testid="create-publish"
             className="pb-btn pb-btn-primary"
           >
-            Publish locally
+            Publish
           </button>
           <button
             type="submit"

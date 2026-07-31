@@ -199,7 +199,7 @@ export default async function SettingsPage({
 
       <PlatformSection
         title="LinkedIn"
-        description="Connect LinkedIn for dwell/comment quality and first-hour velocity signals. Fatigue and shadowban heuristics run on snapshots only."
+        description="Connect LinkedIn for live member publish. Analytics sync is sparse unless your LinkedIn app has Community Management access — Sync still runs, but Overview may stay empty."
         testIdPrefix="li"
         connectHref="/api/oauth/linkedin/start"
         connection={li}

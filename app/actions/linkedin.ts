@@ -44,5 +44,5 @@ export async function syncLinkedInAction(formData: FormData) {
     idempotencyKey: `sync:linkedin:${conn.id}:${clock.now().toISOString()}`,
   });
   await processPendingJobs(3, user.id);
-  redirect("/overview");
+  redirect("/overview?synced=linkedin");
 }

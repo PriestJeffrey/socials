@@ -3,20 +3,32 @@ import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
 import { readOverview } from "@/lib/analytics/pipeline";
 import { prisma } from "@/lib/db/prisma";
+import { getLinkedInConfig } from "@/lib/platforms/linkedin/config";
 
-export default async function OverviewPage() {
+export default async function OverviewPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ synced?: string }>;
+}) {
   const user = await getSessionUser();
   if (!user) redirect("/login");
 
+  const params = (await searchParams) ?? {};
   const board = await readOverview(user.id);
-  const anyConnected = await prisma.socialConnection.findFirst({
+  const connections = await prisma.socialConnection.findMany({
     where: {
       userId: user.id,
       platform: { in: ["instagram", "facebook", "linkedin"] },
       status: { in: ["connected", "error"] },
     },
-    select: { id: true },
+    select: { platform: true, lastSyncAt: true },
   });
+  const anyConnected = connections.length > 0;
+  const liConnected = connections.some((c) => c.platform === "linkedin");
+  const liOnly =
+    liConnected &&
+    !connections.some((c) => c.platform === "instagram" || c.platform === "facebook");
+  const liLiveSparse = liConnected && !getLinkedInConfig().useFixtures;
 
   return (
     <main className="pb-enter">
@@ -29,6 +41,16 @@ export default async function OverviewPage() {
       {board.syncedAt ? (
         <p className="mt-2 text-xs text-[var(--pb-muted)]">
           Snapshot as of {board.syncedAt}
+        </p>
+      ) : null}
+      {params.synced === "linkedin" ? (
+        <p
+          className="pb-panel mt-5 max-w-2xl rounded-xl px-4 py-3 text-sm text-[var(--pb-ink)]"
+          data-testid="overview-li-synced"
+        >
+          LinkedIn sync finished. Live mode can publish, but historical posts and
+          analytics need LinkedIn Community Management product access — without
+          that, this board stays empty on purpose.
         </p>
       ) : null}
       {board.why ? (
@@ -47,16 +69,22 @@ export default async function OverviewPage() {
           className="pb-panel pb-panel-3d mt-8 max-w-xl rounded-2xl p-8"
         >
           <p className="font-display text-2xl font-semibold text-[var(--pb-ink)]">
-            {anyConnected ? "Waiting on snapshots" : "Your board is ready"}
+            {liLiveSparse && liOnly
+              ? "LinkedIn connected — board stays light"
+              : anyConnected
+                ? "Waiting on snapshots"
+                : "Your board is ready"}
           </p>
           <p className="mt-3 text-[var(--pb-slate)]">
-            {anyConnected
-              ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
-              : "Connect Instagram, Facebook, or LinkedIn and sync to see what's broken, what's working, and what to post next."}
+            {liLiveSparse && liOnly
+              ? "Your LinkedIn account is linked for live publishing. Overview cards need analytics sync, which LinkedIn only opens with extra product access. Check Create / Calendar for posts you publish from Pulseboard."
+              : anyConnected
+                ? "A platform is linked. Sync from Settings to fill what's broken and what's working."
+                : "Connect Instagram, Facebook, or LinkedIn and sync to see what's broken, what's working, and what to post next."}
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link href="/settings" className="pb-btn pb-btn-primary">
-              {anyConnected ? "Open Settings to sync" : "Connect a platform"}
+              {anyConnected ? "Back to Settings" : "Connect a platform"}
             </Link>
             <Link href="/settings/health" className="pb-btn pb-btn-ghost">
               System health
