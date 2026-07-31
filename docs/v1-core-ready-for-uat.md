@@ -2,7 +2,7 @@
 
 **Branch:** `v1-core`  
 **Date:** 2026-07-31  
-**Status:** Engineering close-out finishing (push before UAT if local ahead of origin) · **S2–S6 await Human sign** · Wave B frozen
+**Status:** **V1 core CLOSED** — Human signed S2–S6 (2026-07-31) · Wave B frozen
 
 ## What’s in V1
 
@@ -18,10 +18,14 @@ Live Meta/LinkedIn Graph publish · Wave B platforms · hosting/TLS/Sentry go-li
 `demo@pulseboard.local` / `pulseboard-demo` → http://localhost:3000/login  
 (`npm run db:seed` if missing.) Fixtures on; rebuild: `docker compose up -d --build --force-recreate app`.
 
-## Sign order
+## Signs
 
-Reply when green: `S2 signed` → `S3 signed` → `S4 signed` → `S5 signed` → `S6 signed`.  
-Checklists: **[docs/v1-core-ship.md](v1-core-ship.md)**. Do not `/ship` until all five are signed.
+| Bar | Status |
+|---|---|
+| S0 / S1 | Signed (historical, fixtures) |
+| S2–S6 | **SIGNED** 2026-07-31 |
+
+Record: [docs/v1-core-ship.md](v1-core-ship.md).
 
 ## Freeze
 

@@ -11,7 +11,7 @@
 
 ## Overall verdict
 
-V1 core **engineering close-out is done** on branch `v1-core` (push any remaining close-out commits before Human UAT): fixture-honest, test-green (77/77), prior `/cso` mediums closed, Wave B stripped from the active app. Product is **not** Human-shipped: **S2–S6 unsigned**. Next gate is **Human fixture UAT** per the ship pack — not more platform build, not Wave B. Live Meta Graph publish remains deferred. Do **not** `/ship` to production until Human signs S2–S6 and hosting/TLS is ready.
+V1 core is **Human-complete** on branch `v1-core`: fixture-honest, test-green (**80/80**), prior `/cso` mediums closed, Wave B stripped, **S2–S6 signed 2026-07-31**. Live Meta Graph publish remains deferred. Production `/ship` (hosting/TLS/Sentry) stays a separate ask — V1 core product bars are closed.
 
 **Security Review (this pass):** [Security Review](318634c1-6f92-4db9-bf08-07b6014461ea) - no new medium+ findings.  
 **Bugbot (this pass):** [Bugbot](fadb2dbf-7d60-428d-ac25-51471e580f57) - theme desync + compose `DATABASE_URL` encoding **fixed** on branch.
@@ -34,7 +34,7 @@ V1 core **engineering close-out is done** on branch `v1-core` (push any remainin
 | Security mediums (flash cookie, Postgres loopback, Gemini header) | Done |
 | Theme hydration + compose `DATABASE_URL` encoding | Done |
 | Live Graph publish | Deferred |
-| Human S2–S6 | **Awaiting** |
+| Human S2–S6 | **SIGNED** 2026-07-31 |
 
 ---
 
@@ -44,7 +44,7 @@ V1 core **engineering close-out is done** on branch `v1-core` (push any remainin
 
 | Good | Bad / open |
 |---|---|
-| Locked V1 promise: broken / working / next post | S2–S6 still unsigned - no Human ship |
+| Locked V1 promise: broken / working / next post | S2–S6 signed — V1 core closed; live Graph / hosting still optional next |
 | Scope freeze documented; Wave B not auto-expanding | — |
 | Demo path + ready-for-UAT handoff clear | Marketing Threads/TikTok glyphs can imply product platforms |
 | Ship pack exists (`docs/v1-core-ship.md`) | Live publish still residual - must not overclaim in sales |
@@ -166,28 +166,27 @@ No open Bugbot mediums blocking local UAT.
 | Gate | Status |
 |---|---|
 | S0 / S1 | Historically signed (fixtures) |
-| S2–S6 | **Not signed** - `/ship` **blocked** |
+| S2–S6 | **SIGNED** 2026-07-31 — V1 core closed |
 | Security mediums | Closed for V1 local |
 | Live Graph | Deferred - must stay residual in ship notes |
-| Hosting / TLS / Sentry | Open |
+| Hosting / TLS / Sentry | Open (production `/ship` only when you ask) |
 
-**Ship rule:** Do not run `/ship` until Human replies `S2 signed` … `S6 signed`.
+**Ship rule:** V1 core product bars are signed. Do not production-deploy until hosting/TLS/secrets are ready and you ask to `/ship`.
 
 ---
 
 ## Priority backlog (engineering)
 
 1. ~~Fix theme provider hydration desync (Bugbot).~~ **Fixed**  
-2. ~~Fix compose `DATABASE_URL` encoding / use separate env without URI interpolation.~~ **Fixed**  
-3. Add `v1-core` to CI push branches (or always rely on PRs).  
-4. Human UAT S2–S6 (Human only — AI does not sign).  
-5. Post-V1: Redis rate-limit, locking job claim, CSP nonces, live Graph, Sentry SDK.
+2. ~~Fix compose `DATABASE_URL` encoding.~~ **Fixed**  
+3. ~~Add `v1-core` to CI push branches.~~ **Fixed**  
+4. ~~Human UAT S2–S6.~~ **SIGNED** 2026-07-31  
+5. Post-V1 (only if asked): Redis rate-limit, CSP nonces, live Graph, Sentry SDK, hosting/TLS.
 
 ---
 
 ## Human next actions
 
-1. Read `docs/v1-core-ready-for-uat.md` (one-screen handoff).  
-2. Run fixture UAT per `docs/v1-core-ship.md` (S2 → S6).  
-3. Reply `S2 signed` … `S6 signed` when each bar is green.  
-4. After all five: discuss prod / live Graph only if you ask. Wave B only if you **name a platform + go**.
+1. V1 core product bars are **closed** (S2–S6 signed).  
+2. Ask for production `/ship` (hosting/TLS) or live Meta/LinkedIn when ready.  
+3. Wave B only if you **name a platform + go**.

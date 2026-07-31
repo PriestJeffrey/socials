@@ -4,9 +4,9 @@
 **Date:** 2026-07-31  
 **Scope:** Instagram · Facebook · LinkedIn · X only (Wave B frozen)  
 **AI DoD:** Engineering close-out done — tests green (**80/80**) on `v1-core`.  
-**Human DoD:** Fixture UAT + reply with each bar signed → then **S6** = V1 core complete.  
-**gstack:** `/qa` pass recorded below — does **not** sign S2–S6 (Human only).  
-**Handoff:** [docs/v1-core-ready-for-uat.md](v1-core-ready-for-uat.md) (one screen) · freeze [docs/scope-freeze-v1-core.md](scope-freeze-v1-core.md)
+**Human DoD:** **COMPLETE** — Human signed **S2–S6** on 2026-07-31 (fixture UAT). V1 core closed.  
+**gstack:** `/qa` pass recorded below — Human signs recorded separately.  
+**Handoff:** [docs/v1-core-ready-for-uat.md](v1-core-ready-for-uat.md) · freeze [docs/scope-freeze-v1-core.md](scope-freeze-v1-core.md)
 
 Demo login: `demo@pulseboard.local` / `pulseboard-demo` → http://localhost:3000/login
 
@@ -42,13 +42,14 @@ All items checked by AI before Human starts S2–S6. **Does not** equal Human ba
 
 | # | Bar | Reply when green | Status |
 |---|---|---|---|
-| 1 | **S2** - IG + FB + LinkedIn analytics | `S2 signed` | **UNSIGNED** |
-| 2 | **S3** - Create / calendar / publish + X copy | `S3 signed` | **UNSIGNED** |
-| 3 | **S4** - AI why + competitors + draft assist | `S4 signed` | **UNSIGNED** |
-| 4 | **S5** - Approvals + sentiment + account delete | `S5 signed` | **UNSIGNED** |
-| 5 | **S6** - Prod smoke + runbook comfort | `S6 signed` | **UNSIGNED** |
+| 1 | **S2** - IG + FB + LinkedIn analytics | `S2 signed` | **SIGNED** 2026-07-31 |
+| 2 | **S3** - Create / calendar / publish + X copy | `S3 signed` | **SIGNED** 2026-07-31 |
+| 3 | **S4** - AI why + competitors + draft assist | `S4 signed` | **SIGNED** 2026-07-31 |
+| 4 | **S5** - Approvals + sentiment + account delete | `S5 signed` | **SIGNED** 2026-07-31 |
+| 5 | **S6** - Prod smoke + runbook comfort | `S6 signed` | **SIGNED** 2026-07-31 |
 
-S0 + S1 already signed historically (fixtures).
+S0 + S1 already signed historically (fixtures).  
+**Human phrase (this close):** `s2-s6 signed` (2026-07-31).
 
 ---
 
@@ -103,11 +104,14 @@ S0 + S1 already signed historically (fixtures).
 
 ## After all bars signed
 
-V1 core is **closed**. Next only if you ask:
+**V1 core is closed** (Human S2–S6 signed 2026-07-31).
+
+Next only if you ask:
 
 - Live Meta/LinkedIn wiring with real credentials  
 - Hosting vendor / DNS / TLS  
 - Wave B expansion (name platform + go)  
+- Accepted residuals: Sentry SDK, CSP tighten, Redis rate-limit  
 
 ---
 
@@ -115,13 +119,13 @@ V1 core is **closed**. Next only if you ask:
 
 | Check | Result |
 |---|---|
-| Branch | `v1-core` ↔ `origin/v1-core` (tip pushed; local WIP docs/CI may exist uncommitted) |
+| Branch | `v1-core` ↔ `origin/v1-core` |
 | Platforms in registry | `instagram`, `facebook`, `linkedin`, `x` only |
 | `npm test` | **80/80** passed (24 files), 2026-07-31 |
-| Docker rebuild on `v1-core` | Done previously — OAuth routes IG/FB/LI only |
+| Docker rebuild on `v1-core` | Done — OAuth routes IG/FB/LI only |
 | `GET /api/health` | `{"ok":true,"phase":8,"status":"ok"}` (public liveness; no subsystems leak) |
 | Authenticated health | subsystems: auth, database, instagram, facebook, linkedin, x, ai, runtime |
 | `npm run smoke` | Passed vs http://localhost:3000 (`/`, `/login`, `/signup`, `/api/health` 200; `/overview` 307) |
 | Wave B in active app | Removed / frozen |
 | Scope freeze | `docs/scope-freeze-v1-core.md` |
-| S2–S6 Human signs | **UNSIGNED** (Human only) |
+| S2–S6 Human signs | **SIGNED** 2026-07-31 (`s2-s6 signed`) |
