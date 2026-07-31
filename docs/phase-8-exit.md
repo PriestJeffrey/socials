@@ -1,6 +1,6 @@
 # Pulseboard — Phase 8 exit (draft toward S6)
 
-**Status:** Implementation complete — awaiting Human prod UAT / S6 sign.  
+**Status:** Implementation complete on `v1-core` — awaiting Human prod UAT / **S6** sign. See [docs/v1-core-ship.md](v1-core-ship.md).  
 **Date:** 2026-07-30  
 **gstack:** Restatement locked; `/review` notes below.
 

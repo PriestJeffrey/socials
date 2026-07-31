@@ -1,6 +1,6 @@
 # Pulseboard — Phase 6 exit (draft toward S4)
 
-**Status:** Implementation complete — awaiting Human UAT / S4 sign.  
+**Status:** Implementation complete on `v1-core` — awaiting Human UAT / **S4** sign. See [docs/v1-core-ship.md](v1-core-ship.md).  
 **Date:** 2026-07-30  
 **gstack:** `/plan-eng-review` before build; `/review` notes below.
 

@@ -1,6 +1,6 @@
 # Pulseboard — Phase 4 exit (draft)
 
-**Status:** Implementation complete — awaiting Human messaging UAT.  
+**Status:** Implementation complete on `v1-core` — awaiting Human UAT. See [docs/v1-core-ship.md](v1-core-ship.md).  
 **Date:** 2026-07-30  
 **Note:** `/x` added to middleware PROTECTED (gstack remediation).
 
